@@ -17,4 +17,11 @@ public class RoleService {
     public RoleResponseDto save(RoleEntity roleEntity) {
         return RoleMapper.toResponseDto(roleRepository.save(roleEntity));
     }
+
+    @Transactional(readOnly = true)
+    public RoleResponseDto findById(Long id) {
+        return RoleMapper.toResponseDto(roleRepository.findById(id).orElseThrow(
+                () -> new RuntimeException(String.format("Role não encontrada com o id: %d", id))
+        ));
+    }
 }
