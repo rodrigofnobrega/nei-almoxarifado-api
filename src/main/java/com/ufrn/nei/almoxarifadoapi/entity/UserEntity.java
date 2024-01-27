@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -32,12 +33,18 @@ public class UserEntity implements Serializable {
     @JoinColumn(name = "id_role", nullable = false, unique = false)
     private RoleEntity role;
 
+    @OneToMany(mappedBy = "user")
+    private List<RecordEntity> records;
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         UserEntity that = (UserEntity) o;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(email, that.email) && Objects.equals(password, that.password) && Objects.equals(role, that.role);
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(email, that.email)
+                && Objects.equals(password, that.password) && Objects.equals(role, that.role);
     }
 
     @Override
