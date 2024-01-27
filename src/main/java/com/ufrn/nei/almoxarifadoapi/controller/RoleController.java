@@ -27,10 +27,25 @@ public class RoleController {
         return ResponseEntity.status(HttpStatus.CREATED).body(role);
     }
     @GetMapping("/{id}")
-    public ResponseEntity<RoleResponseDto> findById(@PathVariable Long id) {
+    public ResponseEntity<RoleResponseDto> findRoleById(@PathVariable Long id) {
         RoleResponseDto role = roleService.findById(id);
 
         return ResponseEntity.status(HttpStatus.FOUND).body(role);
     }
 
+    @GetMapping
+    public ResponseEntity<List<RoleResponseDto>> findAllRoles() {
+        List<RoleResponseDto> roles = roleService.findAllRoles();
+
+        return ResponseEntity.status(HttpStatus.FOUND).body(roles);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteRole(@PathVariable Long id) {
+        if (roleService.deleteById(id)) {
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
 }
