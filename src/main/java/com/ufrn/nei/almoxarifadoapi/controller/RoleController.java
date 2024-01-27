@@ -48,4 +48,11 @@ public class RoleController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<RoleResponseDto> updateRole(@PathVariable Long id, @RequestBody RoleUpdateDto updateRole) {
+        RoleResponseDto role = roleService.updateRoleById(id, updateRole);
+
+        return ResponseEntity.status(HttpStatus.OK).body(role);
+    }
 }

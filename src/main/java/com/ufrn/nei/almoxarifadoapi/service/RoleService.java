@@ -1,6 +1,7 @@
 package com.ufrn.nei.almoxarifadoapi.service;
 
 import com.ufrn.nei.almoxarifadoapi.dto.RoleResponseDto;
+import com.ufrn.nei.almoxarifadoapi.dto.RoleUpdateDto;
 import com.ufrn.nei.almoxarifadoapi.dto.mapper.RoleMapper;
 import com.ufrn.nei.almoxarifadoapi.entity.RoleEntity;
 import com.ufrn.nei.almoxarifadoapi.repository.RoleRepository;
@@ -48,5 +49,14 @@ public class RoleService {
             log.error("Erro ao excluir registro com ID: {}", id, ex);
             throw new IllegalArgumentException("Erro ao excluir registro.", ex);
         }
+    }
+
+    @Transactional
+    public RoleResponseDto updateRoleById(Long id, RoleUpdateDto newRole) {
+        RoleEntity role = RoleMapper.toRole(findById(id));
+        role.setRole(newRole.getNewRole());
+        save(role);
+
+        return RoleMapper.toResponseDto(role);
     }
 }
