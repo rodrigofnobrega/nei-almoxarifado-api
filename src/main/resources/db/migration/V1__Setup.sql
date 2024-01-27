@@ -20,7 +20,7 @@ CREATE TABLE Usuarios (
         FOREIGN KEY (id_role) REFERENCES Roles (id)
 );
 
-CREATE TABLE Registro (
+CREATE TABLE Registros (
         id serial primary key,
         id_usuario integer,
         id_item integer,
