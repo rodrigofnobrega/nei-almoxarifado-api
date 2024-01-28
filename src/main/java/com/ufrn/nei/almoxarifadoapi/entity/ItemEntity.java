@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -28,12 +29,18 @@ public class ItemEntity implements Serializable {
     @Column(name = "disponivel", nullable = false, unique = false)
     private Boolean available = Boolean.TRUE;
 
+    @OneToMany(mappedBy = "item")
+    private List<RecordEntity> records;
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         ItemEntity that = (ItemEntity) o;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(itemTagging, that.itemTagging) && Objects.equals(available, that.available);
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name)
+                && Objects.equals(itemTagging, that.itemTagging) && Objects.equals(available, that.available);
     }
 
     @Override
