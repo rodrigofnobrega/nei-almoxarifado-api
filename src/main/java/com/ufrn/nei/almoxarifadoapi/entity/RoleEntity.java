@@ -19,7 +19,7 @@ public class RoleEntity implements Serializable {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "encargo", nullable = false, unique = false, length = 50)
+    @Column(name = "encargo", nullable = false, unique = true, length = 50)
     private String role;
 
     @Override
