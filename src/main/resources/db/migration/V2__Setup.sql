@@ -1,0 +1,5 @@
+ALTER TABLE Roles
+ADD CONSTRAINT unique_encargo UNIQUE (encargo);
+
+ALTER TABLE Usuarios
+ALTER COLUMN id_role SET NOT NULL;
