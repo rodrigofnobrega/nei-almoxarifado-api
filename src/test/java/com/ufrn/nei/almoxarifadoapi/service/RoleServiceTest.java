@@ -42,9 +42,7 @@ class RoleServiceTest {
     @Test
     @DisplayName("Testa a criação de novas roles")
     void saveRoleTest() {
-        RoleEntity roleEntity = new RoleEntity();
-        roleEntity.setId(1L);
-        roleEntity.setRole("Admin");
+        RoleEntity roleEntity = createRole(1L, "Cliente");
 
         when(roleRepository.save(roleEntity)).thenReturn(roleEntity);
 
