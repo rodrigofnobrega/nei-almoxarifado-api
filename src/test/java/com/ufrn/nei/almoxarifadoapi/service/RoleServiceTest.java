@@ -1,7 +1,6 @@
 package com.ufrn.nei.almoxarifadoapi.service;
 
 import com.ufrn.nei.almoxarifadoapi.dto.RoleResponseDto;
-import com.ufrn.nei.almoxarifadoapi.dto.mapper.RoleMapper;
 import com.ufrn.nei.almoxarifadoapi.entity.RoleEntity;
 import com.ufrn.nei.almoxarifadoapi.repository.RoleRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,9 +11,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.management.relation.Role;
-
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -30,15 +26,18 @@ class RoleServiceTest {
     @InjectMocks
     private RoleService roleService;
 
+    private RoleEntity roleEntity;
+
     @BeforeEach
     public void setup() {
+        roleEntity = createRole();
         MockitoAnnotations.openMocks(this);
     }
 
-    private RoleEntity createRole(Long id, String role) {
+    private RoleEntity createRole() {
         RoleEntity roleEntity = new RoleEntity();
         roleEntity.setId(1L);
-        roleEntity.setRole("Admin");
+        roleEntity.setRole("Cliente");
 
         return roleEntity;
     }
@@ -46,8 +45,6 @@ class RoleServiceTest {
     @Test
     @DisplayName("Testa a criação de novas roles")
     void saveRoleTest() {
-        RoleEntity roleEntity = createRole(1L, "Cliente");
-
         when(roleRepository.save(roleEntity)).thenReturn(roleEntity);
 
         RoleResponseDto savedRole = roleService.save(roleEntity);
@@ -64,8 +61,7 @@ class RoleServiceTest {
     @DisplayName("Testa encontrar uma Role pelo ID no serviço")
     @Transactional(readOnly = true)
     void testFindRoleById() {
-        Long roleId = 1L;
-        RoleEntity roleEntity = createRole(roleId, "Cliente");
+        Long roleId = roleEntity.getId();
 
         when(roleRepository.findById(roleId)).thenReturn(Optional.of(roleEntity));
 
@@ -83,8 +79,6 @@ class RoleServiceTest {
     @DisplayName("Teste para encontrar todas as roles cadastradas")
     @Transactional(readOnly = true)
     void testFindAllRoles() {
-        RoleEntity roleEntity = createRole(1L, "Cliente");
-
         when(roleRepository.findAll()).thenReturn(Collections.singletonList(roleEntity));
 
         List<RoleResponseDto> roleResponse = roleService.findAllRoles();
