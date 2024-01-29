@@ -9,6 +9,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.management.relation.Role;
+
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -24,6 +29,14 @@ class RoleServiceTest {
     @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
+    }
+
+    private RoleEntity createRole(Long id, String role) {
+        RoleEntity roleEntity = new RoleEntity();
+        roleEntity.setId(1L);
+        roleEntity.setRole("Admin");
+
+        return roleEntity;
     }
 
     @Test
@@ -43,5 +56,24 @@ class RoleServiceTest {
 
         assertEquals(roleEntity.getId(), savedRole.getId());
         assertEquals(roleEntity.getRole(), savedRole.getRole());
+    }
+
+    @Test
+    @DisplayName("Testa encontrar uma Role pelo ID no serviço")
+    @Transactional(readOnly = true)
+    void testFindRoleById() {
+        Long roleId = 1L;
+        RoleEntity roleEntity = createRole(roleId, "Cliente");
+
+        when(roleRepository.findById(roleId)).thenReturn(Optional.of(roleEntity));
+
+        RoleResponseDto foundRole = roleService.findById(roleId);
+
+        verify(roleRepository, times(1)).findById(roleId);
+
+        assertNotNull(foundRole);
+
+        assertEquals(roleEntity.getId(), foundRole.getId());
+        assertEquals(roleEntity.getRole(), foundRole.getRole());
     }
 }
