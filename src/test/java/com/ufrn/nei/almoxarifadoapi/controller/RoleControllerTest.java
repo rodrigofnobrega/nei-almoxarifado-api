@@ -59,12 +59,16 @@ public class RoleControllerTest {
 
     @Test
     void testFindAllRoles() throws Exception {
-        List<RoleResponseDto> mockRoles = Collections.singletonList(roleResponseDto );
+        List<RoleResponseDto> mockRoles = Collections.singletonList(roleResponseDto);
 
         when(roleService.findAllRoles()).thenReturn(mockRoles);
 
         mockMvc.perform(get("/api/v1/roles"))
-            .andExpect(status().isFound())
-            .andExpect(content().json("[{ 'id' : 1, 'role': 'Cliente' }]"));
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$[0].id").value(1))
+            .andExpect(jsonPath("$[0].role").value("Cliente"));
+
+        verify(roleService, times(1)).findAllRoles();
     }
 }
