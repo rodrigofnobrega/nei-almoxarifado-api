@@ -1,6 +1,7 @@
 package com.ufrn.nei.almoxarifadoapi.service;
 
 import com.ufrn.nei.almoxarifadoapi.dto.RoleResponseDto;
+import com.ufrn.nei.almoxarifadoapi.dto.mapper.RoleMapper;
 import com.ufrn.nei.almoxarifadoapi.entity.RoleEntity;
 import com.ufrn.nei.almoxarifadoapi.repository.RoleRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.management.relation.Role;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -73,5 +77,23 @@ class RoleServiceTest {
 
         assertEquals(roleEntity.getId(), foundRole.getId());
         assertEquals(roleEntity.getRole(), foundRole.getRole());
+    }
+
+    @Test
+    @DisplayName("Teste para encontrar todas as roles cadastradas")
+    @Transactional(readOnly = true)
+    void testFindAllRoles() {
+        RoleEntity roleEntity = createRole(1L, "Cliente");
+
+        when(roleRepository.findAll()).thenReturn(Collections.singletonList(roleEntity));
+
+        List<RoleResponseDto> roleResponse = roleService.findAllRoles();
+
+        verify(roleRepository, times(1)).findAll();
+
+        assertNotNull(roleResponse);
+
+        assertEquals(roleEntity.getRole(), roleResponse.get(0).getRole());
+        assertEquals(roleEntity.getId(), roleResponse.get(0).getId());
     }
 }
