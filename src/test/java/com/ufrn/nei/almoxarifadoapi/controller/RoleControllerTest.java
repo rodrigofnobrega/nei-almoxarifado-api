@@ -28,7 +28,7 @@ public class RoleControllerTest {
     RoleService roleService;
 
     @Test
-    public void testFindAllRoles() throws Exception {
+    void testFindAllRoles() throws Exception {
         RoleResponseDto roleResponseDto = new RoleResponseDto();
         roleResponseDto.setId(1L);
         roleResponseDto.setRole("Cliente");
