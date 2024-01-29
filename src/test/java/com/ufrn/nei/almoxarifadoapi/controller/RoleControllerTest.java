@@ -2,7 +2,9 @@ package com.ufrn.nei.almoxarifadoapi.controller;
 
 import com.ufrn.nei.almoxarifadoapi.dto.RoleResponseDto;
 import com.ufrn.nei.almoxarifadoapi.service.RoleService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,23 +24,35 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 public class RoleControllerTest {
     @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @MockBean
-    RoleService roleService;
+    private RoleService roleService;
+
+    private RoleResponseDto roleResponseDto;
+
+    @BeforeEach
+    void setup() {
+        roleResponseDto = createRoleResponseDto();
+        MockitoAnnotations.openMocks(this);
+    }
+
+    private RoleResponseDto createRoleResponseDto() {
+        RoleResponseDto role = new RoleResponseDto();
+        role.setId(1L);
+        role.setRole("Cliente");
+
+        return role;
+    }
 
     @Test
     void testFindAllRoles() throws Exception {
-        RoleResponseDto roleResponseDto = new RoleResponseDto();
-        roleResponseDto.setId(1L);
-        roleResponseDto.setRole("Cliente");
-
         List<RoleResponseDto> mockRoles = Collections.singletonList(roleResponseDto );
 
         when(roleService.findAllRoles()).thenReturn(mockRoles);
 
         mockMvc.perform(get("/api/v1/roles"))
-                .andExpect(status().isFound())
-                .andExpect(content().json("[{ 'id' : 1, 'role': 'Cliente' }]"));
+            .andExpect(status().isFound())
+            .andExpect(content().json("[{ 'id' : 1, 'role': 'Cliente' }]"));
     }
 }
