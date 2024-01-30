@@ -30,14 +30,14 @@ public class RoleController {
     public ResponseEntity<RoleResponseDto> findRoleById(@PathVariable Long id) {
         RoleResponseDto role = roleService.findById(id);
 
-        return ResponseEntity.status(HttpStatus.FOUND).body(role);
+        return ResponseEntity.status(HttpStatus.OK).body(role);
     }
 
     @GetMapping
     public ResponseEntity<List<RoleResponseDto>> findAllRoles() {
         List<RoleResponseDto> roles = roleService.findAllRoles();
 
-        return ResponseEntity.status(HttpStatus.FOUND).body(roles);
+        return ResponseEntity.status(HttpStatus.OK).body(roles);
     }
 
     @DeleteMapping("/{id}")
