@@ -43,22 +43,13 @@ public class RoleControllerTest {
 
     @BeforeEach
     void setup() {
-        roleResponseDto = createRoleResponseDto();
+        roleResponseDto = new RoleResponseDto(1L, "Cliente");
         MockitoAnnotations.openMocks(this);
-    }
-
-    private RoleResponseDto createRoleResponseDto() {
-        RoleResponseDto role = new RoleResponseDto();
-        role.setId(1L);
-        role.setRole("Cliente");
-
-        return role;
     }
 
     @Test
     void testCreateRole() throws Exception {
-        RoleCreateDto roleCreateDto = new RoleCreateDto();
-        roleCreateDto.setRole("Cliente");
+        RoleCreateDto roleCreateDto = new RoleCreateDto("Cliente");
 
         when(roleService.save(RoleMapper.toRole(roleCreateDto))).thenReturn(roleResponseDto);
 
@@ -103,8 +94,7 @@ public class RoleControllerTest {
 
     @Test
     public void testUpdateRole() throws Exception {
-        RoleUpdateDto roleUpdateDto = new RoleUpdateDto();
-        roleUpdateDto.setNewRole("Cliente");
+        RoleUpdateDto roleUpdateDto = new RoleUpdateDto("Cliente");
 
         when(roleService.updateRoleById(1L, roleUpdateDto)).thenReturn(roleResponseDto);
 
