@@ -18,6 +18,10 @@ Descrição da alteração que está sendo proposta.
 - [ ] Minhas alterações não introduzem novos problemas
 - [ ] Minhas alterações estão de acordo com os padrões do projeto
 
+## Issue relacionada (opcional)
+
+Informe a issues relacionada a essa alteração
+
 ### Comentários adicionais
 
 Adicione mais informações sobre a alteração proposta.
