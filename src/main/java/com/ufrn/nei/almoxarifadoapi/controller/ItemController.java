@@ -51,7 +51,7 @@ public class ItemController {
     public ResponseEntity<ItemDetailsDTO> updateItem(@RequestBody @Valid ItemUpdateDTO itemDTO) {
         ItemDetailsDTO item = itemService.updateItem(itemDTO);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(item);
+        return ResponseEntity.status(HttpStatus.OK).body(item);
     }
 
 }
