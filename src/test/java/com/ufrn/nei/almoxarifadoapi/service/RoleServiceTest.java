@@ -1,7 +1,7 @@
 package com.ufrn.nei.almoxarifadoapi.service;
 
-import com.ufrn.nei.almoxarifadoapi.dto.RoleResponseDto;
-import com.ufrn.nei.almoxarifadoapi.dto.RoleUpdateDto;
+import com.ufrn.nei.almoxarifadoapi.dto.role.RoleResponseDto;
+import com.ufrn.nei.almoxarifadoapi.dto.role.RoleUpdateDto;
 import com.ufrn.nei.almoxarifadoapi.entity.RoleEntity;
 import com.ufrn.nei.almoxarifadoapi.repository.RoleRepository;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,4 +1,4 @@
-package com.ufrn.nei.almoxarifadoapi.dto;
+package com.ufrn.nei.almoxarifadoapi.dto.role;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,14 +1,12 @@
 package com.ufrn.nei.almoxarifadoapi.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ufrn.nei.almoxarifadoapi.dto.RoleCreateDto;
-import com.ufrn.nei.almoxarifadoapi.dto.RoleResponseDto;
-import com.ufrn.nei.almoxarifadoapi.dto.RoleUpdateDto;
+import com.ufrn.nei.almoxarifadoapi.dto.role.RoleCreateDto;
+import com.ufrn.nei.almoxarifadoapi.dto.role.RoleResponseDto;
+import com.ufrn.nei.almoxarifadoapi.dto.role.RoleUpdateDto;
 import com.ufrn.nei.almoxarifadoapi.dto.mapper.RoleMapper;
-import com.ufrn.nei.almoxarifadoapi.entity.RoleEntity;
 import com.ufrn.nei.almoxarifadoapi.repository.RoleRepository;
 import com.ufrn.nei.almoxarifadoapi.service.RoleService;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
