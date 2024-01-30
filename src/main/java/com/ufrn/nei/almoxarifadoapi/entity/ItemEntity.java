@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -28,6 +30,15 @@ public class ItemEntity implements Serializable {
 
     @Column(name = "disponivel", nullable = false, unique = false)
     private Boolean available = Boolean.TRUE;
+
+    @Column(name = "criado_em", nullable = false)
+    private Timestamp createdAt = Timestamp.valueOf(LocalDateTime.now());
+
+    @Column(name = "atualizado_em", nullable = false)
+    private Timestamp updatedAt = Timestamp.valueOf(LocalDateTime.now());
+
+    @Column(name = "ativo", nullable = false)
+    private Boolean active = true;
 
     @OneToMany(mappedBy = "item")
     private List<RecordEntity> records;

@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -28,6 +30,15 @@ public class UserEntity implements Serializable {
 
     @Column(name = "password_hash", nullable = false, unique = false, length = 255)
     private String password;
+
+    @Column(name = "criado_em", nullable = false)
+    private Timestamp createdAt = Timestamp.valueOf(LocalDateTime.now());
+
+    @Column(name = "atualizado_em", nullable = false)
+    private Timestamp updatedAt = Timestamp.valueOf(LocalDateTime.now());
+
+    @Column(name = "ativo", nullable = false)
+    private Boolean active = true;
 
     @ManyToOne
     @JoinColumn(name = "id_role", nullable = false, unique = false)
