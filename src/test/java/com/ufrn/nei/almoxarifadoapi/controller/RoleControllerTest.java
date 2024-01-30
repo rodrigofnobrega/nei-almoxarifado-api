@@ -1,7 +1,14 @@
 package com.ufrn.nei.almoxarifadoapi.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ufrn.nei.almoxarifadoapi.dto.RoleCreateDto;
 import com.ufrn.nei.almoxarifadoapi.dto.RoleResponseDto;
+import com.ufrn.nei.almoxarifadoapi.dto.RoleUpdateDto;
+import com.ufrn.nei.almoxarifadoapi.dto.mapper.RoleMapper;
+import com.ufrn.nei.almoxarifadoapi.entity.RoleEntity;
+import com.ufrn.nei.almoxarifadoapi.repository.RoleRepository;
 import com.ufrn.nei.almoxarifadoapi.service.RoleService;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
@@ -17,6 +24,8 @@ import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @AutoConfigureMockMvc
@@ -28,7 +37,11 @@ public class RoleControllerTest {
     @MockBean
     private RoleService roleService;
 
+    @MockBean
+    private RoleRepository roleRepository;
+
     private RoleResponseDto roleResponseDto;
+
 
     @BeforeEach
     void setup() {
@@ -42,6 +55,24 @@ public class RoleControllerTest {
         role.setRole("Cliente");
 
         return role;
+    }
+
+    @Test
+    void testCreateRole() throws Exception {
+        RoleCreateDto roleCreateDto = new RoleCreateDto();
+        roleCreateDto.setRole("Cliente");
+
+        when(roleService.save(RoleMapper.toRole(roleCreateDto))).thenReturn(roleResponseDto);
+
+        mockMvc.perform(post("/api/v1/roles")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(roleCreateDto)))
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.role").value("Cliente"));
+
+        verify(roleService, times(1)).save(RoleMapper.toRole(roleCreateDto));
     }
 
     @Test
@@ -70,5 +101,23 @@ public class RoleControllerTest {
             .andExpect(jsonPath("$[0].role").value("Cliente"));
 
         verify(roleService, times(1)).findAllRoles();
+    }
+
+    @Test
+    public void testUpdateRole() throws Exception {
+        RoleUpdateDto roleUpdateDto = new RoleUpdateDto();
+        roleUpdateDto.setNewRole("Cliente");
+
+        when(roleService.updateRoleById(1L, roleUpdateDto)).thenReturn(roleResponseDto);
+
+        mockMvc.perform(put("/api/v1/roles/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(roleUpdateDto)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.role").value("Cliente"));
+
+        verify(roleService, times(1)).updateRoleById(1L, roleUpdateDto);
     }
 }
