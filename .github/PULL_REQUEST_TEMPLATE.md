@@ -1,6 +1,6 @@
 ## Descrição
 
-Por favor, descreva brevemente a mudança proposta.
+Descreva brevemente a mudança proposta.
 
 ## Tipo de alteração
 
@@ -14,7 +14,7 @@ Por favor, descreva brevemente a mudança proposta.
 
 ## Checklist
 
-Antes de enviar o PR, certifique-se de que todas as caixas abaixo estão marcadas:
+Certifique-se de que todas as caixas abaixo estão marcadas:
 
 - [ ] Eu revisei a minha própria contribuição.
 - [ ] Meus códigos seguem as diretrizes de estilo do projeto.
@@ -24,5 +24,3 @@ Antes de enviar o PR, certifique-se de que todas as caixas abaixo estão marcada
 ## Comentários Adicionais (opcional)
 
 Adicione comentários adicionais para revisores ou colaboradores, se necessário.
-
-

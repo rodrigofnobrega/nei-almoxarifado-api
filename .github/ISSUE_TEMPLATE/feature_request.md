@@ -1,6 +1,6 @@
 ## Descreva a nova feature
 
-Descreva o novo recurso que você está solicitando de maneira clara e concisa.
+Descreva o novo recurso solicitado.
 
 ## Justificativa
 
@@ -16,15 +16,15 @@ Detalhe o funcionamento da nova feature.
 
 ## Screenshots ou Diagramas (opcional)
 
-Adicione screenshots ou diagramas que ajudem a visualizar o novo recurso proposto.
+Adicione screenshots ou diagramas que ajudem a entender o funcionamento do novo recurso.
 
 ## Objetivo
 
-Informe qual a finalidade dessa nova feature para o projeto.
+Informe qual a finalidade para o programa.
 
 ## Checklist
 
-Antes de enviar a issue, certifique-se de que todas as caixas abaixo estão marcadas:
+Certifique-se de que todas as caixas abaixo estão marcadas:
 
 - [ ] Eu verifiquei se esta solicitação de recurso ainda não foi feita.
 - [ ] Eu forneci informações detalhadas para facilitar a implementação do recurso.

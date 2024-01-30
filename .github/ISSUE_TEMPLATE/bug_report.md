@@ -1,6 +1,6 @@
 ## Descrição do Bug
 
-Descreva o bug de maneira clara e concisa.
+Descreva como o bug foi encontradoS.
 
 ## Passos para Reprodução
 
@@ -12,22 +12,21 @@ Descreva o comportamento que você esperava ver.
 
 ## Comportamento Atual
 
-Descreva o comportamento atual observado.
+Descreva o comportamento observado.
 
 ## Informações Adicionais
 
-- Versão do software ou componente afetado.
+- Versão do programa.
 - Sistema operacional e versão.
-- Navegador (se aplicável).
 - Outras informações relevantes.
 
 ## Screenshots (opcional)
 
-Adicione screenshots de tela que ajudem a visualizar o problema.
+Adicione screenshots que ajudem a visualizar o problema.
 
 ## Contexto Adicional (opcional)
 
-Forneça informações adicionais que possam ajudar na resolução do bug.
+Forneça informações adicionais que possam ajudar na resolução.
 
 ## Issues Relacionadas (opcional)
 
