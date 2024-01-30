@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Objects;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,4 +18,25 @@ public class ItemCreateDTO {
     String name;
     @Positive
     Long itemTagging;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ItemCreateDTO that = (ItemCreateDTO) o;
+        return Objects.equals(name, that.name) && Objects.equals(itemTagging, that.itemTagging);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, itemTagging);
+    }
+
+    @Override
+    public String toString() {
+        return "ItemCreateDTO{" +
+                "name='" + name + '\'' +
+                ", itemTagging=" + itemTagging +
+                '}';
+    }
 }
