@@ -63,4 +63,16 @@ public class ItemService {
         return ItemMapper.toDetailsDTO(item);
     }
 
+    @Transactional
+    public boolean deleteItem(Long id) {
+        ItemEntity item = itemRepository.findById(id).orElse(null);
+
+        if (item != null) {
+            item.setActive(false);
+            itemRepository.save(item);
+            return true;
+        }
+        return false;
+    }
+
 }
