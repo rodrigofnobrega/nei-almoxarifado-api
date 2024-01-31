@@ -57,4 +57,9 @@ public class RoleEntity implements Serializable {
                 ", role='" + role + '\'' +
                 '}';
     }
+
+    public RoleEntity(Long id, String role) {
+        this.id = id;
+        this.role = role;
+    }
 }
