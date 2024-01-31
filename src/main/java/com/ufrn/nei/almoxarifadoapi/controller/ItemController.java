@@ -37,7 +37,9 @@ public class ItemController {
     public ResponseEntity<ItemDetailsDTO> getItem(@PathVariable Long id) {
         ItemDetailsDTO item = itemService.findItem(id);
 
-        return ResponseEntity.status(HttpStatus.OK).body(item);
+        return item == null
+                ? ResponseEntity.status(HttpStatus.BAD_REQUEST).build()
+                : ResponseEntity.status(HttpStatus.OK).body(item);
     }
 
     @PostMapping
