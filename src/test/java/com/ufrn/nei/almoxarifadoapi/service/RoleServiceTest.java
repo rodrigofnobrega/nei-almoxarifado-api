@@ -1,7 +1,7 @@
 package com.ufrn.nei.almoxarifadoapi.service;
 
-import com.ufrn.nei.almoxarifadoapi.dto.RoleResponseDto;
-import com.ufrn.nei.almoxarifadoapi.dto.RoleUpdateDto;
+import com.ufrn.nei.almoxarifadoapi.dto.role.RoleResponseDto;
+import com.ufrn.nei.almoxarifadoapi.dto.role.RoleUpdateDto;
 import com.ufrn.nei.almoxarifadoapi.entity.RoleEntity;
 import com.ufrn.nei.almoxarifadoapi.repository.RoleRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,23 +31,8 @@ class RoleServiceTest {
 
     @BeforeEach
     public void setup() {
-        role = createRole();
+        role = new RoleEntity(1L, "Cliente");
         MockitoAnnotations.openMocks(this);
-    }
-
-    private RoleEntity createRole() {
-        RoleEntity roleEntity = new RoleEntity();
-        roleEntity.setId(1L);
-        roleEntity.setRole("Cliente");
-
-        return roleEntity;
-    }
-
-    private RoleUpdateDto createRoleResponseDto() {
-        RoleUpdateDto roleDto = new RoleUpdateDto();
-        roleDto.setNewRole("Admin");
-
-        return roleDto;
     }
 
     @Test
@@ -102,7 +87,7 @@ class RoleServiceTest {
     @Test
     @DisplayName("Teste para mudar o nome de uma role pelo ID")
     void testRenameRole() {
-        RoleUpdateDto newRole = createRoleResponseDto();
+        RoleUpdateDto newRole = new RoleUpdateDto("Admin");
 
         when(roleRepository.findById(role.getId())).thenReturn(Optional.of(role));
 

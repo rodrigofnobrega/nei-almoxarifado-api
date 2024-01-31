@@ -1,7 +1,7 @@
 package com.ufrn.nei.almoxarifadoapi.dto.mapper;
 
-import com.ufrn.nei.almoxarifadoapi.dto.RoleCreateDto;
-import com.ufrn.nei.almoxarifadoapi.dto.RoleResponseDto;
+import com.ufrn.nei.almoxarifadoapi.dto.role.RoleCreateDto;
+import com.ufrn.nei.almoxarifadoapi.dto.role.RoleResponseDto;
 import com.ufrn.nei.almoxarifadoapi.entity.RoleEntity;
 import org.modelmapper.ModelMapper;
 
