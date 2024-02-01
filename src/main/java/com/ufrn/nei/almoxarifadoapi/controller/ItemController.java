@@ -4,7 +4,9 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,7 +39,9 @@ public class ItemController {
     public ResponseEntity<ItemDetailsDTO> getItem(@PathVariable Long id) {
         ItemDetailsDTO item = itemService.findItem(id);
 
-        return ResponseEntity.status(HttpStatus.OK).body(item);
+        return item == null
+                ? ResponseEntity.status(HttpStatus.BAD_REQUEST).build()
+                : ResponseEntity.status(HttpStatus.OK).body(item);
     }
 
     @PostMapping
@@ -52,6 +56,14 @@ public class ItemController {
         ItemDetailsDTO item = itemService.updateItem(itemDTO);
 
         return ResponseEntity.status(HttpStatus.OK).body(item);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteItem(@PathVariable Long id) {
+        boolean result = itemService.deleteItem(id);
+        return result == true
+                ? ResponseEntity.status(HttpStatus.NO_CONTENT).build()
+                : ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
 }

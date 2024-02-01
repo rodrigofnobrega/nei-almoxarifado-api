@@ -1,5 +1,7 @@
 package com.ufrn.nei.almoxarifadoapi.service;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,15 +22,13 @@ public class ItemService {
     private ItemRepository itemRepository;
 
     public List<ItemDetailsDTO> findAllItems() {
-        return ItemMapper.toListDetailsDTO(itemRepository.findAll());
+        return ItemMapper.toListDetailsDTO(itemRepository.findAllByActiveTrue());
     }
 
     public ItemDetailsDTO findItem(Long id) {
-        ItemEntity item = itemRepository
-                .findById(id)
-                .orElseThrow(() -> new RuntimeException(String.format("Item não encontrado com o id %d", id)));
+        ItemEntity item = itemRepository.findById(id).orElse(null);
 
-        return ItemMapper.toDetailsDTO(item);
+        return item == null || item.getActive() == false ? null : ItemMapper.toDetailsDTO(item);
     }
 
     @Transactional
@@ -57,9 +57,22 @@ public class ItemService {
         if (data.getItemTagging() != null) {
             item.setItemTagging(data.getItemTagging());
         }
+        item.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
 
         itemRepository.save(item);
         return ItemMapper.toDetailsDTO(item);
+    }
+
+    @Transactional
+    public boolean deleteItem(Long id) {
+        ItemEntity item = itemRepository.findById(id).orElse(null);
+
+        if (item != null) {
+            item.setActive(false);
+            itemRepository.save(item);
+            return true;
+        }
+        return false;
     }
 
 }

@@ -1,5 +1,6 @@
 package com.ufrn.nei.almoxarifadoapi.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,5 +10,8 @@ import com.ufrn.nei.almoxarifadoapi.entity.ItemEntity;
 
 @Repository
 public interface ItemRepository extends JpaRepository<ItemEntity, Long> {
+    List<ItemEntity> findAllByActiveTrue();
+
     Optional<ItemEntity> findByItemTagging(Long itemTagging);
+
 }

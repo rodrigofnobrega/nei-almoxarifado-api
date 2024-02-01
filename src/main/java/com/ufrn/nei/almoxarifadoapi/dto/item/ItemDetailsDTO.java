@@ -1,5 +1,7 @@
 package com.ufrn.nei.almoxarifadoapi.dto.item;
 
+import java.sql.Timestamp;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,13 +18,19 @@ public class ItemDetailsDTO {
     public String name;
     public Long itemTagging;
     public boolean available;
+    public Timestamp createdAt;
+    public Timestamp updatedAt;
+    public boolean active;
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         ItemDetailsDTO that = (ItemDetailsDTO) o;
-        return available == that.available && Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(itemTagging, that.itemTagging);
+        return available == that.available && Objects.equals(id, that.id) && Objects.equals(name, that.name)
+                && Objects.equals(itemTagging, that.itemTagging);
     }
 
     @Override
