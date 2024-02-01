@@ -13,7 +13,7 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ItemDetailsDTO {
+public class ItemResponseDTO {
     public Long id;
     public String name;
     public Long itemTagging;
@@ -28,7 +28,7 @@ public class ItemDetailsDTO {
             return true;
         if (o == null || getClass() != o.getClass())
             return false;
-        ItemDetailsDTO that = (ItemDetailsDTO) o;
+        ItemResponseDTO that = (ItemResponseDTO) o;
         return available == that.available && Objects.equals(id, that.id) && Objects.equals(name, that.name)
                 && Objects.equals(itemTagging, that.itemTagging);
     }
@@ -40,7 +40,7 @@ public class ItemDetailsDTO {
 
     @Override
     public String toString() {
-        return "ItemDetailsDTO{" +
+        return "ItemResponseDTO{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", itemTagging=" + itemTagging +

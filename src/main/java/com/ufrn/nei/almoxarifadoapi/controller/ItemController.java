@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ufrn.nei.almoxarifadoapi.dto.item.ItemCreateDTO;
-import com.ufrn.nei.almoxarifadoapi.dto.item.ItemDetailsDTO;
+import com.ufrn.nei.almoxarifadoapi.dto.item.ItemResponseDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.item.ItemUpdateDTO;
 import com.ufrn.nei.almoxarifadoapi.service.ItemService;
 
@@ -29,15 +29,15 @@ public class ItemController {
     private ItemService itemService;
 
     @GetMapping
-    public ResponseEntity<List<ItemDetailsDTO>> getAllItems() {
-        List<ItemDetailsDTO> items = itemService.findAllItems();
+    public ResponseEntity<List<ItemResponseDTO>> getAllItems() {
+        List<ItemResponseDTO> items = itemService.findAllItems();
 
         return ResponseEntity.status(HttpStatus.OK).body(items);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ItemDetailsDTO> getItem(@PathVariable Long id) {
-        ItemDetailsDTO item = itemService.findItem(id);
+    public ResponseEntity<ItemResponseDTO> getItem(@PathVariable Long id) {
+        ItemResponseDTO item = itemService.findItem(id);
 
         return item == null
                 ? ResponseEntity.status(HttpStatus.BAD_REQUEST).build()
@@ -45,15 +45,15 @@ public class ItemController {
     }
 
     @PostMapping
-    public ResponseEntity<ItemDetailsDTO> createItem(@RequestBody @Valid ItemCreateDTO itemDTO) {
-        ItemDetailsDTO item = itemService.createItem(itemDTO);
+    public ResponseEntity<ItemResponseDTO> createItem(@RequestBody @Valid ItemCreateDTO itemDTO) {
+        ItemResponseDTO item = itemService.createItem(itemDTO);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(item);
     }
 
     @PutMapping
-    public ResponseEntity<ItemDetailsDTO> updateItem(@RequestBody @Valid ItemUpdateDTO itemDTO) {
-        ItemDetailsDTO item = itemService.updateItem(itemDTO);
+    public ResponseEntity<ItemResponseDTO> updateItem(@RequestBody @Valid ItemUpdateDTO itemDTO) {
+        ItemResponseDTO item = itemService.updateItem(itemDTO);
 
         return ResponseEntity.status(HttpStatus.OK).body(item);
     }
