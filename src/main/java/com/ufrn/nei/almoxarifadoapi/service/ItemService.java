@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ufrn.nei.almoxarifadoapi.dto.item.ItemCreateDTO;
-import com.ufrn.nei.almoxarifadoapi.dto.item.ItemDetailsDTO;
+import com.ufrn.nei.almoxarifadoapi.dto.item.ItemResponseDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.item.ItemUpdateDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.mapper.ItemMapper;
 import com.ufrn.nei.almoxarifadoapi.entity.ItemEntity;
@@ -21,18 +21,18 @@ public class ItemService {
     @Autowired
     private ItemRepository itemRepository;
 
-    public List<ItemDetailsDTO> findAllItems() {
-        return ItemMapper.toListDetailsDTO(itemRepository.findAllByActiveTrue());
+    public List<ItemResponseDTO> findAllItems() {
+        return ItemMapper.toListResponseDTO(itemRepository.findAllByActiveTrue());
     }
 
-    public ItemDetailsDTO findItem(Long id) {
+    public ItemResponseDTO findItem(Long id) {
         ItemEntity item = itemRepository.findById(id).orElse(null);
 
-        return item == null || item.getActive() == false ? null : ItemMapper.toDetailsDTO(item);
+        return item == null || item.getActive() == false ? null : ItemMapper.toResponseDTO(item);
     }
 
     @Transactional
-    public ItemDetailsDTO createItem(ItemCreateDTO data) {
+    public ItemResponseDTO createItem(ItemCreateDTO data) {
         ItemEntity item = ItemMapper.toItem(data);
 
         if (item == null) {
@@ -41,11 +41,11 @@ public class ItemService {
         item.setAvailable(true);
 
         itemRepository.save(item);
-        return ItemMapper.toDetailsDTO(item);
+        return ItemMapper.toResponseDTO(item);
     }
 
     @Transactional
-    public ItemDetailsDTO updateItem(ItemUpdateDTO data) {
+    public ItemResponseDTO updateItem(ItemUpdateDTO data) {
         ItemEntity item = itemRepository
                 .findById(data.getId())
                 .orElseThrow(() -> new RuntimeException(
@@ -60,7 +60,7 @@ public class ItemService {
         item.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
 
         itemRepository.save(item);
-        return ItemMapper.toDetailsDTO(item);
+        return ItemMapper.toResponseDTO(item);
     }
 
     @Transactional
