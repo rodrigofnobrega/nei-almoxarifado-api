@@ -49,12 +49,9 @@ public class ItemService {
 
     @Transactional
     public ItemResponseDTO updateItem(ItemUpdateDTO data) {
-        ItemEntity item = itemRepository
-                .findById(data.getId())
-                .orElseThrow(() -> new RuntimeException(
-                        String.format("Não foi possível encontrar item com id %d", data.getId())));
+        ItemEntity item = ItemMapper.toItem(findItem(data.getId()));
 
-        if (data.getName() != null) {
+        if (data.getName() != null && !data.getName().isBlank()) {
             item.setName(data.getName());
         }
         if (data.getItemTagging() != null) {
@@ -68,7 +65,7 @@ public class ItemService {
 
     @Transactional
     public boolean deleteItem(Long id) {
-        ItemEntity item = itemRepository.findById(id).orElse(null);
+        ItemEntity item = ItemMapper.toItem(findItem(id));
 
         if (item != null) {
             item.setActive(false);

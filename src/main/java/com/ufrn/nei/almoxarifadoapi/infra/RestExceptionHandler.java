@@ -40,6 +40,6 @@ public class RestExceptionHandler {
     public ResponseEntity<RestErrorMessage> handleHttpMessageNotReadableException(HttpMessageNotReadableException exception,
                                                                             HttpServletRequest request) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST, "itemTagging não pode ser nulo"));
+                .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST, "Campo(s) invalido(s)"));
     }
 }
