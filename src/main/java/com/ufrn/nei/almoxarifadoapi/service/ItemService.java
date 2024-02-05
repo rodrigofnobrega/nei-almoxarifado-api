@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.ufrn.nei.almoxarifadoapi.exception.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,9 +27,9 @@ public class ItemService {
     }
 
     public ItemResponseDTO findItem(Long id) {
-        ItemEntity item = itemRepository.findById(id).orElse(null);
-
-        return item == null || item.getActive() == false ? null : ItemMapper.toResponseDTO(item);
+        return ItemMapper.toResponseDTO(itemRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException(String.format("Item não encontrado com id=%s", id))
+        ));
     }
 
     @Transactional
