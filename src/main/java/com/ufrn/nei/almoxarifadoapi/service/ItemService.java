@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.ufrn.nei.almoxarifadoapi.exception.CreateEntityException;
 import com.ufrn.nei.almoxarifadoapi.exception.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,11 +38,12 @@ public class ItemService {
         ItemEntity item = ItemMapper.toItem(data);
 
         if (item == null) {
-            throw new RuntimeException("Não foi possível converter o modelo em uma entidade.");
+            throw new CreateEntityException("Erro na criação da entidade item");
         }
-        item.setAvailable(true);
 
+        item.setAvailable(true);
         itemRepository.save(item);
+
         return ItemMapper.toResponseDTO(item);
     }
 
