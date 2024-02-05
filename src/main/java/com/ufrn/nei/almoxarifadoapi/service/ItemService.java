@@ -48,8 +48,8 @@ public class ItemService {
     }
 
     @Transactional
-    public ItemResponseDTO updateItem(ItemUpdateDTO data) {
-        ItemEntity item = ItemMapper.toItem(findItem(data.getId()));
+    public ItemResponseDTO updateItem(Long id, ItemUpdateDTO data) {
+        ItemEntity item = ItemMapper.toItem(findItem(id));
 
         if (data.getName() != null && !data.getName().isBlank()) {
             item.setName(data.getName());

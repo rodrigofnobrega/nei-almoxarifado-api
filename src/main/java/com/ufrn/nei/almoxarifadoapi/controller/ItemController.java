@@ -41,9 +41,9 @@ public class ItemController {
         return ResponseEntity.status(HttpStatus.CREATED).body(item);
     }
 
-    @PutMapping
-    public ResponseEntity<ItemResponseDTO> updateItem(@RequestBody @Valid ItemUpdateDTO itemDTO) {
-        ItemResponseDTO item = itemService.updateItem(itemDTO);
+    @PutMapping("/{id}")
+    public ResponseEntity<ItemResponseDTO> updateItem(@PathVariable Long id, @RequestBody @Valid ItemUpdateDTO itemDTO) {
+        ItemResponseDTO item = itemService.updateItem(id, itemDTO);
 
         return ResponseEntity.status(HttpStatus.OK).body(item);
     }
