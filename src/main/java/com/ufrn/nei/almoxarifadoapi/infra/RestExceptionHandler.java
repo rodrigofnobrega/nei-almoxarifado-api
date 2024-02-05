@@ -18,20 +18,26 @@ public class RestExceptionHandler {
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<RestErrorMessage> handleItemNotFoundException(EntityNotFoundException exception,
                                                                   HttpServletRequest request) {
+        log.info("API ERROR - ", exception);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST, exception.getMessage()));
     }
 
     @ExceptionHandler(CreateEntityException.class)
-    public ResponseEntity<RestErrorMessage> handleCreateEntityException(CreateEntityException exception, HttpServletRequest request) {
+    public ResponseEntity<RestErrorMessage> handleCreateEntityException(CreateEntityException exception,
+                                                                        HttpServletRequest request) {
+        log.info("API ERROR - ", exception);
+
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST, exception.getMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<RestErrorMessage> handleMethodArgumentNotValid(MethodArgumentNotValidException exception,
-                                                                            HttpServletRequest request) {
+                                                                         HttpServletRequest request) {
+        log.info("API ERROR - ", exception);
+
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST, "Campo(s) invalido(s)"));
     }
@@ -39,6 +45,8 @@ public class RestExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<RestErrorMessage> handleHttpMessageNotReadableException(HttpMessageNotReadableException exception,
                                                                             HttpServletRequest request) {
+        log.info("API ERROR - ", exception);
+
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST, "Campo(s) invalido(s)"));
     }
