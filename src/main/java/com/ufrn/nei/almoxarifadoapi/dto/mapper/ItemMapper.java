@@ -24,7 +24,8 @@ public class ItemMapper {
         return new ModelMapper().map(itemDTO, ItemEntity.class);
     }
 
-    public static ItemEntity toItem(ItemUpdateDTO itemDTO) {
+    public static ItemEntity toItem(ItemResponseDTO itemDTO) {
         return new ModelMapper().map(itemDTO, ItemEntity.class);
     }
+
 }

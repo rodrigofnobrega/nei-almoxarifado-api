@@ -1,7 +1,6 @@
 package com.ufrn.nei.almoxarifadoapi.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -12,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.ufrn.nei.almoxarifadoapi.exception.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -73,12 +73,12 @@ public class ItemServiceTest {
     @Test
     @DisplayName("Não deve deletar item que não existe")
     void deleteItemFailureTest() {
-        Mockito.when(itemRepository.findById(anyLong())).thenReturn(Optional.empty());
+        EntityNotFoundException validate = assertThrows(
+                EntityNotFoundException.class,
+                () -> itemService.deleteItem(3L)
+        );
 
-        Boolean response = itemService.deleteItem(3L);
-
-        verify(itemRepository, times(1)).findById(3L);
-        assertEquals(response, false);
+        assertEquals("Item não encontrado com id=3", validate.getMessage());
     }
 
     @Test

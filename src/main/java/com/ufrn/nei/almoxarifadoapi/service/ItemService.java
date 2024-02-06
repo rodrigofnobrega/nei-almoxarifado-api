@@ -4,6 +4,8 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.ufrn.nei.almoxarifadoapi.exception.CreateEntityException;
+import com.ufrn.nei.almoxarifadoapi.exception.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,9 +28,9 @@ public class ItemService {
     }
 
     public ItemResponseDTO findItem(Long id) {
-        ItemEntity item = itemRepository.findById(id).orElse(null);
-
-        return item == null || item.getActive() == false ? null : ItemMapper.toResponseDTO(item);
+        return ItemMapper.toResponseDTO(itemRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException(String.format("Item não encontrado com id=%s", id))
+        ));
     }
 
     @Transactional
@@ -36,22 +38,20 @@ public class ItemService {
         ItemEntity item = ItemMapper.toItem(data);
 
         if (item == null) {
-            throw new RuntimeException("Não foi possível converter o modelo em uma entidade.");
+            throw new CreateEntityException("Erro na criação da entidade item");
         }
-        item.setAvailable(true);
 
+        item.setAvailable(true);
         itemRepository.save(item);
+
         return ItemMapper.toResponseDTO(item);
     }
 
     @Transactional
-    public ItemResponseDTO updateItem(ItemUpdateDTO data) {
-        ItemEntity item = itemRepository
-                .findById(data.getId())
-                .orElseThrow(() -> new RuntimeException(
-                        String.format("Não foi possível encontrar item com id %d", data.getId())));
+    public ItemResponseDTO updateItem(Long id, ItemUpdateDTO data) {
+        ItemEntity item = ItemMapper.toItem(findItem(id));
 
-        if (data.getName() != null) {
+        if (data.getName() != null && !data.getName().isBlank()) {
             item.setName(data.getName());
         }
         if (data.getItemTagging() != null) {
@@ -65,7 +65,7 @@ public class ItemService {
 
     @Transactional
     public boolean deleteItem(Long id) {
-        ItemEntity item = itemRepository.findById(id).orElse(null);
+        ItemEntity item = ItemMapper.toItem(findItem(id));
 
         if (item != null) {
             item.setActive(false);
