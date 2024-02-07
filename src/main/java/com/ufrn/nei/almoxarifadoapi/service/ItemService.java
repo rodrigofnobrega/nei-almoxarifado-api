@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.ufrn.nei.almoxarifadoapi.exception.CreateEntityException;
 import com.ufrn.nei.almoxarifadoapi.exception.EntityNotFoundException;
+import com.ufrn.nei.almoxarifadoapi.exception.ItemNotActiveException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -67,10 +68,13 @@ public class ItemService {
     public boolean deleteItem(Long id) {
         ItemEntity item = ItemMapper.toItem(findItem(id));
 
+        if (item.getActive().equals(false)) {
+            throw new ItemNotActiveException();
+        }
+
         item.setActive(false);
         itemRepository.save(item);
 
         return true;
     }
-
 }
