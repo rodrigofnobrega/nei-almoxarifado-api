@@ -100,11 +100,9 @@ public class ItemController {
     )
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteItem(@PathVariable Long id) {
-        boolean result = itemService.deleteItem(id);
-        return result == true
-                ? ResponseEntity.status(HttpStatus.NO_CONTENT).build()
-                : ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-    }
+        itemService.deleteItem(id);
 
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }
 
