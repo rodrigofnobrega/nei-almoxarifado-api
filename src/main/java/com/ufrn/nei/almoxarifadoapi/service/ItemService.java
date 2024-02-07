@@ -67,12 +67,10 @@ public class ItemService {
     public boolean deleteItem(Long id) {
         ItemEntity item = ItemMapper.toItem(findItem(id));
 
-        if (item != null) {
-            item.setActive(false);
-            itemRepository.save(item);
-            return true;
-        }
-        return false;
+        item.setActive(false);
+        itemRepository.save(item);
+
+        return true;
     }
 
 }
