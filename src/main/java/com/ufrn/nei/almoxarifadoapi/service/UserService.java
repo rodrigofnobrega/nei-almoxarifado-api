@@ -7,6 +7,7 @@ import com.ufrn.nei.almoxarifadoapi.dto.user.UserCreateDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.user.UserPasswordUpdateDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.user.UserResponseDTO;
 import com.ufrn.nei.almoxarifadoapi.entity.UserEntity;
+import com.ufrn.nei.almoxarifadoapi.exception.DeleteErrorException;
 import com.ufrn.nei.almoxarifadoapi.exception.EntityNotFoundException;
 import com.ufrn.nei.almoxarifadoapi.exception.PasswordInvalidException;
 import com.ufrn.nei.almoxarifadoapi.repository.UserRepository;
@@ -67,5 +68,16 @@ public class UserService {
         }
 
         user.setPassword(newPassword);
+    }
+
+    @Transactional
+    public void deleteUser(Long id) {
+        UserEntity user = findById(id);
+
+        if (user.getActive() == Boolean.FALSE) {
+            throw new DeleteErrorException("O usuário ja foi deletado anteriormente");
+        }
+
+        user.setActive(Boolean.FALSE);
     }
 }
