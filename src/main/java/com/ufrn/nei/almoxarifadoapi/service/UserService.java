@@ -25,11 +25,10 @@ public class UserService {
     @Transactional
     public UserResponseDTO save(UserCreateDTO createDTO) {
         UserEntity user = UserMapper.toItem(createDTO);
+        RoleResponseDto roleResponse = roleService.findById(createDTO.getRoleId());
 
-        for (RoleResponseDto role : roleService.findAllRoles()) {
-            if (role.getRole().equalsIgnoreCase("cliente")) {
-                user.setRole(RoleMapper.toRole(role));
-            }
+        if (roleResponse != null) {
+            user.setRole(RoleMapper.toRole(roleResponse));
         }
 
         user = userRepository.save(user);
