@@ -17,6 +17,11 @@ public class UserMapper {
         return new ModelMapper().map(userDTO, UserEntity.class);
     }
 
+    public static UserEntity toItem(UserResponseDTO userDTO) {
+        return new ModelMapper().map(userDTO, UserEntity.class);
+    }
+
+
     public static UserResponseDTO toItem(UserEntity userEntity) {
         return new ModelMapper().map(userEntity, UserResponseDTO.class);
     }

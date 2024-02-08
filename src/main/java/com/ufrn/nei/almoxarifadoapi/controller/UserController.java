@@ -1,6 +1,8 @@
 package com.ufrn.nei.almoxarifadoapi.controller;
 
+import com.ufrn.nei.almoxarifadoapi.dto.mapper.UserMapper;
 import com.ufrn.nei.almoxarifadoapi.dto.user.UserCreateDTO;
+import com.ufrn.nei.almoxarifadoapi.dto.user.UserPasswordUpdateDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.user.UserResponseDTO;
 import com.ufrn.nei.almoxarifadoapi.service.UserService;
 import jakarta.validation.Valid;
@@ -26,7 +28,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDTO> findById(@PathVariable Long id) {
-        UserResponseDTO response = userService.findById(id);
+        UserResponseDTO response = UserMapper.toResponseDTO(userService.findById(id));
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -43,5 +45,14 @@ public class UserController {
         UserResponseDTO user = userService.findByEmail(email);
 
         return ResponseEntity.status(HttpStatus.OK).body(user);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> updatePassword(@RequestBody @Valid UserPasswordUpdateDTO passwordUpdateDTO,
+                                               @PathVariable Long id) {
+        userService.updatePassword(passwordUpdateDTO.getCurrentPassword(),
+                passwordUpdateDTO.getNewPassword(), passwordUpdateDTO.getConfirmPassword(), id);
+
+        return ResponseEntity.ok().build();
     }
 }

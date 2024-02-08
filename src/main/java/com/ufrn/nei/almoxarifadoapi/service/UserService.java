@@ -4,9 +4,11 @@ import com.ufrn.nei.almoxarifadoapi.dto.mapper.RoleMapper;
 import com.ufrn.nei.almoxarifadoapi.dto.mapper.UserMapper;
 import com.ufrn.nei.almoxarifadoapi.dto.role.RoleResponseDto;
 import com.ufrn.nei.almoxarifadoapi.dto.user.UserCreateDTO;
+import com.ufrn.nei.almoxarifadoapi.dto.user.UserPasswordUpdateDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.user.UserResponseDTO;
 import com.ufrn.nei.almoxarifadoapi.entity.UserEntity;
 import com.ufrn.nei.almoxarifadoapi.exception.EntityNotFoundException;
+import com.ufrn.nei.almoxarifadoapi.exception.PasswordInvalidException;
 import com.ufrn.nei.almoxarifadoapi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,9 +38,9 @@ public class UserService {
         return UserMapper.toResponseDTO(user);
     }
 
-    public UserResponseDTO findById(Long id) {
-       return UserMapper.toItem(userRepository.findById(id).orElseThrow(
-               () -> new EntityNotFoundException(String.format("Usuário não encontrado com id='%s'", id))
+    public UserEntity findById(Long id) {
+       return userRepository.findById(id).orElseThrow(
+               () -> new EntityNotFoundException(String.format("Usuário não encontrado com id='%s'", id)
        ));
     }
 
@@ -50,5 +52,20 @@ public class UserService {
 
     public List<UserResponseDTO> findAll() {
         return UserMapper.toListResponseDTO(userRepository.findAll());
+    }
+
+    @Transactional
+    public void updatePassword(String currentPassword, String newPassword, String confirmPassword, Long id) {
+        if (!newPassword.equals(confirmPassword)) {
+            throw new PasswordInvalidException("Nova senha não é igual a confirma senha");
+        }
+
+        UserEntity user = findById(id);
+
+        if (!currentPassword.equals(user.getPassword())) {
+            throw new PasswordInvalidException("Senha atual é inválida");
+        }
+
+        user.setPassword(newPassword);
     }
 }
