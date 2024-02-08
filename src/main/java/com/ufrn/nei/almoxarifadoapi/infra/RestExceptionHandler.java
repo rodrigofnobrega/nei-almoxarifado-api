@@ -4,6 +4,7 @@ import com.ufrn.nei.almoxarifadoapi.exception.CreateEntityException;
 import com.ufrn.nei.almoxarifadoapi.exception.DeleteErrorException;
 import com.ufrn.nei.almoxarifadoapi.exception.EntityNotFoundException;
 import com.ufrn.nei.almoxarifadoapi.exception.PasswordInvalidException;
+import com.ufrn.nei.almoxarifadoapi.exception.ItemNotActiveException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -65,6 +66,15 @@ public class RestExceptionHandler {
     @ExceptionHandler(DeleteErrorException.class)
     public ResponseEntity<RestErrorMessage> handleDeleteErrorException(DeleteErrorException exception,
                                                                        HttpServletRequest request) {
+        log.info("API ERROR - ", exception);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST, exception.getMessage()));
+    }
+              
+    @ExceptionHandler(ItemNotActiveException.class)
+    public ResponseEntity<RestErrorMessage> handleItemNotActiveException(ItemNotActiveException exception,
+                                                                         HttpServletRequest request) {
         log.info("API ERROR - ", exception);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
