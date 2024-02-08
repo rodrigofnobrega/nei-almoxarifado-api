@@ -39,18 +39,21 @@ public class UserService {
         return UserMapper.toResponseDTO(user);
     }
 
+    @Transactional(readOnly = true)
     public UserEntity findById(Long id) {
        return userRepository.findById(id).orElseThrow(
                () -> new EntityNotFoundException(String.format("Usuário não encontrado com id='%s'", id)
        ));
     }
 
+    @Transactional(readOnly = true)
     public UserResponseDTO findByEmail(String email) {
         return UserMapper.toItem(userRepository.findByEmail(email).orElseThrow(
                 () -> new EntityNotFoundException(String.format("Usuário não encontrado com email='%s'", email))
         ));
     }
 
+    @Transactional(readOnly = true)
     public List<UserResponseDTO> findAll() {
         return UserMapper.toListResponseDTO(userRepository.findAll());
     }
