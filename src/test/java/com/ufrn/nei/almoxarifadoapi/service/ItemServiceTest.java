@@ -22,6 +22,7 @@ import org.mockito.MockitoAnnotations;
 
 import com.ufrn.nei.almoxarifadoapi.dto.item.ItemCreateDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.item.ItemResponseDTO;
+import com.ufrn.nei.almoxarifadoapi.dto.item.ItemUpdateDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.mapper.ItemMapper;
 import com.ufrn.nei.almoxarifadoapi.entity.ItemEntity;
 import com.ufrn.nei.almoxarifadoapi.entity.RecordEntity;
@@ -37,9 +38,9 @@ public class ItemServiceTest {
 
     @BeforeEach
     void setup() {
-        items.add(new ItemEntity(null, "Cadeira", 202012L, true, Timestamp.valueOf(LocalDateTime.now()),
+        items.add(new ItemEntity(null, "Cadeira", 202012L, 100, 1, Timestamp.valueOf(LocalDateTime.now()),
                 Timestamp.valueOf(LocalDateTime.now()), true, new ArrayList<RecordEntity>()));
-        items.add(new ItemEntity(null, "Mesa", 202013L, true, Timestamp.valueOf(LocalDateTime.now()),
+        items.add(new ItemEntity(null, "Mesa", 202013L, 45, 22, Timestamp.valueOf(LocalDateTime.now()),
                 Timestamp.valueOf(LocalDateTime.now()), true, new ArrayList<RecordEntity>()));
         MockitoAnnotations.openMocks(this);
     }
@@ -60,7 +61,7 @@ public class ItemServiceTest {
     @DisplayName("Deve cadastrar Item corretamente")
     void createItemTest() {
         ItemEntity item = items.get(0);
-        ItemCreateDTO itemDTO = new ItemCreateDTO(item.getName(), item.getItemTagging());
+        ItemCreateDTO itemDTO = new ItemCreateDTO(item.getName(), item.getItemTagging(), item.getQuantityAvailable());
 
         Mockito.when(itemRepository.save(item)).thenReturn(item);
         ItemResponseDTO response = itemService.createItem(itemDTO);
@@ -75,8 +76,7 @@ public class ItemServiceTest {
     void deleteItemFailureTest() {
         EntityNotFoundException validate = assertThrows(
                 EntityNotFoundException.class,
-                () -> itemService.deleteItem(3L)
-        );
+                () -> itemService.deleteItem(3L));
 
         assertEquals("Item não encontrado com id=3", validate.getMessage());
     }
