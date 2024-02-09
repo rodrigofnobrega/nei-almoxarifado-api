@@ -7,6 +7,8 @@ import java.util.List;
 import com.ufrn.nei.almoxarifadoapi.exception.CreateEntityException;
 import com.ufrn.nei.almoxarifadoapi.exception.EntityNotFoundException;
 import com.ufrn.nei.almoxarifadoapi.exception.ItemNotActiveException;
+import com.ufrn.nei.almoxarifadoapi.exception.NotAvailableQuantity;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,8 +32,7 @@ public class ItemService {
 
     public ItemResponseDTO findItem(Long id) {
         return ItemMapper.toResponseDTO(itemRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException(String.format("Item não encontrado com id=%s", id))
-        ));
+                () -> new EntityNotFoundException(String.format("Item não encontrado com id=%s", id))));
     }
 
     @Transactional
@@ -42,7 +43,7 @@ public class ItemService {
             throw new CreateEntityException("Erro na criação da entidade item");
         }
 
-        item.setAvailable(true);
+        item.setActive(true);
         itemRepository.save(item);
 
         return ItemMapper.toResponseDTO(item);
@@ -65,6 +66,38 @@ public class ItemService {
     }
 
     @Transactional
+    public ItemResponseDTO sumLendQuantity(Long id, Integer itemsToLend) {
+        ItemEntity item = ItemMapper.toItem(findItem(id));
+
+        if (itemsToLend <= item.getQuantityAvailable()) {
+            item.setQuantityLend(item.getQuantityLend() + itemsToLend);
+            item.setQuantityAvailable(item.getQuantityAvailable() - item.getQuantityLend());
+
+            itemRepository.save(item);
+            return ItemMapper.toResponseDTO(item);
+        } else {
+            throw new NotAvailableQuantity("Não há itens suficientes para realizar este empréstimo.");
+        }
+    }
+
+    @Transactional
+    public ItemResponseDTO subtractLendQuantity(Long id, Integer itemsToLend) {
+        ItemEntity item = ItemMapper.toItem(findItem(id));
+
+        // Caso a quantidade de itens emprestados enviada seja maior que a cadastrada
+        if (itemsToLend > item.getQuantityLend()) {
+            int diff = itemsToLend - item.getQuantityLend();
+            itemsToLend -= diff;
+        }
+
+        item.setQuantityLend(item.getQuantityLend() - itemsToLend);
+        item.setQuantityAvailable(item.getQuantityAvailable() + itemsToLend);
+
+        itemRepository.save(item);
+        return ItemMapper.toResponseDTO(item);
+    }
+
+    @Transactional
     public boolean deleteItem(Long id) {
         ItemEntity item = ItemMapper.toItem(findItem(id));
 
@@ -77,4 +110,5 @@ public class ItemService {
 
         return true;
     }
+
 }
