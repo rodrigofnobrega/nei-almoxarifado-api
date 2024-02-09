@@ -61,15 +61,6 @@ public class RestExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST, exception.getMessage()));
     }
-
-    @ExceptionHandler(DeleteErrorException.class)
-    public ResponseEntity<RestErrorMessage> handleDeleteErrorException(DeleteErrorException exception,
-                                                                       HttpServletRequest request) {
-        log.info("API ERROR - ", exception);
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST, exception.getMessage()));
-    }
               
     @ExceptionHandler(ItemNotActiveException.class)
     public ResponseEntity<RestErrorMessage> handleItemNotActiveException(ItemNotActiveException exception,

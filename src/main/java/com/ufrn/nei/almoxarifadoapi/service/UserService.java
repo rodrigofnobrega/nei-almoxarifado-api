@@ -76,10 +76,10 @@ public class UserService {
     public void deleteUser(Long id) {
         UserEntity user = findById(id);
 
-        if (user.getActive() == Boolean.FALSE) {
-            throw new DeleteErrorException("O usuário ja foi deletado anteriormente");
+        if (!user.getActive()) {
+            throw new EntityNotFoundException("O usuário não existe.");
         }
 
-        user.setActive(Boolean.FALSE);
+        user.setActive(false);
     }
 }
