@@ -17,7 +17,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "Itens")
+@Table(name = "itens")
 public class ItemEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,8 +30,11 @@ public class ItemEntity implements Serializable {
     @Column(name = "tombamento", nullable = false, unique = true)
     private Long itemTagging;
 
-    @Column(name = "disponivel", nullable = false, unique = false)
-    private Boolean available = Boolean.TRUE;
+    @Column(name = "quantidade_disponiveis", nullable = false)
+    private int quantityAvailable;
+
+    @Column(name = "quantidade_emprestados", nullable = false)
+    private int quantityLend;
 
     @Column(name = "criado_em", nullable = false)
     private Timestamp createdAt = Timestamp.valueOf(LocalDateTime.now());
@@ -53,12 +56,12 @@ public class ItemEntity implements Serializable {
             return false;
         ItemEntity that = (ItemEntity) o;
         return Objects.equals(id, that.id) && Objects.equals(name, that.name)
-                && Objects.equals(itemTagging, that.itemTagging) && Objects.equals(available, that.available);
+                && Objects.equals(itemTagging, that.itemTagging);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, itemTagging, available);
+        return Objects.hash(id, name, itemTagging);
     }
 
     @Override
@@ -67,7 +70,6 @@ public class ItemEntity implements Serializable {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", itemTagging=" + itemTagging +
-                ", available=" + available +
                 '}';
     }
 }

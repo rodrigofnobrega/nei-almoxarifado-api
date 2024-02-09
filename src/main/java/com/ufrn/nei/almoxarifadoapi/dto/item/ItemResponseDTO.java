@@ -17,7 +17,8 @@ public class ItemResponseDTO {
     public Long id;
     public String name;
     public Long itemTagging;
-    public boolean available;
+    public int quantityAvailable;
+    public int quantityLend;
     public Timestamp createdAt;
     public Timestamp updatedAt;
     public boolean active;
@@ -29,13 +30,13 @@ public class ItemResponseDTO {
         if (o == null || getClass() != o.getClass())
             return false;
         ItemResponseDTO that = (ItemResponseDTO) o;
-        return available == that.available && Objects.equals(id, that.id) && Objects.equals(name, that.name)
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name)
                 && Objects.equals(itemTagging, that.itemTagging);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, itemTagging, available);
+        return Objects.hash(id, name, itemTagging);
     }
 
     @Override
@@ -44,7 +45,6 @@ public class ItemResponseDTO {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", itemTagging=" + itemTagging +
-                ", available=" + available +
                 '}';
     }
 }

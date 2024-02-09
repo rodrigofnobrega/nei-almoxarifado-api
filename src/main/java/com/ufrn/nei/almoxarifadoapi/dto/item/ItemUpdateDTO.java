@@ -19,11 +19,15 @@ public class ItemUpdateDTO {
     String name;
     @Positive
     Long itemTagging;
+    @Positive
+    int quantityLend;
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         ItemUpdateDTO that = (ItemUpdateDTO) o;
         return Objects.equals(name, that.name) && Objects.equals(itemTagging, that.itemTagging);
     }
