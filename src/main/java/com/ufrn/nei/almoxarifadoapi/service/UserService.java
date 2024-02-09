@@ -6,7 +6,6 @@ import com.ufrn.nei.almoxarifadoapi.dto.role.RoleResponseDto;
 import com.ufrn.nei.almoxarifadoapi.dto.user.UserCreateDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.user.UserResponseDTO;
 import com.ufrn.nei.almoxarifadoapi.entity.UserEntity;
-import com.ufrn.nei.almoxarifadoapi.exception.DeleteErrorException;
 import com.ufrn.nei.almoxarifadoapi.exception.EntityNotFoundException;
 import com.ufrn.nei.almoxarifadoapi.exception.PasswordInvalidException;
 import com.ufrn.nei.almoxarifadoapi.repository.UserRepository;

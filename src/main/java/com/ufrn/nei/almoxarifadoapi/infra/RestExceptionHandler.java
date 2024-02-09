@@ -1,7 +1,6 @@
 package com.ufrn.nei.almoxarifadoapi.infra;
 
 import com.ufrn.nei.almoxarifadoapi.exception.CreateEntityException;
-import com.ufrn.nei.almoxarifadoapi.exception.DeleteErrorException;
 import com.ufrn.nei.almoxarifadoapi.exception.EntityNotFoundException;
 import com.ufrn.nei.almoxarifadoapi.exception.PasswordInvalidException;
 import com.ufrn.nei.almoxarifadoapi.exception.ItemNotActiveException;
