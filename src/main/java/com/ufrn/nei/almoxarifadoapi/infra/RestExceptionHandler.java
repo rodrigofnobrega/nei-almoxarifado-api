@@ -3,6 +3,8 @@ package com.ufrn.nei.almoxarifadoapi.infra;
 import com.ufrn.nei.almoxarifadoapi.exception.CreateEntityException;
 import com.ufrn.nei.almoxarifadoapi.exception.EntityNotFoundException;
 import com.ufrn.nei.almoxarifadoapi.exception.ItemNotActiveException;
+import com.ufrn.nei.almoxarifadoapi.exception.NotAvailableQuantity;
+
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -16,48 +18,58 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @Slf4j
 @ControllerAdvice
 public class RestExceptionHandler {
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<RestErrorMessage> handleItemNotFoundException(EntityNotFoundException exception,
-                                                                  HttpServletRequest request) {
-        log.info("API ERROR - ", exception);
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST, exception.getMessage()));
-    }
+        @ExceptionHandler(EntityNotFoundException.class)
+        public ResponseEntity<RestErrorMessage> handleItemNotFoundException(EntityNotFoundException exception,
+                        HttpServletRequest request) {
+                log.info("API ERROR - ", exception);
+                return ResponseEntity
+                                .status(HttpStatus.BAD_REQUEST)
+                                .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST, exception.getMessage()));
+        }
 
-    @ExceptionHandler(CreateEntityException.class)
-    public ResponseEntity<RestErrorMessage> handleCreateEntityException(CreateEntityException exception,
-                                                                        HttpServletRequest request) {
-        log.info("API ERROR - ", exception);
+        @ExceptionHandler(CreateEntityException.class)
+        public ResponseEntity<RestErrorMessage> handleCreateEntityException(CreateEntityException exception,
+                        HttpServletRequest request) {
+                log.info("API ERROR - ", exception);
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST, exception.getMessage()));
-    }
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST, exception.getMessage()));
+        }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<RestErrorMessage> handleMethodArgumentNotValid(MethodArgumentNotValidException exception,
-                                                                         HttpServletRequest request) {
-        log.info("API ERROR - ", exception);
+        @ExceptionHandler(MethodArgumentNotValidException.class)
+        public ResponseEntity<RestErrorMessage> handleMethodArgumentNotValid(MethodArgumentNotValidException exception,
+                        HttpServletRequest request) {
+                log.info("API ERROR - ", exception);
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST, "Campo(s) invalido(s)"));
-    }
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST, "Campo(s) invalido(s)"));
+        }
 
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<RestErrorMessage> handleHttpMessageNotReadableException(HttpMessageNotReadableException exception,
-                                                                            HttpServletRequest request) {
-        log.info("API ERROR - ", exception);
+        @ExceptionHandler(HttpMessageNotReadableException.class)
+        public ResponseEntity<RestErrorMessage> handleHttpMessageNotReadableException(
+                        HttpMessageNotReadableException exception,
+                        HttpServletRequest request) {
+                log.info("API ERROR - ", exception);
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST, "Campo(s) invalido(s)"));
-    }
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST, "Campo(s) invalido(s)"));
+        }
 
-    @ExceptionHandler(ItemNotActiveException.class)
-    public ResponseEntity<RestErrorMessage> handleItemNotActiveException(ItemNotActiveException exception,
-                                                                         HttpServletRequest request) {
-        log.info("API ERROR - ", exception);
+        @ExceptionHandler(ItemNotActiveException.class)
+        public ResponseEntity<RestErrorMessage> handleItemNotActiveException(ItemNotActiveException exception,
+                        HttpServletRequest request) {
+                log.info("API ERROR - ", exception);
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST, exception.getMessage()));
-    }
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST, exception.getMessage()));
+        }
+
+        @ExceptionHandler(NotAvailableQuantity.class)
+        public ResponseEntity<RestErrorMessage> handleQuantityNotAvailableToLend(NotAvailableQuantity exception,
+                        HttpServletRequest request) {
+                log.info("API ERROR - ", exception);
+
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST, exception.getMessage()));
+        }
 }
