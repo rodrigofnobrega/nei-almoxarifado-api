@@ -32,6 +32,11 @@ public class RecordEntity implements Serializable {
 
     private Timestamp data = new Timestamp(System.currentTimeMillis());
 
+    public RecordEntity(UserEntity user, ItemEntity item) {
+        this.user = user;
+        this.item = item;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

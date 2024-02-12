@@ -25,7 +25,7 @@ public class UserService {
 
     @Transactional
     public UserResponseDTO save(UserCreateDTO createDTO) {
-        UserEntity user = UserMapper.toItem(createDTO);
+        UserEntity user = UserMapper.toUser(createDTO);
         RoleResponseDto roleResponse = roleService.findById(createDTO.getRoleId());
 
         if (roleResponse != null) {
@@ -46,7 +46,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public UserResponseDTO findByEmail(String email) {
-        return UserMapper.toItem(userRepository.findByEmail(email).orElseThrow(
+        return UserMapper.toUser(userRepository.findByEmail(email).orElseThrow(
                 () -> new EntityNotFoundException(String.format("Usuário não encontrado com email='%s'", email))
         ));
     }
