@@ -21,10 +21,10 @@ public class RecordController {
     private RecordService recordService;
 
     @PostMapping
-    public ResponseEntity<?> createRecord(@RequestBody RecordCreateDTO recordCreateDTO) {
-        recordService.save(recordCreateDTO);
+    public ResponseEntity<RecordResponseDTO> createRecord(@RequestBody RecordCreateDTO recordCreateDTO) {
+        RecordEntity response = recordService.save(recordCreateDTO);
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(RecordMapper.toResponseDTO(response));
     }
 
     @GetMapping
