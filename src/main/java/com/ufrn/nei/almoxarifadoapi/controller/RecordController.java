@@ -1,12 +1,11 @@
 package com.ufrn.nei.almoxarifadoapi.controller;
 
-import com.ufrn.nei.almoxarifadoapi.dto.item.ItemCreateDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.mapper.RecordMapper;
 import com.ufrn.nei.almoxarifadoapi.dto.record.RecordCreateDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.record.RecordResponseDTO;
-import com.ufrn.nei.almoxarifadoapi.dto.user.UserCreateDTO;
 import com.ufrn.nei.almoxarifadoapi.entity.RecordEntity;
 import com.ufrn.nei.almoxarifadoapi.service.RecordService;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,5 +31,31 @@ public class RecordController {
         List<RecordEntity> recordEntityList = recordService.findAll();
 
         return ResponseEntity.status(HttpStatus.OK).body(RecordMapper.toListResponseDTO(recordEntityList));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<RecordResponseDTO> findById(@PathVariable Long id) {
+        RecordEntity response = recordService.findById(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(RecordMapper.toResponseDTO(response));
+    }
+
+    @GetMapping("/query/users")
+    public ResponseEntity<List<RecordResponseDTO>> findByUsers(@RequestParam(required = false) Long id,
+                                                               @RequestParam(required = false) String name,
+                                                               @RequestParam(required = false) String email,
+                                                               @RequestParam(required = false) String role) {
+        List<RecordEntity> response = recordService.findByUsers(id, name, email, role);
+
+        return ResponseEntity.status(HttpStatus.OK).body(RecordMapper.toListResponseDTO(response));
+    }
+
+    @GetMapping("/query/itens")
+    public ResponseEntity<List<RecordResponseDTO>> findByItens(@RequestParam(required = false) Long id,
+                                                               @RequestParam(required = false) Long itemTagging,
+                                                               @RequestParam(required = false) String name) {
+        List<RecordEntity> response = recordService.findByItens(id, itemTagging, name);
+
+        return ResponseEntity.status(HttpStatus.OK).body(RecordMapper.toListResponseDTO(response));
     }
 }

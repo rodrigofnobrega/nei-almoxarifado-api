@@ -1,13 +1,11 @@
 package com.ufrn.nei.almoxarifadoapi.service;
 
 import com.ufrn.nei.almoxarifadoapi.dto.mapper.ItemMapper;
-import com.ufrn.nei.almoxarifadoapi.dto.mapper.UserMapper;
 import com.ufrn.nei.almoxarifadoapi.dto.record.RecordCreateDTO;
-import com.ufrn.nei.almoxarifadoapi.dto.user.UserCreateDTO;
-import com.ufrn.nei.almoxarifadoapi.dto.user.UserResponseDTO;
 import com.ufrn.nei.almoxarifadoapi.entity.ItemEntity;
 import com.ufrn.nei.almoxarifadoapi.entity.RecordEntity;
 import com.ufrn.nei.almoxarifadoapi.entity.UserEntity;
+import com.ufrn.nei.almoxarifadoapi.exception.EntityNotFoundException;
 import com.ufrn.nei.almoxarifadoapi.repository.RecordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,5 +37,22 @@ public class RecordService {
     @Transactional(readOnly = true)
     public List<RecordEntity> findAll() {
         return recordRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    public RecordEntity findById(Long id) {
+        return recordRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException(String.format("Usuário não encontrado com o id='%s'", id))
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public List<RecordEntity> findByUsers(Long id, String name, String email, String role) {
+        return recordRepository.findByUsers(id, name, email, role);
+    }
+
+    @Transactional(readOnly = true)
+    public List<RecordEntity> findByItens(Long id, Long itemTagging, String name) {
+        return recordRepository.findByItens(id, itemTagging, name);
     }
 }
