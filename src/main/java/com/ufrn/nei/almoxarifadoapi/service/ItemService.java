@@ -71,7 +71,7 @@ public class ItemService {
 
         if (itemsToLend <= item.getQuantityAvailable()) {
             item.setQuantityLend(item.getQuantityLend() + itemsToLend);
-            item.setQuantityAvailable(item.getQuantityAvailable() - item.getQuantityLend());
+            item.setQuantityAvailable(item.getQuantityAvailable() - itemsToLend);
 
             itemRepository.save(item);
             return ItemMapper.toResponseDTO(item);
