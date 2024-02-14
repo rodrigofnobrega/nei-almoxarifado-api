@@ -16,13 +16,13 @@ import java.util.Objects;
 @AllArgsConstructor
 public class ItemCreateDTO {
     @NotBlank
-    String name;
+    private String name;
     @NotNull
     @Positive
-    Long itemTagging;
+    private Long itemTagging;
     @NotNull
     @Positive
-    int quantityAvailable;
+    private int quantityAvailable;
 
     @Override
     public boolean equals(Object o) {

@@ -14,14 +14,14 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ItemResponseDTO {
-    public Long id;
-    public String name;
-    public Long itemTagging;
-    public int quantityAvailable;
-    public int quantityLend;
-    public Timestamp createdAt;
-    public Timestamp updatedAt;
-    public boolean active;
+    private Long id;
+    private String name;
+    private Long itemTagging;
+    private int quantityAvailable;
+    private int quantityLend;
+    private Timestamp createdAt;
+    private Timestamp updatedAt;
+    private boolean active;
 
     @Override
     public boolean equals(Object o) {
