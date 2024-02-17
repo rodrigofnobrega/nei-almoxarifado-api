@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.ufrn.nei.almoxarifadoapi.dto.user.UserRecordDTO;
+import com.ufrn.nei.almoxarifadoapi.enums.RecordOperationEnum;
 import com.ufrn.nei.almoxarifadoapi.service.UserService;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -38,6 +39,13 @@ public class RecordEntity implements Serializable {
     @ManyToOne
     @JoinColumn(name = "id_item")
     private ItemEntity item;
+
+    @Column(name = "quantidade", nullable = false)
+    private Integer quantity;
+
+    @Column(name = "operacao", nullable = false, length = 60)
+    @Enumerated(EnumType.STRING)
+    private RecordOperationEnum operationEnum;
 
     private Timestamp data = new Timestamp(System.currentTimeMillis());
 
