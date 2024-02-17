@@ -1,9 +1,7 @@
 package com.ufrn.nei.almoxarifadoapi.infra;
 
-import com.ufrn.nei.almoxarifadoapi.exception.CreateEntityException;
-import com.ufrn.nei.almoxarifadoapi.exception.EntityNotFoundException;
-import com.ufrn.nei.almoxarifadoapi.exception.PasswordInvalidException;
-import com.ufrn.nei.almoxarifadoapi.exception.ItemNotActiveException;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.ufrn.nei.almoxarifadoapi.exception.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

@@ -49,9 +49,11 @@ public class RecordEntity implements Serializable {
 
     private Timestamp data = new Timestamp(System.currentTimeMillis());
 
-    public RecordEntity(UserEntity user, ItemEntity item) {
+    public RecordEntity(UserEntity user, ItemEntity item, Integer quantity, RecordOperationEnum operationEnum) {
         this.user = user;
         this.item = item;
+        this.quantity = quantity;
+        this.operationEnum = operationEnum;
     }
 
     @Override

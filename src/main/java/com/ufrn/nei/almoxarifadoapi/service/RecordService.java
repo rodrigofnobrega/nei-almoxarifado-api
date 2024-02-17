@@ -23,13 +23,13 @@ public class RecordService {
 
     @Autowired
     private ItemService itemService;
-
+    
     @Transactional
     public RecordEntity save(RecordCreateDTO recordCreateDTO) {
         UserEntity user = userService.findById(recordCreateDTO.getUserID());
         ItemEntity item = ItemMapper.toItem(itemService.findItem(recordCreateDTO.getItemID()));
 
-        RecordEntity record = new RecordEntity(user, item);
+        RecordEntity record = new RecordEntity(user, item, recordCreateDTO.getQuantity(), recordCreateDTO.getOperation());
 
         return recordRepository.save(record);
     }
