@@ -1,9 +1,11 @@
 package com.ufrn.nei.almoxarifadoapi.controller;
 
+import com.ufrn.nei.almoxarifadoapi.dto.item.ItemResponseDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.mapper.RecordMapper;
 import com.ufrn.nei.almoxarifadoapi.dto.record.RecordCreateDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.record.RecordResponseDTO;
 import com.ufrn.nei.almoxarifadoapi.entity.RecordEntity;
+import com.ufrn.nei.almoxarifadoapi.infra.RestErrorMessage;
 import com.ufrn.nei.almoxarifadoapi.service.RecordService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -25,6 +27,14 @@ public class RecordController {
     @Autowired
     private RecordService recordService;
 
+    @Operation(summary = "Criar novo registro.", description = "Cadastrará novos reegistros no sistema.",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Registro salvo com sucesso.",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = RecordResponseDTO.class))),
+                    @ApiResponse(responseCode = "400", description = "Não foi possível criar o registro.",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class)))
+            }
+    )
     @PostMapping
     public ResponseEntity<RecordResponseDTO> createRecord(@RequestBody @Valid RecordCreateDTO recordCreateDTO) {
         RecordEntity response = recordService.save(recordCreateDTO);
@@ -48,7 +58,9 @@ public class RecordController {
     @Operation(summary = "Listar registros pelo ID.", description = "Listará os registros com o ID informado.",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Registro encontrado com sucesso.",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = RecordResponseDTO.class)))
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = RecordResponseDTO.class))),
+                    @ApiResponse(responseCode = "400", description = "Não foi possível encontrar o registro.",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class)))
             }
     )
     @GetMapping("/{id}")
