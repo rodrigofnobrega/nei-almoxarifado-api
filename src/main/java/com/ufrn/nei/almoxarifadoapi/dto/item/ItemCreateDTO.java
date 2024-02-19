@@ -1,6 +1,7 @@
 package com.ufrn.nei.almoxarifadoapi.dto.item;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,14 +16,20 @@ import java.util.Objects;
 @AllArgsConstructor
 public class ItemCreateDTO {
     @NotBlank
-    String name;
+    private String name;
+    @NotNull
     @Positive
-    Long itemTagging;
+    private Long itemTagging;
+    @NotNull
+    @Positive
+    private int quantityAvailable;
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         ItemCreateDTO that = (ItemCreateDTO) o;
         return Objects.equals(name, that.name) && Objects.equals(itemTagging, that.itemTagging);
     }
