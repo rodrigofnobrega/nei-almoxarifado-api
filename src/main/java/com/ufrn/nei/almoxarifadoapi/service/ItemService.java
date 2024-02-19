@@ -7,7 +7,7 @@ import java.util.List;
 import com.ufrn.nei.almoxarifadoapi.exception.CreateEntityException;
 import com.ufrn.nei.almoxarifadoapi.exception.EntityNotFoundException;
 import com.ufrn.nei.almoxarifadoapi.exception.ItemNotActiveException;
-import com.ufrn.nei.almoxarifadoapi.exception.NotAvailableQuantity;
+import com.ufrn.nei.almoxarifadoapi.exception.NotAvailableQuantityException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,19 +35,19 @@ public class ItemService {
                 () -> new EntityNotFoundException(String.format("Item não encontrado com id=%s", id))));
     }
 
-    @Transactional
-    public ItemResponseDTO createItem(ItemCreateDTO data) {
-        ItemEntity item = ItemMapper.toItem(data);
+        @Transactional
+        public ItemResponseDTO createItem(ItemCreateDTO data) {
+            ItemEntity item = ItemMapper.toItem(data);
 
-        if (item == null) {
-            throw new CreateEntityException("Erro na criação da entidade item");
+            if (item == null) {
+                throw new CreateEntityException("Erro na criação da entidade item");
+            }
+
+            item.setActive(true);
+            itemRepository.save(item);
+
+            return ItemMapper.toResponseDTO(item);
         }
-
-        item.setActive(true);
-        itemRepository.save(item);
-
-        return ItemMapper.toResponseDTO(item);
-    }
 
     @Transactional
     public ItemResponseDTO updateItem(Long id, ItemUpdateDTO data) {
@@ -76,7 +76,7 @@ public class ItemService {
             itemRepository.save(item);
             return ItemMapper.toResponseDTO(item);
         } else {
-            throw new NotAvailableQuantity("Não há itens suficientes para realizar este empréstimo.");
+            throw new NotAvailableQuantityException("Não há itens suficientes para realizar este empréstimo.");
         }
     }
 
