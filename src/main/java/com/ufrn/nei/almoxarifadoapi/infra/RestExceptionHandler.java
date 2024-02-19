@@ -3,7 +3,7 @@ package com.ufrn.nei.almoxarifadoapi.infra;
 import com.ufrn.nei.almoxarifadoapi.exception.CreateEntityException;
 import com.ufrn.nei.almoxarifadoapi.exception.EntityNotFoundException;
 import com.ufrn.nei.almoxarifadoapi.exception.ItemNotActiveException;
-import com.ufrn.nei.almoxarifadoapi.exception.NotAvailableQuantity;
+import com.ufrn.nei.almoxarifadoapi.exception.NotAvailableQuantityException;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -64,8 +64,8 @@ public class RestExceptionHandler {
                                 .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST, exception.getMessage()));
         }
 
-        @ExceptionHandler(NotAvailableQuantity.class)
-        public ResponseEntity<RestErrorMessage> handleQuantityNotAvailableToLend(NotAvailableQuantity exception,
+        @ExceptionHandler(NotAvailableQuantityException.class)
+        public ResponseEntity<RestErrorMessage> handleQuantityNotAvailableToLend(NotAvailableQuantityException exception,
                         HttpServletRequest request) {
                 log.info("API ERROR - ", exception);
 
