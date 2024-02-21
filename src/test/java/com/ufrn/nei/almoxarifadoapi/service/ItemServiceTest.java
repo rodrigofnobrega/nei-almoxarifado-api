@@ -76,7 +76,7 @@ public class ItemServiceTest {
     void deleteItemFailureTest() {
         EntityNotFoundException validate = assertThrows(
                 EntityNotFoundException.class,
-                () -> itemService.deleteItem(3L));
+                () -> itemService.deleteItem(3L, 0));
 
         assertEquals("Item não encontrado com id=3", validate.getMessage());
     }
@@ -89,8 +89,10 @@ public class ItemServiceTest {
         Mockito.when(itemRepository.findById(anyLong())).thenReturn(item);
         items.get(0).setId(1L); // Trocando o Id nulo para um Id válido.
 
-        Boolean response = itemService.deleteItem(items.get(0).getId());
+        ItemEntity response = itemService.deleteItem(items.get(0).getId(), 0);
 
-        assertEquals(response, true);
+        ItemEntity expected = new ItemEntity(1L, "Cadeira", 202012L);
+
+        assertEquals(response, expected);
     }
 }

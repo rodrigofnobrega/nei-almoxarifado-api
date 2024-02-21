@@ -2,17 +2,21 @@ package com.ufrn.nei.almoxarifadoapi.service;
 
 import com.ufrn.nei.almoxarifadoapi.dto.mapper.ItemMapper;
 import com.ufrn.nei.almoxarifadoapi.dto.record.RecordCreateDTO;
+import com.ufrn.nei.almoxarifadoapi.dto.record.RecordCreateItemDTO;
 import com.ufrn.nei.almoxarifadoapi.entity.ItemEntity;
 import com.ufrn.nei.almoxarifadoapi.entity.RecordEntity;
 import com.ufrn.nei.almoxarifadoapi.entity.UserEntity;
+import com.ufrn.nei.almoxarifadoapi.enums.RecordOperationEnum;
 import com.ufrn.nei.almoxarifadoapi.exception.EntityNotFoundException;
 import com.ufrn.nei.almoxarifadoapi.repository.RecordRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class RecordService {
     @Autowired
@@ -25,11 +29,18 @@ public class RecordService {
     private ItemService itemService;
     
     @Transactional
-    public RecordEntity save(RecordCreateDTO recordCreateDTO) {
+    public RecordEntity save(RecordCreateDTO recordCreateDTO, RecordOperationEnum operationEnum) {
         UserEntity user = userService.findById(recordCreateDTO.getUserID());
-        ItemEntity item = ItemMapper.toItem(itemService.findItem(recordCreateDTO.getItemID()));
+        ItemEntity item = ItemMapper.toItem(itemService.findById(recordCreateDTO.getItemID()));
+        RecordEntity record = new RecordEntity(user, item, recordCreateDTO.getQuantity(), operationEnum);
 
-        RecordEntity record = new RecordEntity(user, item, recordCreateDTO.getQuantity(), recordCreateDTO.getOperation());
+        return recordRepository.save(record);
+    }
+
+    @Transactional
+    public RecordEntity save(RecordCreateItemDTO createItemDTO, ItemEntity item, RecordOperationEnum operationEnum) {
+        UserEntity user = userService.findById(createItemDTO.getUserID());
+        RecordEntity record = new RecordEntity(user, item, createItemDTO.getItem().getQuantityAvailable(), operationEnum);
 
         return recordRepository.save(record);
     }

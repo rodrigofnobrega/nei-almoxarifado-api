@@ -2,6 +2,7 @@ package com.ufrn.nei.almoxarifadoapi.controller;
 
 import java.util.List;
 
+import com.ufrn.nei.almoxarifadoapi.dto.item.ItemDeleteDTO;
 import com.ufrn.nei.almoxarifadoapi.infra.RestErrorMessage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -44,7 +45,7 @@ public class ItemController {
         })
         @GetMapping("/{id}")
         public ResponseEntity<ItemResponseDTO> getItem(@PathVariable Long id) {
-                ItemResponseDTO item = itemService.findItem(id);
+                ItemResponseDTO item = itemService.findById(id);
 
                 return ResponseEntity.status(HttpStatus.OK).body(item);
         }
@@ -90,8 +91,8 @@ public class ItemController {
                         @ApiResponse(responseCode = "400", description = "O item especificado não foi encontrado.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class)))
         })
         @DeleteMapping("/{id}")
-        public ResponseEntity<Void> deleteItem(@PathVariable Long id) {
-                itemService.deleteItem(id);
+        public ResponseEntity<Void> deleteItem(@PathVariable Long id, @RequestBody @Valid ItemDeleteDTO deleteDTO) {
+                itemService.deleteItem(id, deleteDTO.getQuantity());
 
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }

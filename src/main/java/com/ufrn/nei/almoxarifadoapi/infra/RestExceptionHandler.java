@@ -1,10 +1,6 @@
 package com.ufrn.nei.almoxarifadoapi.infra;
 
-import com.ufrn.nei.almoxarifadoapi.exception.CreateEntityException;
-import com.ufrn.nei.almoxarifadoapi.exception.EntityNotFoundException;
-import com.ufrn.nei.almoxarifadoapi.exception.PasswordInvalidException;
-import com.ufrn.nei.almoxarifadoapi.exception.ItemNotActiveException;
-import com.ufrn.nei.almoxarifadoapi.exception.NotAvailableQuantityException;
+import com.ufrn.nei.almoxarifadoapi.exception.*;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -80,5 +76,14 @@ public class RestExceptionHandler {
 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST, exception.getMessage()));
+        }
+
+        @ExceptionHandler(OperationErrorException.class)
+        public ResponseEntity<RestErrorMessage> handlePasswordInvalidException(OperationErrorException exception,
+                                                                               HttpServletRequest request) {
+                log.info("API ERROR - ", exception);
+
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST, exception.getMessage()));
         }
 }

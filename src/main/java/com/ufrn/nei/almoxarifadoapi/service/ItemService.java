@@ -26,32 +26,46 @@ public class ItemService {
     @Autowired
     private ItemRepository itemRepository;
 
+    @Transactional
     public List<ItemResponseDTO> findAllItems() {
         return ItemMapper.toListResponseDTO(itemRepository.findAllByActiveTrue());
     }
 
-    public ItemResponseDTO findItem(Long id) {
+    @Transactional
+    public ItemResponseDTO findById(Long id) {
         return ItemMapper.toResponseDTO(itemRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(String.format("Item não encontrado com id=%s", id))));
     }
 
-        @Transactional
-        public ItemResponseDTO createItem(ItemCreateDTO data) {
-            ItemEntity item = ItemMapper.toItem(data);
+    @Transactional
+    public ItemEntity findByTagging(Long itemTagging) {
+        return itemRepository.findByItemTagging(itemTagging).orElseThrow(
+                () -> new EntityNotFoundException(String.format("Item não encontrado com tagging=%s", itemTagging)));
+    }
 
-            if (item == null) {
-                throw new CreateEntityException("Erro na criação da entidade item");
-            }
+    @Transactional
+    public ItemResponseDTO createItem(ItemCreateDTO data) {
+        ItemEntity item = ItemMapper.toItem(data);
 
-            item.setActive(true);
-            itemRepository.save(item);
-
-            return ItemMapper.toResponseDTO(item);
+        if (item == null) {
+            throw new CreateEntityException("Erro na criação da entidade item");
         }
+
+        try {
+            item = findByTagging(data.getItemTagging());
+
+            item.setQuantityAvailable(item.getQuantityAvailable() + data.getQuantityAvailable());
+        } catch (EntityNotFoundException ignored) {}
+
+        item.setActive(true);
+        itemRepository.save(item);
+
+        return ItemMapper.toResponseDTO(item);
+    }
 
     @Transactional
     public ItemResponseDTO updateItem(Long id, ItemUpdateDTO data) {
-        ItemEntity item = ItemMapper.toItem(findItem(id));
+        ItemEntity item = ItemMapper.toItem(findById(id));
 
         if (data.getName() != null && !data.getName().isBlank()) {
             item.setName(data.getName());
@@ -67,7 +81,7 @@ public class ItemService {
 
     @Transactional
     public ItemResponseDTO sumLendQuantity(Long id, Integer itemsToLend) {
-        ItemEntity item = ItemMapper.toItem(findItem(id));
+        ItemEntity item = ItemMapper.toItem(findById(id));
 
         if (itemsToLend <= item.getQuantityAvailable()) {
             item.setQuantityLend(item.getQuantityLend() + itemsToLend);
@@ -82,7 +96,7 @@ public class ItemService {
 
     @Transactional
     public ItemResponseDTO subtractLendQuantity(Long id, Integer itemsToLend) {
-        ItemEntity item = ItemMapper.toItem(findItem(id));
+        ItemEntity item = ItemMapper.toItem(findById(id));
 
         // Caso a quantidade de itens emprestados enviada seja maior que a cadastrada
         if (itemsToLend > item.getQuantityLend()) {
@@ -98,17 +112,23 @@ public class ItemService {
     }
 
     @Transactional
-    public boolean deleteItem(Long id) {
-        ItemEntity item = ItemMapper.toItem(findItem(id));
+    public ItemEntity deleteItem(Long id, Integer quantity) {
+        ItemEntity item = ItemMapper.toItem(findById(id));
 
         if (item.getActive().equals(false)) {
             throw new ItemNotActiveException();
+        } else if (quantity > item.getQuantityAvailable()) {
+            throw new NotAvailableQuantityException("Não há itens disponiveis suficientes para realizar a exclusão.");
         }
 
-        item.setActive(false);
+        item.setQuantityAvailable(item.getQuantityAvailable() - quantity);
+
+        if (item.getQuantityAvailable() == 0 && item.getQuantityLend() == 0) {
+            item.setActive(false);
+        }
+
         itemRepository.save(item);
 
-        return true;
+        return item;
     }
-
 }

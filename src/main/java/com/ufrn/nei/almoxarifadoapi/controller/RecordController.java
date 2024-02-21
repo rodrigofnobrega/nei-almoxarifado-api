@@ -37,7 +37,7 @@ public class RecordController {
     )
     @PostMapping
     public ResponseEntity<RecordResponseDTO> createRecord(@RequestBody @Valid RecordCreateDTO recordCreateDTO) {
-        RecordEntity response = recordService.save(recordCreateDTO);
+        RecordEntity response = recordService.save(recordCreateDTO, null);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(RecordMapper.toResponseDTO(response));
     }
