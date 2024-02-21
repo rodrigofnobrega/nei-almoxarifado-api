@@ -32,7 +32,7 @@ public class UserService {
             user.setRole(RoleMapper.toRole(roleResponse));
         }
 
-        user = userRepository.save(user);
+        userRepository.save(user);
 
         return UserMapper.toResponseDTO(user);
     }
