@@ -112,7 +112,7 @@ public class ItemService {
     }
 
     @Transactional
-    public ItemEntity deleteItem(Long id, Integer quantity) {
+    public void deleteItem(Long id, Integer quantity) {
         ItemEntity item = ItemMapper.toItem(findById(id));
 
         if (item.getActive().equals(false)) {
@@ -128,7 +128,5 @@ public class ItemService {
         }
 
         itemRepository.save(item);
-
-        return item;
     }
 }
