@@ -13,16 +13,16 @@ public class UserMapper {
         return new ModelMapper().map(userEntity, UserResponseDTO.class);
     }
 
-    public static UserEntity toItem(UserCreateDTO userDTO) {
+    public static UserEntity toUser(UserCreateDTO userDTO) {
         return new ModelMapper().map(userDTO, UserEntity.class);
     }
 
-    public static UserEntity toItem(UserResponseDTO userDTO) {
+    public static UserEntity toUser(UserResponseDTO userDTO) {
         return new ModelMapper().map(userDTO, UserEntity.class);
     }
 
 
-    public static UserResponseDTO toItem(UserEntity userEntity) {
+    public static UserResponseDTO toUser(UserEntity userEntity) {
         return new ModelMapper().map(userEntity, UserResponseDTO.class);
     }
 

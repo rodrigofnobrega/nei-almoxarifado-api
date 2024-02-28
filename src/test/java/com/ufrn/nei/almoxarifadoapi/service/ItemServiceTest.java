@@ -2,8 +2,7 @@ package com.ufrn.nei.almoxarifadoapi.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -17,12 +16,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import com.ufrn.nei.almoxarifadoapi.dto.item.ItemCreateDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.item.ItemResponseDTO;
-import com.ufrn.nei.almoxarifadoapi.dto.item.ItemUpdateDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.mapper.ItemMapper;
 import com.ufrn.nei.almoxarifadoapi.entity.ItemEntity;
 import com.ufrn.nei.almoxarifadoapi.entity.RecordEntity;
@@ -48,7 +45,7 @@ public class ItemServiceTest {
     @Test
     @DisplayName("Deve listar DTOs corretamente")
     void getAllItemsTest() {
-        Mockito.when(itemRepository.findAllByActiveTrue()).thenReturn(items);
+        when(itemRepository.findAllByActiveTrue()).thenReturn(items);
 
         List<ItemResponseDTO> response = itemService.findAllItems();
 
@@ -63,7 +60,7 @@ public class ItemServiceTest {
         ItemEntity item = items.get(0);
         ItemCreateDTO itemDTO = new ItemCreateDTO(item.getName(), item.getItemTagging(), item.getQuantityAvailable());
 
-        Mockito.when(itemRepository.save(item)).thenReturn(item);
+        when(itemRepository.save(item)).thenReturn(item);
         ItemResponseDTO response = itemService.createItem(itemDTO);
 
         verify(itemRepository, times(1)).save(item);
@@ -76,7 +73,7 @@ public class ItemServiceTest {
     void deleteItemFailureTest() {
         EntityNotFoundException validate = assertThrows(
                 EntityNotFoundException.class,
-                () -> itemService.deleteItem(3L));
+                () -> itemService.deleteItem(3L, 0));
 
         assertEquals("Item não encontrado com id=3", validate.getMessage());
     }
@@ -84,13 +81,14 @@ public class ItemServiceTest {
     @Test
     @DisplayName("Deve deletar item corretamente")
     void deleteItemTest() {
-        Optional<ItemEntity> item = Optional.of(items.get(0));
+        ItemResponseDTO itemResponseDTO = new ItemResponseDTO(1L, "Cadeira", 202012L, 10, 0,
+                Timestamp.valueOf(LocalDateTime.now()), Timestamp.valueOf(LocalDateTime.now()), true);
 
-        Mockito.when(itemRepository.findById(anyLong())).thenReturn(item);
-        items.get(0).setId(1L); // Trocando o Id nulo para um Id válido.
+        when(itemService.findById(1L)).thenReturn(itemResponseDTO);
 
-        Boolean response = itemService.deleteItem(items.get(0).getId());
+        itemService.deleteItem(1L, 10);
 
-        assertEquals(response, true);
+        verify(itemRepository, times(1)).findById(1L);
+        verify(itemRepository, times(1)).deleteById(1L);
     }
 }
