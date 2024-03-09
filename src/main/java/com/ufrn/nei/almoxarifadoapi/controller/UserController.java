@@ -15,6 +15,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -52,6 +53,7 @@ public class UserController {
             }
     )
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') OR ( hasRole('USER') AND #id == authentication.principal.id )")
     public ResponseEntity<UserResponseDTO> findById(@PathVariable Long id) {
         UserResponseDTO response = UserMapper.toResponseDTO(userService.findById(id));
 
@@ -65,6 +67,7 @@ public class UserController {
             }
     )
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserResponseDTO>> findAll() {
         List<UserResponseDTO> users = userService.findAll();
 
@@ -80,6 +83,7 @@ public class UserController {
             }
     )
     @GetMapping("/query")
+    @PreAuthorize("hasRole('ADMIN') OR ( hasRole('USER') AND #email == authentication.principal.username )")
     public ResponseEntity<UserResponseDTO> findByEmail(@RequestParam String email) {
         UserResponseDTO user = userService.findByEmail(email);
 
@@ -94,6 +98,7 @@ public class UserController {
             }
     )
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') OR ( hasRole('USER') AND #id == authentication.principal.id )")
     public ResponseEntity<Void> updatePassword(@RequestBody @Valid UserPasswordUpdateDTO passwordUpdateDTO,
                                                @PathVariable Long id) {
         userService.updatePassword(passwordUpdateDTO.getCurrentPassword(),
@@ -111,6 +116,7 @@ public class UserController {
             }
     )
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') OR ( hasRole('USER') AND #id == authentication.principal.id )")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
 
