@@ -18,4 +18,5 @@ public class RecordCreateDTO {
     private Long itemID;
     @Positive
     private Integer quantity;
+    private RecordOperationEnum operation;
 }
