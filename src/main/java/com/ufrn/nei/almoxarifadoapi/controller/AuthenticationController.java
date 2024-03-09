@@ -4,7 +4,6 @@ import com.ufrn.nei.almoxarifadoapi.dto.user.UserLoginDTO;
 import com.ufrn.nei.almoxarifadoapi.infra.RestErrorMessage;
 import com.ufrn.nei.almoxarifadoapi.infra.jwt.JwtToken;
 import com.ufrn.nei.almoxarifadoapi.infra.jwt.JwtUserDetailsService;
-import com.ufrn.nei.almoxarifadoapi.infra.jwt.JwtUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
