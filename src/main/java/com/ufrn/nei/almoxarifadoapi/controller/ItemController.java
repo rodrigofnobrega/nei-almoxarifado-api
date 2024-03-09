@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.ufrn.nei.almoxarifadoapi.dto.item.ItemCreateDTO;
@@ -33,6 +34,7 @@ public class ItemController {
                         @ApiResponse(responseCode = "200", description = "Itens encontrados com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ItemResponseDTO.class)))
         })
         @GetMapping
+        @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
         public ResponseEntity<List<ItemResponseDTO>> getAllItems() {
                 List<ItemResponseDTO> items = itemService.findAllItems();
 
@@ -44,6 +46,7 @@ public class ItemController {
                         @ApiResponse(responseCode = "400", description = "Item não foi encontrado.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class)))
         })
         @GetMapping("/{id}")
+        @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
         public ResponseEntity<ItemResponseDTO> getItem(@PathVariable Long id) {
                 ItemResponseDTO item = itemService.findById(id);
 
@@ -55,6 +58,7 @@ public class ItemController {
                         @ApiResponse(responseCode = "400", description = "Não foi possível cadastrar o item.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class)))
         })
         @PostMapping
+        @PreAuthorize("hasRole('ADMIN')")
         public ResponseEntity<ItemResponseDTO> createItem(@RequestBody @Valid ItemCreateDTO itemDTO) {
                 ItemResponseDTO item = itemService.createItem(itemDTO);
 
@@ -66,6 +70,7 @@ public class ItemController {
                         @ApiResponse(responseCode = "400", description = "O item especificado não foi encontrado.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class)))
         })
         @PutMapping("/{id}")
+        @PreAuthorize("hasRole('ADMIN')")
         public ResponseEntity<ItemResponseDTO> updateItem(@PathVariable Long id,
                         @RequestBody @Valid ItemUpdateDTO itemDTO) {
                 ItemResponseDTO item = itemService.updateItem(id, itemDTO);
@@ -74,6 +79,7 @@ public class ItemController {
         }
 
         @PutMapping("/lend/{id}")
+        @PreAuthorize("hasRole('ADMIN')")
         public ResponseEntity<ItemResponseDTO> updateItemQuantity(@PathVariable Long id,
                         @RequestBody @Valid QuantityUpdateDTO dto) {
                 ItemResponseDTO item;
@@ -91,6 +97,7 @@ public class ItemController {
                         @ApiResponse(responseCode = "400", description = "O item especificado não foi encontrado.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class)))
         })
         @DeleteMapping("/{id}")
+        @PreAuthorize("hasRole('ADMIN')")
         public ResponseEntity<Void> deleteItem(@PathVariable Long id, @RequestBody @Valid ItemDeleteDTO deleteDTO) {
                 itemService.deleteItem(id, deleteDTO.getQuantity());
 
