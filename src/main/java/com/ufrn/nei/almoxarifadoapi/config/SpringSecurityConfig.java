@@ -29,6 +29,7 @@ public class SpringSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 antMatcher(HttpMethod.POST, "/api/v1/users"),
+                                antMatcher(HttpMethod.POST, "/api/v1/auth"),
                                 antMatcher("/docs-almoxarifado.html"),
                                 antMatcher("/docs-almoxarifado/**"),
                                 antMatcher("/swagger-ui.html"),
