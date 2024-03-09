@@ -8,6 +8,7 @@ import com.ufrn.nei.almoxarifadoapi.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,7 +16,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/roles")
 public class RoleController {
-
     @Autowired
     private RoleService roleService;
 
@@ -26,6 +26,7 @@ public class RoleController {
         return ResponseEntity.status(HttpStatus.CREATED).body(role);
     }
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<RoleResponseDto> findRoleById(@PathVariable Long id) {
         RoleResponseDto role = roleService.findById(id);
 
@@ -33,6 +34,7 @@ public class RoleController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<RoleResponseDto>> findAllRoles() {
         List<RoleResponseDto> roles = roleService.findAllRoles();
 
@@ -40,6 +42,7 @@ public class RoleController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteRole(@PathVariable Long id) {
         if (roleService.deleteById(id)) {
             return ResponseEntity.status(HttpStatus.OK).build();
@@ -49,6 +52,7 @@ public class RoleController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<RoleResponseDto> updateRole(@PathVariable Long id, @RequestBody RoleUpdateDto updateRole) {
         RoleResponseDto role = roleService.updateRoleById(id, updateRole);
 
