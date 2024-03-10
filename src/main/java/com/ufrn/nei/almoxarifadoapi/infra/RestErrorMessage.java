@@ -6,10 +6,11 @@ import lombok.ToString;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @Getter
 public class RestErrorMessage {
-    private LocalDateTime timestamp = LocalDateTime.now();
+    private String hour = LocalDateTime.now(ZoneId.systemDefault()).toString();
     private String method;
     private int status;
     private String statusText;

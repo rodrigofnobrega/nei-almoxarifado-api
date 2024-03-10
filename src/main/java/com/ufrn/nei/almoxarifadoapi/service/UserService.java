@@ -9,12 +9,16 @@ import com.ufrn.nei.almoxarifadoapi.entity.UserEntity;
 import com.ufrn.nei.almoxarifadoapi.exception.EntityNotFoundException;
 import com.ufrn.nei.almoxarifadoapi.exception.PasswordInvalidException;
 import com.ufrn.nei.almoxarifadoapi.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Random;
 
+@Slf4j
 @Service
 public class UserService {
     @Autowired
@@ -23,9 +27,14 @@ public class UserService {
     @Autowired
     private RoleService roleService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Transactional
     public UserResponseDTO save(UserCreateDTO createDTO) {
         UserEntity user = UserMapper.toUser(createDTO);
+        user.setId(null);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         RoleResponseDto roleResponse = roleService.findById(createDTO.getRoleId());
 
         if (roleResponse != null) {
@@ -64,11 +73,11 @@ public class UserService {
 
         UserEntity user = findById(id);
 
-        if (!currentPassword.equals(user.getPassword())) {
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
             throw new PasswordInvalidException("Senha atual é inválida");
         }
 
-        user.setPassword(newPassword);
+        user.setPassword(passwordEncoder.encode(newPassword));
     }
 
     @Transactional

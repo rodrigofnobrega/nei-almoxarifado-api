@@ -16,6 +16,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,8 +37,9 @@ public class RecordController {
             }
     )
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<RecordResponseDTO> createRecord(@RequestBody @Valid RecordCreateDTO recordCreateDTO) {
-        RecordEntity response = recordService.save(recordCreateDTO, null);
+        RecordEntity response = recordService.save(recordCreateDTO, recordCreateDTO.getOperation());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(RecordMapper.toResponseDTO(response));
     }
@@ -49,6 +51,7 @@ public class RecordController {
             }
     )
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<RecordResponseDTO>> findAll() {
         List<RecordEntity> recordEntityList = recordService.findAll();
 
@@ -64,6 +67,7 @@ public class RecordController {
             }
     )
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<RecordResponseDTO> findById(@PathVariable Long id) {
         RecordEntity response = recordService.findById(id);
 
@@ -77,6 +81,7 @@ public class RecordController {
             }
     )
     @GetMapping("/query/users")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<RecordResponseDTO>> findByUsers(@RequestParam(required = false) Long id,
                                                                @RequestParam(required = false) String name,
                                                                @RequestParam(required = false) String email,
@@ -93,6 +98,7 @@ public class RecordController {
             }
     )
     @GetMapping("/query/itens")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<RecordResponseDTO>> findByItens(@RequestParam(required = false) Long id,
                                                                @RequestParam(required = false) Long itemTagging,
                                                                @RequestParam(required = false) String name) {
