@@ -20,8 +20,8 @@ public class JwtUtils {
     public static final String JWT_AUTHORIZATION = "Authorization";
     public static final String SECRET_KEY = "0123456789-0123456789-0123456789";
     public static final Long EXPIRE_DAYS = 0L;
-    public static final Long EXPIRE_HOURS = 0L;
-    public static final Long EXPIRE_MINUTES = 30L;
+    public static final Long EXPIRE_HOURS = 10L;
+    public static final Long EXPIRE_MINUTES = 0L;
 
     private static SecretKey generateKey() {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
