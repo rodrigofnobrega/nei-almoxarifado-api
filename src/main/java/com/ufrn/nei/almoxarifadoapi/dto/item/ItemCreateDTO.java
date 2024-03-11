@@ -19,10 +19,10 @@ public class ItemCreateDTO {
     private String name;
     @NotNull
     @Positive
-    private Long itemTagging;
+    private Long sipacCode;
     @NotNull
     @Positive
-    private int quantityAvailable;
+    private int quantity;
 
     @Override
     public boolean equals(Object o) {
@@ -31,19 +31,19 @@ public class ItemCreateDTO {
         if (o == null || getClass() != o.getClass())
             return false;
         ItemCreateDTO that = (ItemCreateDTO) o;
-        return Objects.equals(name, that.name) && Objects.equals(itemTagging, that.itemTagging);
+        return Objects.equals(name, that.name) && Objects.equals(sipacCode, that.sipacCode);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, itemTagging);
+        return Objects.hash(name, sipacCode);
     }
 
     @Override
     public String toString() {
         return "ItemCreateDTO{" +
                 "name='" + name + '\'' +
-                ", itemTagging=" + itemTagging +
+                ", sipacCode=" + sipacCode +
                 '}';
     }
 }

@@ -27,14 +27,11 @@ public class ItemEntity implements Serializable {
     @Column(name = "nome", nullable = false, unique = false, length = 255)
     private String name;
 
-    @Column(name = "tombamento", nullable = false, unique = true)
-    private Long itemTagging;
+    @Column(name = "codigo_sipac", nullable = false, unique = true)
+    private Long sipacCode;
 
-    @Column(name = "quantidade_disponiveis", nullable = false)
-    private int quantityAvailable;
-
-    @Column(name = "quantidade_emprestados", nullable = false)
-    private int quantityLend;
+    @Column(name = "quantidade", nullable = false)
+    private int quantity;
 
     @Column(name = "criado_em", nullable = false)
     private Timestamp createdAt = Timestamp.valueOf(LocalDateTime.now());
@@ -42,16 +39,16 @@ public class ItemEntity implements Serializable {
     @Column(name = "atualizado_em", nullable = false)
     private Timestamp updatedAt = Timestamp.valueOf(LocalDateTime.now());
 
-    @Column(name = "ativo", nullable = false)
-    private Boolean active = true;
+    @Column(name = "disponivel", nullable = false)
+    private Boolean available = true;
 
     @OneToMany(mappedBy = "item")
     private List<RecordEntity> records;
 
-    public ItemEntity(long id, String name, Long tagging) {
+    public ItemEntity(long id, String name, Long sipacCode) {
         this.id = id;
         this.name = name;
-        this.itemTagging = tagging;
+        this.sipacCode = sipacCode;
     }
 
     @Override
@@ -62,12 +59,12 @@ public class ItemEntity implements Serializable {
             return false;
         ItemEntity that = (ItemEntity) o;
         return Objects.equals(id, that.id) && Objects.equals(name, that.name)
-                && Objects.equals(itemTagging, that.itemTagging);
+                && Objects.equals(sipacCode, that.sipacCode);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, itemTagging);
+        return Objects.hash(id, name, sipacCode);
     }
 
     @Override
@@ -75,7 +72,7 @@ public class ItemEntity implements Serializable {
         return "ItemEntity{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", itemTagging=" + itemTagging +
+                ", sipacCode=" + sipacCode +
                 '}';
     }
 }
