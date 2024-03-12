@@ -4,25 +4,46 @@ import com.ufrn.nei.almoxarifadoapi.dto.user.UserCreateDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.user.UserResponseDTO;
 import com.ufrn.nei.almoxarifadoapi.entity.UserEntity;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class UserMapper {
     public static UserResponseDTO toResponseDTO(UserEntity userEntity) {
-        return new ModelMapper().map(userEntity, UserResponseDTO.class);
+        String role;
+
+        if (userEntity.getRole().getRole().contains("ROLE_")) {
+            role = userEntity.getRole().getRole().substring("ROLE_".length());
+        } else {
+            role = userEntity.getRole().getRole();
+        }
+
+        PropertyMap<UserEntity, UserResponseDTO> propertyMap = new PropertyMap<UserEntity, UserResponseDTO>() {
+            @Override
+            protected void configure() {
+                map().setRole(role);
+            }
+        };
+
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.addMappings(propertyMap);
+
+        return modelMapper.map(userEntity, UserResponseDTO.class);
     }
 
     public static UserEntity toUser(UserCreateDTO userDTO) {
-        return new ModelMapper().map(userDTO, UserEntity.class);
-    }
+        PropertyMap<UserCreateDTO, UserEntity> propertyMap = new PropertyMap<UserCreateDTO, UserEntity>() {
+            @Override
+            protected void configure() {
+                map().setId(null);
+            }
+        };
 
-    public static UserEntity toUser(UserResponseDTO userDTO) {
-        return new ModelMapper().map(userDTO, UserEntity.class);
-    }
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.addMappings(propertyMap);
 
-    public static UserResponseDTO toUser(UserEntity userEntity) {
-        return new ModelMapper().map(userEntity, UserResponseDTO.class);
+        return modelMapper.map(userDTO, UserEntity.class);
     }
 
     public static List<UserResponseDTO> toListResponseDTO(List<UserEntity> users) {
