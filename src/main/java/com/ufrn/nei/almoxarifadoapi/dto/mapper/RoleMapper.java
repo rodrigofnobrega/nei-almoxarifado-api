@@ -26,7 +26,7 @@ public class RoleMapper {
         String role = roleEntity.getRole();
 
         if (role.contains("ROLE_")) {
-            role = roleEntity.getRole().substring("ROLE_".length());
+            role = role.substring("ROLE_".length());
         }
 
         String finalRole = role;

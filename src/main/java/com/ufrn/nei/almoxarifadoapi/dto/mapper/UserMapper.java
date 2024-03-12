@@ -11,18 +11,18 @@ import java.util.stream.Collectors;
 
 public class UserMapper {
     public static UserResponseDTO toResponseDTO(UserEntity userEntity) {
-        String role;
+        String role = userEntity.getRole().getRole();
 
-        if (userEntity.getRole().getRole().contains("ROLE_")) {
-            role = userEntity.getRole().getRole().substring("ROLE_".length());
-        } else {
-            role = userEntity.getRole().getRole();
+        if (role.contains("ROLE_")) {
+            role = role.substring("ROLE_".length());
         }
 
-        PropertyMap<UserEntity, UserResponseDTO> propertyMap = new PropertyMap<UserEntity, UserResponseDTO>() {
+        String finalRole = role;
+
+        PropertyMap<UserEntity, UserResponseDTO> propertyMap = new PropertyMap<>() {
             @Override
             protected void configure() {
-                map().setRole(role);
+                map().setRole(finalRole);
             }
         };
 
