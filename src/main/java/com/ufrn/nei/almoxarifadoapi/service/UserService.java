@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Random;
 
 @Slf4j
 @Service
@@ -33,7 +32,6 @@ public class UserService {
     @Transactional
     public UserResponseDTO save(UserCreateDTO createDTO) {
         UserEntity user = UserMapper.toUser(createDTO);
-        user.setId(null);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         RoleResponseDto roleResponse = roleService.findById(createDTO.getRoleId());
 
@@ -55,7 +53,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public UserResponseDTO findByEmail(String email) {
-        return UserMapper.toUser(userRepository.findByEmail(email).orElseThrow(
+        return UserMapper.toResponseDTO(userRepository.findByEmail(email).orElseThrow(
                 () -> new EntityNotFoundException(String.format("Usuário não encontrado com email='%s'", email))
         ));
     }
