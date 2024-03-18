@@ -12,10 +12,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@DynamicUpdate
 @Entity
 @Table(name = "itens")
 public class ItemEntity implements Serializable {
@@ -32,6 +35,9 @@ public class ItemEntity implements Serializable {
 
     @Column(name = "quantidade", nullable = false)
     private int quantity;
+
+    @Column(name = "tipo_unitario")
+    private String type;
 
     @Column(name = "criado_em", nullable = false)
     private Timestamp createdAt = Timestamp.valueOf(LocalDateTime.now());
