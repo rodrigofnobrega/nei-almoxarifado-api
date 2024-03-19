@@ -17,12 +17,13 @@ import java.util.Objects;
 public class ItemCreateDTO {
     @NotBlank
     private String name;
-    @NotNull
     @Positive
     private Long sipacCode;
     @NotNull
     @Positive
     private int quantity;
+    @NotBlank
+    private String type;
 
     @Override
     public boolean equals(Object o) {
