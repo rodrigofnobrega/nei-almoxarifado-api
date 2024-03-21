@@ -14,4 +14,5 @@ public interface ItemRepository extends JpaRepository<ItemEntity, Long> {
 
     Optional<ItemEntity> findBySipacCode(Long sipacCode);
 
+    Optional<ItemEntity> findByName(String name);
 }

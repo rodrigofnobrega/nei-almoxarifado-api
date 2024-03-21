@@ -40,6 +40,14 @@ public class ItemService {
     }
 
     @Transactional
+    public ItemEntity findByName(String name) {
+        ItemEntity item = itemRepository.findByName(name).orElseThrow(
+                () -> new EntityNotFoundException(String.format("Item não encontrado com nome=%s", name)));
+
+        return item;
+    }
+
+    @Transactional
     public ItemEntity findByCode(Long sipacCode) {
         ItemEntity item = itemRepository.findBySipacCode(sipacCode).orElseThrow(
                 () -> new EntityNotFoundException(String.format("Item não encontrado com código=%s", sipacCode)));
@@ -56,13 +64,24 @@ public class ItemService {
         // Para ter um valor padrão.
         ItemEntity item = ItemMapper.toItem(data);
 
+        // Busca por um item previamente cadastrado para, ao invés de cadastrar
+        // novamente, atualizar quantidade.
         try {
-            item = findByCode(data.getSipacCode());
+            if (data.getSipacCode() != null) {
+                item = findByCode(data.getSipacCode());
 
-            if (item != null) {
+                if (data.getName().equalsIgnoreCase(item.getName())) {
+                    setItemQuantity(item, data.getQuantity(), ItemQuantityOperation.SUM);
+                } else {
+                    throw new OperationErrorException("Encontrado outro item com nome diferente e mesmo código SIPAC.");
+                }
+            } else {
+                item = findByName(data.getName());
                 setItemQuantity(item, data.getQuantity(), ItemQuantityOperation.SUM);
             }
-        } catch (EntityNotFoundException ignored) {
+
+            item.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
+        } catch (EntityNotFoundException ex) {
         }
 
         item.setAvailable(true);
