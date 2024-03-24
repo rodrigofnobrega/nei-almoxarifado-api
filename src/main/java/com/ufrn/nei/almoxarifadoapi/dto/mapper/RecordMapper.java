@@ -2,7 +2,6 @@ package com.ufrn.nei.almoxarifadoapi.dto.mapper;
 
 import com.ufrn.nei.almoxarifadoapi.dto.item.ItemRecordDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.record.RecordResponseDTO;
-import com.ufrn.nei.almoxarifadoapi.dto.user.UserRecordDTO;
 import com.ufrn.nei.almoxarifadoapi.entity.RecordEntity;
 import org.modelmapper.ModelMapper;
 
@@ -14,11 +13,12 @@ public class RecordMapper {
         ModelMapper mapper = new ModelMapper();
         RecordResponseDTO recordResponseDTO = mapper.map(recordEntity, RecordResponseDTO.class);
 
-        recordResponseDTO.setUser(mapper.map(recordEntity.getUser(), UserRecordDTO.class));
+        recordResponseDTO.setUser(UserMapper.toRecordDTO(recordEntity.getUser()));
         recordResponseDTO.setItem(mapper.map(recordEntity.getItem(), ItemRecordDTO.class));
 
         return recordResponseDTO;
     }
+
     public static List<RecordResponseDTO> toListResponseDTO(List<RecordEntity> records) {
         return records.stream().map(i -> toResponseDTO(i)).collect(Collectors.toList());
     }

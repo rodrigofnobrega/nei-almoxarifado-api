@@ -28,7 +28,6 @@ public class UserService {
     @Transactional
     public UserEntity save(UserCreateDTO createDTO) {
         UserEntity user = UserMapper.toUser(createDTO);
-        user.setId(null);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         RoleEntity role = roleService.findById(createDTO.getRoleId());
 

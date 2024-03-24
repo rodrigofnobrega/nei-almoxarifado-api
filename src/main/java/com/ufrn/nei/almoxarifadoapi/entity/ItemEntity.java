@@ -51,12 +51,6 @@ public class ItemEntity implements Serializable {
     @OneToMany(mappedBy = "item")
     private List<RecordEntity> records;
 
-    public ItemEntity(long id, String name, Long sipacCode) {
-        this.id = id;
-        this.name = name;
-        this.sipacCode = sipacCode;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o)
