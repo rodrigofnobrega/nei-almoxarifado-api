@@ -14,11 +14,11 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ItemUpdateDTO {
-    String name;
+    private String name;
     @Positive
-    Long sipacCode;
+    private Long sipacCode;
     @PositiveOrZero
-    int quantity;
+    private int quantity;
 
     @Override
     public boolean equals(Object o) {

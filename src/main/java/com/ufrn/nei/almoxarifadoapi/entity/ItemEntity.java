@@ -30,7 +30,7 @@ public class ItemEntity implements Serializable {
     @Column(name = "nome", nullable = false, unique = false, length = 255)
     private String name;
 
-    @Column(name = "codigo_sipac", nullable = false, unique = true)
+    @Column(name = "codigo_sipac", nullable = true, unique = true)
     private Long sipacCode;
 
     @Column(name = "quantidade", nullable = false)
