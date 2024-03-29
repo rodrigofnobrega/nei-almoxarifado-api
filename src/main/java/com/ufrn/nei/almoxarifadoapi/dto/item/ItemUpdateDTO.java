@@ -15,7 +15,7 @@ import java.util.Objects;
 @AllArgsConstructor
 public class ItemUpdateDTO {
     private String name;
-    @Positive
+    @PositiveOrZero
     private Long sipacCode;
     @PositiveOrZero
     private int quantity;
