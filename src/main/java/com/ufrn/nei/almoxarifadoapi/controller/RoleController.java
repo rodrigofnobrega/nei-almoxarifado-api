@@ -23,7 +23,7 @@ public class RoleController {
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<RoleResponseDto> createRole(@RequestBody RoleCreateDto roleCreateDto) {
-        RoleEntity role = roleService.save(RoleMapper.toRole(roleCreateDto));
+        RoleEntity role = roleService.save(roleCreateDto);
 
         RoleResponseDto response = RoleMapper.toResponseDto(role);
 

@@ -1,5 +1,6 @@
 package com.ufrn.nei.almoxarifadoapi.service;
 
+import com.ufrn.nei.almoxarifadoapi.dto.role.RoleCreateDto;
 import com.ufrn.nei.almoxarifadoapi.dto.role.RoleUpdateDto;
 import com.ufrn.nei.almoxarifadoapi.entity.RoleEntity;
 import com.ufrn.nei.almoxarifadoapi.repository.RoleRepository;
@@ -39,7 +40,10 @@ class RoleServiceTest {
     void saveRoleTest() {
         when(roleRepository.save(role)).thenReturn(role);
 
-        RoleEntity savedRole = roleService.save(role);
+        RoleCreateDto data = new RoleCreateDto();
+        data.setRole(role.getRole());
+
+        RoleEntity savedRole = roleService.save(data);
 
         verify(roleRepository, times(1)).save(role);
 

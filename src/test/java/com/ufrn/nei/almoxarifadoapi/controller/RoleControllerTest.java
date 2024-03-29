@@ -50,7 +50,7 @@ public class RoleControllerTest {
     void testCreateRole() throws Exception {
         RoleCreateDto roleCreateDto = new RoleCreateDto("Cliente");
 
-        when(roleService.save(RoleMapper.toRole(roleCreateDto))).thenReturn(RoleMapper.toRole(roleResponseDto));
+        when(roleService.save(roleCreateDto)).thenReturn(RoleMapper.toRole(roleResponseDto));
 
         mockMvc.perform(post("/api/v1/roles")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -60,7 +60,7 @@ public class RoleControllerTest {
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.role").value("Cliente"));
 
-        verify(roleService, times(1)).save(RoleMapper.toRole(roleCreateDto));
+        verify(roleService, times(1)).save(roleCreateDto);
     }
 
     @Test

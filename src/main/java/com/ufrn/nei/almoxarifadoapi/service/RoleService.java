@@ -1,5 +1,7 @@
 package com.ufrn.nei.almoxarifadoapi.service;
 
+import com.ufrn.nei.almoxarifadoapi.dto.mapper.RoleMapper;
+import com.ufrn.nei.almoxarifadoapi.dto.role.RoleCreateDto;
 import com.ufrn.nei.almoxarifadoapi.dto.role.RoleUpdateDto;
 import com.ufrn.nei.almoxarifadoapi.entity.RoleEntity;
 import com.ufrn.nei.almoxarifadoapi.repository.RoleRepository;
@@ -17,8 +19,10 @@ public class RoleService {
     private RoleRepository roleRepository;
 
     @Transactional
-    public RoleEntity save(RoleEntity roleEntity) {
-        RoleEntity role = roleRepository.save(roleEntity);
+    public RoleEntity save(RoleCreateDto data) {
+        RoleEntity role = RoleMapper.toRole(data);
+
+        roleRepository.save(role);
         return role;
     }
 
@@ -54,8 +58,8 @@ public class RoleService {
     public RoleEntity updateRoleById(Long id, RoleUpdateDto newRole) {
         RoleEntity role = findById(id);
         role.setRole(newRole.getNewRole());
-        save(role);
 
+        roleRepository.save(role);
         return role;
     }
 }
