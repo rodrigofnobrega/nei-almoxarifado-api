@@ -7,6 +7,7 @@ import com.ufrn.nei.almoxarifadoapi.entity.RequestEntity;
 import com.ufrn.nei.almoxarifadoapi.entity.UserEntity;
 import com.ufrn.nei.almoxarifadoapi.enums.RequestStatusEnum;
 import com.ufrn.nei.almoxarifadoapi.exception.HigherQuantityException;
+import com.ufrn.nei.almoxarifadoapi.infra.jwt.JwtAuthenticationContext;
 import com.ufrn.nei.almoxarifadoapi.repository.RequestRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class RequestService {
 
     @Transactional
     public RequestEntity create(RequestCreateDTO data) {
-        UserEntity user = userService.findById(data.getUserID());
+        UserEntity user = userService.findById(JwtAuthenticationContext.getId());
         ItemEntity item = itemService.findById(data.getItemID());
         RequestStatusEnum status = RequestStatusEnum.PENDENTE;
 
