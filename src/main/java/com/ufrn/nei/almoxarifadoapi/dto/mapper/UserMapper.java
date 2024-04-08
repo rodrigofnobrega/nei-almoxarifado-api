@@ -61,7 +61,7 @@ public class UserMapper {
         return users.stream().map(i -> toResponseDTO(i)).collect(Collectors.toList());
     }
 
-    private static String refactorRoleName(String role) {
+    public static String refactorRoleName(String role) {
         if (role.startsWith("ROLE_")) {
             role = role.substring("ROLE_".length());
         }

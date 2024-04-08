@@ -49,4 +49,12 @@ public class RequestEntity implements Serializable {
     @JsonManagedReference
     @JoinColumn(name = "item_id", nullable = false)
     private ItemEntity item;
+
+    public RequestEntity(RequestStatusEnum status, String description, Long quantity, UserEntity user, ItemEntity item) {
+        this.status = status;
+        this.description = description;
+        this.quantity = quantity;
+        this.user = user;
+        this.item = item;
+    }
 }
