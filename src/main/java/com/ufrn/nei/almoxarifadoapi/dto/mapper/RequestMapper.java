@@ -10,6 +10,11 @@ import com.ufrn.nei.almoxarifadoapi.entity.UserEntity;
 import com.ufrn.nei.almoxarifadoapi.enums.RequestStatusEnum;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class RequestMapper {
     public static RequestEntity toRequest(RequestCreateDTO data, UserEntity user, ItemEntity item, RequestStatusEnum status) {
@@ -48,5 +53,12 @@ public class RequestMapper {
         modelMapper.addMappings(propertyMap);
 
         return modelMapper.map(data, RequestResponseDTO.class);
+    }
+
+    public static Page<RequestResponseDTO> toPageResponseDTO(Page<RequestEntity> data) {
+        List<RequestResponseDTO> dtos = data.getContent().stream()
+                .map(RequestMapper::toResponseDTO)
+                .collect(Collectors.toList());
+        return new PageImpl<>(dtos, data.getPageable(), data.getTotalElements());
     }
 }

@@ -4,13 +4,21 @@ import com.ufrn.nei.almoxarifadoapi.dto.mapper.RequestMapper;
 import com.ufrn.nei.almoxarifadoapi.dto.request.RequestCreateDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.request.RequestResponseDTO;
 import com.ufrn.nei.almoxarifadoapi.entity.RequestEntity;
+import com.ufrn.nei.almoxarifadoapi.enums.RequestStatusEnum;
+import com.ufrn.nei.almoxarifadoapi.exception.PageableException;
 import com.ufrn.nei.almoxarifadoapi.service.RequestService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/requests")
@@ -25,5 +33,27 @@ public class RequestController {
         RequestResponseDTO response = RequestMapper.toResponseDTO(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Page<RequestResponseDTO>> findAll(@RequestParam(defaultValue = "0") int page,
+                                                            @RequestParam(defaultValue = "10") int size) {
+        if (size == 0) {
+            throw new PageableException("O tamanho não pode ser zero");
+        } else if (page < 0) {
+            throw new PageableException("O tamanho da página não pode ser negativo");
+        }
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<RequestEntity> requestPage = requestService.findAll(pageable);
+
+        if (page >= requestPage.getTotalPages()) {
+            throw new PageableException("Tamanho de páginas solicitados maior que o total");
+        }
+
+        Page<RequestResponseDTO> response = RequestMapper.toPageResponseDTO(requestPage);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
