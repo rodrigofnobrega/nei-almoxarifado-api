@@ -113,4 +113,12 @@ public class RestExceptionHandler {
                         .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST,
                                 exception.getLocalizedMessage()));
         }
+
+        @ExceptionHandler(UnauthorizedAccessException.class)
+        public ResponseEntity<RestErrorMessage> handleErrorOnDatabase(UnauthorizedAccessException exception,
+                                                                      HttpServletRequest request) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(new RestErrorMessage(request, HttpStatus.UNAUTHORIZED,
+                                exception.getLocalizedMessage()));
+        }
 }

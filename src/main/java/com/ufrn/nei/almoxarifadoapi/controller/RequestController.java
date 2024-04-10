@@ -1,9 +1,12 @@
 package com.ufrn.nei.almoxarifadoapi.controller;
 
 import com.ufrn.nei.almoxarifadoapi.dto.mapper.RequestMapper;
+import com.ufrn.nei.almoxarifadoapi.dto.mapper.UserMapper;
 import com.ufrn.nei.almoxarifadoapi.dto.request.RequestCreateDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.request.RequestResponseDTO;
+import com.ufrn.nei.almoxarifadoapi.dto.user.UserResponseDTO;
 import com.ufrn.nei.almoxarifadoapi.entity.RequestEntity;
+import com.ufrn.nei.almoxarifadoapi.entity.UserEntity;
 import com.ufrn.nei.almoxarifadoapi.enums.RequestStatusEnum;
 import com.ufrn.nei.almoxarifadoapi.exception.PageableException;
 import com.ufrn.nei.almoxarifadoapi.service.RequestService;
@@ -53,6 +56,16 @@ public class RequestController {
         }
 
         Page<RequestResponseDTO> response = RequestMapper.toPageResponseDTO(requestPage);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public ResponseEntity<RequestResponseDTO> findById(@PathVariable Long id) {
+        RequestEntity request = requestService.findById(id);
+
+        RequestResponseDTO response = RequestMapper.toResponseDTO(request);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
