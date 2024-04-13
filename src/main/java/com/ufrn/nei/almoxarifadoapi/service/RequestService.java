@@ -7,18 +7,15 @@ import com.ufrn.nei.almoxarifadoapi.entity.RequestEntity;
 import com.ufrn.nei.almoxarifadoapi.entity.UserEntity;
 import com.ufrn.nei.almoxarifadoapi.enums.RequestStatusEnum;
 import com.ufrn.nei.almoxarifadoapi.exception.EntityNotFoundException;
-import com.ufrn.nei.almoxarifadoapi.exception.HigherQuantityException;
 import com.ufrn.nei.almoxarifadoapi.exception.UnauthorizedAccessException;
 import com.ufrn.nei.almoxarifadoapi.infra.jwt.JwtAuthenticationContext;
 import com.ufrn.nei.almoxarifadoapi.repository.RequestRepository;
-import java.util.List;
+
 import java.util.Objects;
 
-import org.apache.coyote.Request;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,10 +35,6 @@ public class RequestService {
         UserEntity user = userService.findById(JwtAuthenticationContext.getId());
         ItemEntity item = itemService.findById(data.getItemID());
         RequestStatusEnum status = RequestStatusEnum.PENDENTE;
-
-        if (data.getQuantity() > item.getQuantity()) {
-            throw new HigherQuantityException();
-        }
 
         RequestEntity request = RequestMapper.toRequest(data, user, item, status);
 
