@@ -1,12 +1,13 @@
 package com.ufrn.nei.almoxarifadoapi.service;
 
-import com.ufrn.nei.almoxarifadoapi.dto.record.RecordCreateDTO;
-import com.ufrn.nei.almoxarifadoapi.dto.record.RecordCreateItemDTO;
+import com.ufrn.nei.almoxarifadoapi.dto.item.ItemCreateDTO;
+import com.ufrn.nei.almoxarifadoapi.dto.record.RecordDeleteDTO;
 import com.ufrn.nei.almoxarifadoapi.entity.ItemEntity;
 import com.ufrn.nei.almoxarifadoapi.entity.RecordEntity;
 import com.ufrn.nei.almoxarifadoapi.entity.UserEntity;
 import com.ufrn.nei.almoxarifadoapi.enums.RecordOperationEnum;
 import com.ufrn.nei.almoxarifadoapi.exception.EntityNotFoundException;
+import com.ufrn.nei.almoxarifadoapi.infra.jwt.JwtAuthenticationContext;
 import com.ufrn.nei.almoxarifadoapi.repository.RecordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,10 +27,10 @@ public class RecordService {
     private ItemService itemService;
 
     @Transactional
-    public RecordEntity save(RecordCreateDTO recordCreateDTO, RecordOperationEnum operationEnum) {
-        UserEntity user = userService.findById(recordCreateDTO.getUserID());
-        ItemEntity item = itemService.findById(recordCreateDTO.getItemID());
-        RecordEntity record = new RecordEntity(user, item, recordCreateDTO.getQuantity(), operationEnum);
+    public RecordEntity save(RecordDeleteDTO recordDeleteDTO, RecordOperationEnum operationEnum) {
+        UserEntity user = userService.findById(JwtAuthenticationContext.getId());
+        ItemEntity item = itemService.findById(recordDeleteDTO.getItemID());
+        RecordEntity record = new RecordEntity(user, item, recordDeleteDTO.getQuantity(), operationEnum);
 
         record = recordRepository.save(record);
 
@@ -37,9 +38,9 @@ public class RecordService {
     }
 
     @Transactional
-    public RecordEntity save(RecordCreateItemDTO createItemDTO, ItemEntity item, RecordOperationEnum operationEnum) {
-        UserEntity user = userService.findById(createItemDTO.getUserID());
-        RecordEntity record = new RecordEntity(user, item, createItemDTO.getItem().getQuantity(), operationEnum);
+    public RecordEntity save(ItemCreateDTO createItemDTO, ItemEntity item, RecordOperationEnum operationEnum) {
+        UserEntity user = userService.findById(JwtAuthenticationContext.getId());
+        RecordEntity record = new RecordEntity(user, item, createItemDTO.getQuantity(), operationEnum);
 
         record = recordRepository.save(record);
 
