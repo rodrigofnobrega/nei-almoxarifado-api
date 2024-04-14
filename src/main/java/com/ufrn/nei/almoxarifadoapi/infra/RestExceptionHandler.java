@@ -113,4 +113,12 @@ public class RestExceptionHandler {
                         .body(new RestErrorMessage(request, HttpStatus.UNAUTHORIZED,
                                 exception.getLocalizedMessage()));
         }
+
+        @ExceptionHandler(ModifyStatusException.class)
+        public ResponseEntity<RestErrorMessage> handleErrorOnDatabase(ModifyStatusException exception,
+                                                                      HttpServletRequest request) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST,
+                                exception.getLocalizedMessage()));
+        }
 }

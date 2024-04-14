@@ -7,18 +7,21 @@ import com.ufrn.nei.almoxarifadoapi.entity.RequestEntity;
 import com.ufrn.nei.almoxarifadoapi.entity.UserEntity;
 import com.ufrn.nei.almoxarifadoapi.enums.RequestStatusEnum;
 import com.ufrn.nei.almoxarifadoapi.exception.EntityNotFoundException;
+import com.ufrn.nei.almoxarifadoapi.exception.ModifyStatusException;
 import com.ufrn.nei.almoxarifadoapi.exception.UnauthorizedAccessException;
 import com.ufrn.nei.almoxarifadoapi.infra.jwt.JwtAuthenticationContext;
 import com.ufrn.nei.almoxarifadoapi.repository.RequestRepository;
 
 import java.util.Objects;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 public class RequestService {
     @Autowired
@@ -41,6 +44,31 @@ public class RequestService {
         requestRepository.save(request);
 
         return request;
+    }
+
+    @Transactional
+    public Boolean decline(Long id) {
+        RequestEntity request = findById(id);
+
+        if (request.getStatus().equals(RequestStatusEnum.RECUSADO)) {
+            return Boolean.TRUE;
+        }
+
+        if (!request.getStatus().equals(RequestStatusEnum.PENDENTE)) {
+            log.warn("Tentando alterar o status de uma solicitaçã que não está como pendente.");
+            throw new ModifyStatusException("Não é possível alterar o status de uma solicitação que não está pendente");
+        }
+
+        try {
+            request.setStatus(RequestStatusEnum.RECUSADO);
+
+            requestRepository.save(request);
+        } catch (RuntimeException err) {
+            log.error(err.getMessage());
+            return Boolean.FALSE;
+        }
+
+        return Boolean.TRUE;
     }
 
     @Transactional(readOnly = true)

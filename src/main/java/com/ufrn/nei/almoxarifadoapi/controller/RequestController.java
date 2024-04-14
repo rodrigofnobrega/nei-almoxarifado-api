@@ -38,6 +38,18 @@ public class RequestController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @PatchMapping("/decline/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<RequestResponseDTO> decline(@PathVariable Long id) {
+        Boolean request = requestService.decline(id);
+
+        if (request == Boolean.TRUE) {
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Page<RequestResponseDTO>> findAll(@RequestParam(defaultValue = "0") int page,
