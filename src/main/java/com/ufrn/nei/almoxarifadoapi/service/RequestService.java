@@ -118,6 +118,13 @@ public class RequestService {
         return requests;
     }
 
+    @Transactional(readOnly = true)
+    public Page<RequestEntity> findByUserID(Long id, Pageable pageable) {
+        Page<RequestEntity> requests = requestRepository.findByUserId(id, pageable);
+
+        return requests;
+    }
+
     // Métodos Auxiliares
 
     @Transactional
