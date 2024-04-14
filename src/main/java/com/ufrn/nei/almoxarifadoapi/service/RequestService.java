@@ -47,21 +47,23 @@ public class RequestService {
     }
 
     @Transactional
-    public Boolean decline(Long id) {
+    public Boolean updateRequestStatus(Long id, RequestStatusEnum newStatus) {
         RequestEntity request = findById(id);
 
-        if (request.getStatus().equals(RequestStatusEnum.RECUSADO)) {
+        // Verificar se a solicitação já possui o novo status
+        if (request.getStatus().equals(newStatus)) {
             return Boolean.TRUE;
         }
 
+        // Verificar se a solicitação está pendente
         if (!request.getStatus().equals(RequestStatusEnum.PENDENTE)) {
-            log.warn("Tentando alterar o status de uma solicitaçã que não está como pendente.");
+            log.warn("Tentando alterar o status de uma solicitação que não está como pendente.");
             throw new ModifyStatusException("Não é possível alterar o status de uma solicitação que não está pendente");
         }
 
         try {
-            request.setStatus(RequestStatusEnum.RECUSADO);
-
+            // Atualizar o status da solicitação
+            request.setStatus(newStatus);
             requestRepository.save(request);
         } catch (RuntimeException err) {
             log.error(err.getMessage());
@@ -69,6 +71,16 @@ public class RequestService {
         }
 
         return Boolean.TRUE;
+    }
+
+    @Transactional
+    public Boolean decline(Long id) {
+        return updateRequestStatus(id, RequestStatusEnum.RECUSADO);
+    }
+
+    @Transactional
+    public Boolean cancel(Long id) {
+        return updateRequestStatus(id, RequestStatusEnum.CANCELADO);
     }
 
     @Transactional(readOnly = true)

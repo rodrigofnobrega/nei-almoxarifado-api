@@ -50,6 +50,18 @@ public class RequestController {
         }
     }
 
+    @PatchMapping("/cancel/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public ResponseEntity<RequestResponseDTO> cancel(@PathVariable Long id) {
+        Boolean request = requestService.cancel(id);
+
+        if (request == Boolean.TRUE) {
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Page<RequestResponseDTO>> findAll(@RequestParam(defaultValue = "0") int page,
