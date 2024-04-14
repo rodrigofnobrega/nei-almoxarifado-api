@@ -111,6 +111,13 @@ public class RequestService {
         return request;
     }
 
+    @Transactional(readOnly = true)
+    public Page<RequestEntity> findByStatus(RequestStatusEnum status, Pageable pageable) {
+        Page<RequestEntity> requests = requestRepository.findByStatus(status, pageable);
+
+        return requests;
+    }
+
     // Métodos Auxiliares
 
     @Transactional

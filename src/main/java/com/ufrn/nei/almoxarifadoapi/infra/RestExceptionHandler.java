@@ -121,4 +121,12 @@ public class RestExceptionHandler {
                         .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST,
                                 exception.getLocalizedMessage()));
         }
+
+        @ExceptionHandler(StatusNotFoundException.class)
+        public ResponseEntity<RestErrorMessage> handleErrorOnDatabase(StatusNotFoundException exception,
+                                                                      HttpServletRequest request) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST,
+                                exception.getLocalizedMessage()));
+        }
 }
