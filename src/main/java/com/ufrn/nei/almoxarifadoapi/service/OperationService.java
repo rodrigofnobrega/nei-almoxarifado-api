@@ -2,6 +2,7 @@ package com.ufrn.nei.almoxarifadoapi.service;
 
 import com.ufrn.nei.almoxarifadoapi.dto.record.RecordCreateDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.record.RecordCreateItemDTO;
+import com.ufrn.nei.almoxarifadoapi.dto.record.RecordRequestDTO;
 import com.ufrn.nei.almoxarifadoapi.entity.ItemEntity;
 import com.ufrn.nei.almoxarifadoapi.entity.RecordEntity;
 import com.ufrn.nei.almoxarifadoapi.enums.RecordOperationEnum;
@@ -17,7 +18,15 @@ public class OperationService {
     private RecordService recordService;
 
     public RecordEntity toConsume(RecordCreateDTO createDTO) {
-        itemService.deleteItem(createDTO.getItemID(), createDTO.getQuantity());
+        itemService.deleteOrConsumeItem(createDTO.getItemID(), createDTO.getQuantity());
+
+        RecordEntity record = recordService.save(createDTO, RecordOperationEnum.CONSUMO);
+
+        return record;
+    }
+
+    public RecordEntity toConsume(RecordRequestDTO createDTO) {
+        itemService.deleteOrConsumeItem(createDTO.getItemID(), createDTO.getQuantity());
 
         RecordEntity record = recordService.save(createDTO, RecordOperationEnum.CONSUMO);
 
@@ -33,7 +42,7 @@ public class OperationService {
     }
 
     public RecordEntity toDelete(RecordCreateDTO createDTO) {
-        itemService.deleteItem(createDTO.getItemID(), createDTO.getQuantity());
+        itemService.deleteOrConsumeItem(createDTO.getItemID(), createDTO.getQuantity());
 
         RecordEntity record = recordService.save(createDTO, RecordOperationEnum.EXCLUSAO);
 

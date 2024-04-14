@@ -1,6 +1,7 @@
 package com.ufrn.nei.almoxarifadoapi.service;
 
 import com.ufrn.nei.almoxarifadoapi.dto.mapper.RequestMapper;
+import com.ufrn.nei.almoxarifadoapi.dto.record.RecordRequestDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.request.RequestCreateDTO;
 import com.ufrn.nei.almoxarifadoapi.entity.ItemEntity;
 import com.ufrn.nei.almoxarifadoapi.entity.RequestEntity;
@@ -12,6 +13,8 @@ import com.ufrn.nei.almoxarifadoapi.exception.UnauthorizedAccessException;
 import com.ufrn.nei.almoxarifadoapi.infra.jwt.JwtAuthenticationContext;
 import com.ufrn.nei.almoxarifadoapi.repository.RequestRepository;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +36,9 @@ public class RequestService {
     @Autowired
     private ItemService itemService;
 
+    @Autowired
+    private OperationService operationService;
+
     @Transactional
     public RequestEntity create(RequestCreateDTO data) {
         UserEntity user = userService.findById(JwtAuthenticationContext.getId());
@@ -47,40 +53,35 @@ public class RequestService {
     }
 
     @Transactional
-    public Boolean updateRequestStatus(Long id, RequestStatusEnum newStatus) {
+    public Boolean accept(Long id) {
         RequestEntity request = findById(id);
 
-        // Verificar se a solicitação já possui o novo status
-        if (request.getStatus().equals(newStatus)) {
-            return Boolean.TRUE;
-        }
+        validateRequestStatus(request, RequestStatusEnum.ACEITO);
 
-        // Verificar se a solicitação está pendente
-        if (!request.getStatus().equals(RequestStatusEnum.PENDENTE)) {
-            log.warn("Tentando alterar o status de uma solicitação que não está como pendente.");
-            throw new ModifyStatusException("Não é possível alterar o status de uma solicitação que não está pendente");
-        }
+        RecordRequestDTO requestDTO =
+                new RecordRequestDTO(request.getUser().getId(), request.getItem().getId(), Math.toIntExact(request.getQuantity()));
 
-        try {
-            // Atualizar o status da solicitação
-            request.setStatus(newStatus);
-            requestRepository.save(request);
-        } catch (RuntimeException err) {
-            log.error(err.getMessage());
+        if (operationService.toConsume(requestDTO) == null) {
             return Boolean.FALSE;
         }
+
+        updateRequestStatus(request, RequestStatusEnum.ACEITO);
 
         return Boolean.TRUE;
     }
 
     @Transactional
     public Boolean decline(Long id) {
-        return updateRequestStatus(id, RequestStatusEnum.RECUSADO);
+        RequestEntity request = findById(id);
+
+        return updateRequestStatus(request, RequestStatusEnum.RECUSADO);
     }
 
     @Transactional
     public Boolean cancel(Long id) {
-        return updateRequestStatus(id, RequestStatusEnum.CANCELADO);
+        RequestEntity request = findById(id);
+
+        return updateRequestStatus(request, RequestStatusEnum.CANCELADO);
     }
 
     @Transactional(readOnly = true)
@@ -108,5 +109,38 @@ public class RequestService {
         }
 
         return request;
+    }
+
+    // Métodos Auxiliares
+
+    @Transactional
+    private Boolean updateRequestStatus(RequestEntity request, RequestStatusEnum status) {
+        validateRequestStatus(request, status);
+
+        try {
+            // Atualizar o status da solicitação
+            request.setStatus(status);
+            request.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
+            requestRepository.save(request);
+        } catch (RuntimeException err) {
+            log.error(err.getMessage());
+            return Boolean.FALSE;
+        }
+
+        return Boolean.TRUE;
+    }
+
+    private void validateRequestStatus(RequestEntity request, RequestStatusEnum status) {
+        // Verificar se a solicitação já possui o novo status
+        if (request.getStatus().equals(status)) {
+            log.info("Solicitação já foi" +  status.toString().toLowerCase() +  "anteriormente");
+            throw new ModifyStatusException("Solicitação já foi" +  status.toString().toLowerCase() +  "anteriormente");
+        }
+
+        // Verificar se a solicitação está pendente
+        if (!request.getStatus().equals(RequestStatusEnum.PENDENTE)) {
+            log.warn("Tentando alterar o status de uma solicitação que não está como pendente.");
+            throw new ModifyStatusException("Não é possível alterar o status de uma solicitação que não está pendente");
+        }
     }
 }

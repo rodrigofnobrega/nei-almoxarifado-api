@@ -134,7 +134,7 @@ public class ItemService {
     }
 
     @Transactional
-    public void deleteItem(Long id, int quantity) {
+    public void deleteOrConsumeItem(Long id, int quantity) {
         ItemEntity item = findById(id);
 
         if (item.getAvailable().equals(false)) {
@@ -142,7 +142,7 @@ public class ItemService {
         }
 
         if (quantity > item.getQuantity()) {
-            throw new NotAvailableQuantityException("Não há itens disponiveis suficientes para realizar a exclusão.");
+            throw new NotAvailableQuantityException("Quantidade de itens disponiveis insuficientes.");
         }
 
         setItemQuantity(item, quantity, ItemQuantityOperation.SUBTRACT);

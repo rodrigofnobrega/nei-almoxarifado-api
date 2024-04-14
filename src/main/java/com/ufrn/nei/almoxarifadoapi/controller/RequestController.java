@@ -31,6 +31,18 @@ public class RequestController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @PatchMapping("/accept/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> accept(@PathVariable Long id) {
+        Boolean request = requestService.accept(id);
+
+        if (request == Boolean.TRUE) {
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
     @PatchMapping("/decline/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> decline(@PathVariable Long id) {
