@@ -1,7 +1,7 @@
 package com.ufrn.nei.almoxarifadoapi.service;
 
 import com.ufrn.nei.almoxarifadoapi.dto.item.ItemCreateDTO;
-import com.ufrn.nei.almoxarifadoapi.dto.record.RecordDeleteDTO;
+import com.ufrn.nei.almoxarifadoapi.dto.record.RecordRegisterDTO;
 import com.ufrn.nei.almoxarifadoapi.entity.ItemEntity;
 import com.ufrn.nei.almoxarifadoapi.entity.RecordEntity;
 import com.ufrn.nei.almoxarifadoapi.entity.UserEntity;
@@ -27,10 +27,10 @@ public class RecordService {
     private ItemService itemService;
 
     @Transactional
-    public RecordEntity save(RecordDeleteDTO recordDeleteDTO, RecordOperationEnum operationEnum) {
+    public RecordEntity save(RecordRegisterDTO recordCreateDTO, RecordOperationEnum operationEnum) {
         UserEntity user = userService.findById(JwtAuthenticationContext.getId());
-        ItemEntity item = itemService.findById(recordDeleteDTO.getItemID());
-        RecordEntity record = new RecordEntity(user, item, recordDeleteDTO.getQuantity(), operationEnum);
+        ItemEntity item = itemService.findById(recordCreateDTO.getItemID());
+        RecordEntity record = new RecordEntity(user, item, recordCreateDTO.getQuantity(), operationEnum);
 
         record = recordRepository.save(record);
 

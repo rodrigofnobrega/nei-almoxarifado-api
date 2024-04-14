@@ -2,7 +2,7 @@ package com.ufrn.nei.almoxarifadoapi.controller;
 
 import com.ufrn.nei.almoxarifadoapi.dto.item.ItemCreateDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.mapper.RecordMapper;
-import com.ufrn.nei.almoxarifadoapi.dto.record.RecordDeleteDTO;
+import com.ufrn.nei.almoxarifadoapi.dto.record.RecordRegisterDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.record.RecordResponseDTO;
 import com.ufrn.nei.almoxarifadoapi.entity.RecordEntity;
 import com.ufrn.nei.almoxarifadoapi.infra.RestErrorMessage;
@@ -35,7 +35,7 @@ public class OperationController {
         })
         @PostMapping("/consumo")
         @PreAuthorize("hasRole('ADMIN')")
-        public ResponseEntity<RecordResponseDTO> consume(@RequestBody @Valid RecordDeleteDTO createDTO) {
+        public ResponseEntity<RecordResponseDTO> consume(@RequestBody @Valid RecordRegisterDTO createDTO) {
                 RecordEntity record = operationService.toConsume(createDTO);
 
                 return ResponseEntity.status(HttpStatus.OK).body(RecordMapper.toResponseDTO(record));
@@ -59,7 +59,7 @@ public class OperationController {
         })
         @PostMapping("/exclusao")
         @PreAuthorize("hasRole('ADMIN')")
-        public ResponseEntity<RecordResponseDTO> toDelete(@RequestBody @Valid RecordDeleteDTO deleteDTO) {
+        public ResponseEntity<RecordResponseDTO> toDelete(@RequestBody @Valid RecordRegisterDTO deleteDTO) {
                 RecordEntity record = operationService.toDelete(deleteDTO);
 
                 return ResponseEntity.status(HttpStatus.OK).body(RecordMapper.toResponseDTO(record));

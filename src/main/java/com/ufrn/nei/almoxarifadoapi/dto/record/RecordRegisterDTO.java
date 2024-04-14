@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RecordDeleteDTO {
+public class RecordRegisterDTO {
     @Positive
     private Long itemID;
     @Positive
