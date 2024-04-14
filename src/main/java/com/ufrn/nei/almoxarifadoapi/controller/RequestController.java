@@ -1,13 +1,9 @@
 package com.ufrn.nei.almoxarifadoapi.controller;
 
 import com.ufrn.nei.almoxarifadoapi.dto.mapper.RequestMapper;
-import com.ufrn.nei.almoxarifadoapi.dto.mapper.UserMapper;
 import com.ufrn.nei.almoxarifadoapi.dto.request.RequestCreateDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.request.RequestResponseDTO;
-import com.ufrn.nei.almoxarifadoapi.dto.user.UserResponseDTO;
 import com.ufrn.nei.almoxarifadoapi.entity.RequestEntity;
-import com.ufrn.nei.almoxarifadoapi.entity.UserEntity;
-import com.ufrn.nei.almoxarifadoapi.enums.RequestStatusEnum;
 import com.ufrn.nei.almoxarifadoapi.exception.PageableException;
 import com.ufrn.nei.almoxarifadoapi.service.RequestService;
 import jakarta.validation.Valid;
@@ -15,13 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/requests")
