@@ -137,6 +137,23 @@ public class RequestController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @GetMapping("/item/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Page<RequestResponseDTO>> findByItemId(@PathVariable Long id,
+                                                                 @RequestParam(defaultValue = "0") int page,
+                                                                 @RequestParam(defaultValue = "10") int size) {
+        validatePageParameters(page, size);
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<RequestEntity> requestPage = requestService.findByItemID(id, pageable);
+
+        validateTotalPages(page, requestPage.getTotalPages());
+
+        Page<RequestResponseDTO> response = RequestMapper.toPageResponseDTO(requestPage);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
     // Métodos auxiliares
 
     private void validatePageParameters(int page, int size) {

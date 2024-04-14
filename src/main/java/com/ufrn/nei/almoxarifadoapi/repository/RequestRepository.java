@@ -16,4 +16,6 @@ public interface RequestRepository extends JpaRepository<RequestEntity, Long> {
     Page<RequestEntity> findByStatus(RequestStatusEnum status, @NonNull Pageable pageable);
 
     Page<RequestEntity> findByUserId(Long id, @NonNull Pageable pageable);
+
+    Page<RequestEntity> findByItemId(Long id, @NonNull Pageable pageable);
 }

@@ -125,6 +125,13 @@ public class RequestService {
         return requests;
     }
 
+    @Transactional(readOnly = true)
+    public Page<RequestEntity> findByItemID(Long id, Pageable pageable) {
+        Page<RequestEntity> requests = requestRepository.findByItemId(id, pageable);
+
+        return requests;
+    }
+
     // Métodos Auxiliares
 
     @Transactional
