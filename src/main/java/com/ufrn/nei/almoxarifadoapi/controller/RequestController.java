@@ -40,7 +40,7 @@ public class RequestController {
 
     @PatchMapping("/decline/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<RequestResponseDTO> decline(@PathVariable Long id) {
+    public ResponseEntity<Void> decline(@PathVariable Long id) {
         Boolean request = requestService.decline(id);
 
         if (request == Boolean.TRUE) {
@@ -52,7 +52,7 @@ public class RequestController {
 
     @PatchMapping("/cancel/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public ResponseEntity<RequestResponseDTO> cancel(@PathVariable Long id) {
+    public ResponseEntity<Void> cancel(@PathVariable Long id) {
         Boolean request = requestService.cancel(id);
 
         if (request == Boolean.TRUE) {
