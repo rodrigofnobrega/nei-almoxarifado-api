@@ -2,7 +2,6 @@ package com.ufrn.nei.almoxarifadoapi.service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.List;
 
 import com.ufrn.nei.almoxarifadoapi.exception.EntityNotFoundException;
 import com.ufrn.nei.almoxarifadoapi.exception.ItemNotActiveException;
@@ -10,6 +9,8 @@ import com.ufrn.nei.almoxarifadoapi.exception.NotAvailableQuantityException;
 import com.ufrn.nei.almoxarifadoapi.exception.OperationErrorException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.ufrn.nei.almoxarifadoapi.dto.item.ItemCreateDTO;
@@ -18,20 +19,20 @@ import com.ufrn.nei.almoxarifadoapi.dto.mapper.ItemMapper;
 import com.ufrn.nei.almoxarifadoapi.entity.ItemEntity;
 import com.ufrn.nei.almoxarifadoapi.enums.ItemQuantityOperation;
 import com.ufrn.nei.almoxarifadoapi.repository.ItemRepository;
+import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.transaction.Transactional;
 
 @Service
 public class ItemService {
     @Autowired
     private ItemRepository itemRepository;
 
-    @Transactional
-    public List<ItemEntity> findAllItems() {
-        return itemRepository.findAllByAvailableTrue();
+    @Transactional(readOnly = true)
+    public Page<ItemEntity> findAllItems(Pageable pageable) {
+        return itemRepository.findAllByAvailableTrue(pageable);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public ItemEntity findById(Long id) {
         ItemEntity item = itemRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(String.format("Item não encontrado com id=%s", id)));
@@ -39,7 +40,7 @@ public class ItemService {
         return item;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public ItemEntity findByName(String name) {
         ItemEntity item = itemRepository.findByName(name).orElseThrow(
                 () -> new EntityNotFoundException(String.format("Item não encontrado com nome=%s", name)));
@@ -47,7 +48,7 @@ public class ItemService {
         return item;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public ItemEntity findByCode(Long sipacCode) {
         ItemEntity item = itemRepository.findBySipacCode(sipacCode).orElseThrow(
                 () -> new EntityNotFoundException(String.format("Item não encontrado com código=%s", sipacCode)));

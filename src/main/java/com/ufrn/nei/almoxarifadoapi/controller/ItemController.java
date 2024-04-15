@@ -1,7 +1,6 @@
 package com.ufrn.nei.almoxarifadoapi.controller;
 
-import java.util.List;
-
+import com.ufrn.nei.almoxarifadoapi.controller.utils.ValidatePagination;
 import com.ufrn.nei.almoxarifadoapi.dto.item.ItemDeleteDTO;
 import com.ufrn.nei.almoxarifadoapi.infra.RestErrorMessage;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,6 +9,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -36,10 +38,17 @@ public class ItemController {
         })
         @GetMapping
         @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-        public ResponseEntity<List<ItemResponseDTO>> getAllItems() {
-                List<ItemEntity> data = itemService.findAllItems();
+        public ResponseEntity<Page<ItemResponseDTO>> getAllItems(@RequestParam(defaultValue = "0") int page,
+                                                                 @RequestParam(defaultValue = "10") int size) {
+                ValidatePagination.validatePageParameters(page, size);
 
-                List<ItemResponseDTO> items = ItemMapper.toListResponseDTO(data);
+                Pageable pageable = PageRequest.of(page, size);
+                Page<ItemEntity> data = itemService.findAllItems(pageable);
+
+                ValidatePagination.validateTotalPages(page, data.getTotalPages());
+
+
+                Page<ItemResponseDTO> items = ItemMapper.toPageResponseDTO(data);
 
                 return ResponseEntity.status(HttpStatus.OK).body(items);
         }
