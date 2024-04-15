@@ -21,7 +21,6 @@ import com.ufrn.nei.almoxarifadoapi.enums.ItemQuantityOperation;
 import com.ufrn.nei.almoxarifadoapi.repository.ItemRepository;
 import org.springframework.transaction.annotation.Transactional;
 
-
 @Service
 public class ItemService {
     @Autowired

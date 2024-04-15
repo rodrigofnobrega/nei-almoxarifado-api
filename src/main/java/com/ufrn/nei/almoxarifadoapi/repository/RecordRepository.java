@@ -8,8 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
 public interface RecordRepository extends JpaRepository<RecordEntity, Long> {
     @NonNull

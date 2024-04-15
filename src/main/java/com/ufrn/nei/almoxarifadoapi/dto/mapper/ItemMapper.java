@@ -3,8 +3,6 @@ package com.ufrn.nei.almoxarifadoapi.dto.mapper;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.ufrn.nei.almoxarifadoapi.dto.record.RecordResponseDTO;
-import com.ufrn.nei.almoxarifadoapi.entity.RecordEntity;
 import org.modelmapper.ModelMapper;
 
 import com.ufrn.nei.almoxarifadoapi.dto.item.ItemCreateDTO;

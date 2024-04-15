@@ -2,9 +2,7 @@ package com.ufrn.nei.almoxarifadoapi.controller;
 
 import com.ufrn.nei.almoxarifadoapi.controller.utils.ValidatePagination;
 import com.ufrn.nei.almoxarifadoapi.dto.mapper.RecordMapper;
-import com.ufrn.nei.almoxarifadoapi.dto.mapper.RoleMapper;
 import com.ufrn.nei.almoxarifadoapi.dto.record.RecordResponseDTO;
-import com.ufrn.nei.almoxarifadoapi.dto.role.RoleResponseDto;
 import com.ufrn.nei.almoxarifadoapi.entity.RecordEntity;
 import com.ufrn.nei.almoxarifadoapi.infra.RestErrorMessage;
 import com.ufrn.nei.almoxarifadoapi.service.RecordService;
@@ -21,8 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Tag(name = "Records", description = "Contém todas as operações relativas aos recursos para criação e leitura dos registros")
 @RestController

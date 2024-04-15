@@ -2,9 +2,7 @@ package com.ufrn.nei.almoxarifadoapi.dto.mapper;
 
 import com.ufrn.nei.almoxarifadoapi.dto.item.ItemRecordDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.record.RecordResponseDTO;
-import com.ufrn.nei.almoxarifadoapi.dto.role.RoleResponseDto;
 import com.ufrn.nei.almoxarifadoapi.entity.RecordEntity;
-import com.ufrn.nei.almoxarifadoapi.entity.RoleEntity;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
