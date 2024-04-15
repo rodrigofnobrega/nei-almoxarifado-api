@@ -5,6 +5,7 @@ import com.ufrn.nei.almoxarifadoapi.dto.role.RoleCreateDto;
 import com.ufrn.nei.almoxarifadoapi.dto.role.RoleResponseDto;
 import com.ufrn.nei.almoxarifadoapi.dto.role.RoleUpdateDto;
 import com.ufrn.nei.almoxarifadoapi.dto.mapper.RoleMapper;
+import com.ufrn.nei.almoxarifadoapi.entity.RoleEntity;
 import com.ufrn.nei.almoxarifadoapi.repository.RoleRepository;
 import com.ufrn.nei.almoxarifadoapi.service.RoleService;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,6 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -78,9 +82,11 @@ public class RoleControllerTest {
 
     @Test
     void testFindAllRoles() throws Exception {
-        List<RoleResponseDto> mockRoles = Collections.singletonList(roleResponseDto);
-
-        when(roleService.findAllRoles()).thenReturn(RoleMapper.toListRole(mockRoles));
+        RoleEntity roleEntity = new RoleEntity();
+        roleEntity.setId(1L);
+        roleEntity.setRole("Cliente");
+        Page<RoleEntity> mockPage = new PageImpl<>(Collections.singletonList(roleEntity));
+        when(roleService.findAllRoles(any(Pageable.class))).thenReturn(mockPage);
 
         mockMvc.perform(get("/api/v1/roles"))
                 .andExpect(status().isOk())
@@ -88,7 +94,7 @@ public class RoleControllerTest {
                 .andExpect(jsonPath("$[0].id").value(1))
                 .andExpect(jsonPath("$[0].role").value("Cliente"));
 
-        verify(roleService, times(1)).findAllRoles();
+        verify(roleService, times(1)).findAllRoles(any(Pageable.class));
     }
 
     @Test
