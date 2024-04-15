@@ -6,6 +6,8 @@ import com.ufrn.nei.almoxarifadoapi.dto.user.UserResponseDTO;
 import com.ufrn.nei.almoxarifadoapi.entity.UserEntity;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -57,8 +59,11 @@ public class UserMapper {
         return modelMapper.map(userEntity, UserRecordDTO.class);
     }
 
-    public static List<UserResponseDTO> toListResponseDTO(List<UserEntity> users) {
-        return users.stream().map(i -> toResponseDTO(i)).collect(Collectors.toList());
+    public static Page<UserResponseDTO> toPageResponseDTO(Page<UserEntity> data) {
+        List<UserResponseDTO> dtos = data.getContent().stream()
+                .map(UserMapper::toResponseDTO)
+                .collect(Collectors.toList());
+        return new PageImpl<>(dtos, data.getPageable(), data.getTotalElements());
     }
 
     private static String refactorRoleName(String role) {

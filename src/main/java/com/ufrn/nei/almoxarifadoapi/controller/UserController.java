@@ -1,5 +1,6 @@
 package com.ufrn.nei.almoxarifadoapi.controller;
 
+import com.ufrn.nei.almoxarifadoapi.controller.utils.ValidatePagination;
 import com.ufrn.nei.almoxarifadoapi.dto.mapper.UserMapper;
 import com.ufrn.nei.almoxarifadoapi.dto.user.UserCreateDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.user.UserPasswordUpdateDTO;
@@ -14,6 +15,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -60,10 +64,16 @@ public class UserController {
         })
         @GetMapping
         @PreAuthorize("hasRole('ADMIN')")
-        public ResponseEntity<List<UserResponseDTO>> findAll() {
-                List<UserEntity> users = userService.findAll();
+        public ResponseEntity<Page<UserResponseDTO>> findAll(@RequestParam(defaultValue = "0") int page,
+                                                             @RequestParam(defaultValue = "10") int size) {
+                ValidatePagination.validatePageParameters(page, size);
 
-                List<UserResponseDTO> response = UserMapper.toListResponseDTO(users);
+                Pageable pageable = PageRequest.of(page, size);
+                Page<UserEntity> users = userService.findAll(pageable);
+
+                ValidatePagination.validateTotalPages(page, users.getTotalPages());
+
+                Page<UserResponseDTO> response = UserMapper.toPageResponseDTO(users);
 
                 return ResponseEntity.status(HttpStatus.OK).body(response);
         }
