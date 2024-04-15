@@ -9,6 +9,8 @@ import com.ufrn.nei.almoxarifadoapi.enums.RecordOperationEnum;
 import com.ufrn.nei.almoxarifadoapi.exception.EntityNotFoundException;
 import com.ufrn.nei.almoxarifadoapi.repository.RecordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,8 +49,8 @@ public class RecordService {
     }
 
     @Transactional(readOnly = true)
-    public List<RecordEntity> findAll() {
-        return recordRepository.findAll();
+    public Page<RecordEntity> findAll(Pageable pageable) {
+        return recordRepository.findAll(pageable);
     }
 
     @Transactional(readOnly = true)
@@ -58,12 +60,12 @@ public class RecordService {
     }
 
     @Transactional(readOnly = true)
-    public List<RecordEntity> findByUsers(Long id, String name, String email, String role) {
-        return recordRepository.findByUsers(id, name, email, role);
+    public Page<RecordEntity> findByUsers(Long id, String name, String email, String role, Pageable pageable) {
+        return recordRepository.findByUsers(id, name, email, role, pageable);
     }
 
     @Transactional(readOnly = true)
-    public List<RecordEntity> findByItens(Long id, Long itemTagging, String name) {
-        return recordRepository.findByItens(id, itemTagging, name);
+    public Page<RecordEntity> findByItens(Long id, Long itemTagging, String name, Pageable pageable) {
+        return recordRepository.findByItens(id, itemTagging, name, pageable);
     }
 }
