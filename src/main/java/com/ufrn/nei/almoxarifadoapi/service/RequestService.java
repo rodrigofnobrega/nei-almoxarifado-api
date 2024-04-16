@@ -1,7 +1,7 @@
 package com.ufrn.nei.almoxarifadoapi.service;
 
 import com.ufrn.nei.almoxarifadoapi.dto.mapper.RequestMapper;
-import com.ufrn.nei.almoxarifadoapi.dto.record.RecordRequestDTO;
+import com.ufrn.nei.almoxarifadoapi.dto.record.RecordCreateDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.request.RequestCreateDTO;
 import com.ufrn.nei.almoxarifadoapi.entity.ItemEntity;
 import com.ufrn.nei.almoxarifadoapi.entity.RequestEntity;
@@ -58,8 +58,8 @@ public class RequestService {
 
         validateRequestStatus(request, RequestStatusEnum.ACEITO);
 
-        RecordRequestDTO requestDTO =
-                new RecordRequestDTO(request.getUser().getId(), request.getItem().getId(), Math.toIntExact(request.getQuantity()));
+        RecordCreateDTO requestDTO =
+                new RecordCreateDTO(request.getUser().getId(), request.getItem().getId(), Math.toIntExact(request.getQuantity()));
 
         if (operationService.toConsume(requestDTO) == null) {
             return Boolean.FALSE;
