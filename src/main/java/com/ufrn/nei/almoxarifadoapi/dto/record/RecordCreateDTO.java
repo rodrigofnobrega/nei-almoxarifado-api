@@ -1,6 +1,5 @@
 package com.ufrn.nei.almoxarifadoapi.dto.record;
 
-import com.ufrn.nei.almoxarifadoapi.enums.RecordOperationEnum;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
