@@ -3,11 +3,13 @@ package com.ufrn.nei.almoxarifadoapi.service;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
+import com.ufrn.nei.almoxarifadoapi.dto.item.ItemResponseDTO;
 import com.ufrn.nei.almoxarifadoapi.exception.EntityNotFoundException;
 import com.ufrn.nei.almoxarifadoapi.exception.ItemNotActiveException;
 import com.ufrn.nei.almoxarifadoapi.exception.NotAvailableQuantityException;
 import com.ufrn.nei.almoxarifadoapi.exception.OperationErrorException;
 
+import com.ufrn.nei.almoxarifadoapi.repository.projection.ItemProjection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +29,7 @@ public class ItemService {
     private ItemRepository itemRepository;
 
     @Transactional(readOnly = true)
-    public Page<ItemEntity> findAllItems(Pageable pageable) {
+    public Page<ItemProjection> findAllItems(Pageable pageable) {
         return itemRepository.findAllByAvailableTrue(pageable);
     }
 

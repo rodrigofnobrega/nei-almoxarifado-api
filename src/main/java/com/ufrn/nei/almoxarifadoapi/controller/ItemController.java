@@ -2,7 +2,10 @@ package com.ufrn.nei.almoxarifadoapi.controller;
 
 import com.ufrn.nei.almoxarifadoapi.controller.utils.ValidatePagination;
 import com.ufrn.nei.almoxarifadoapi.dto.item.ItemDeleteDTO;
+import com.ufrn.nei.almoxarifadoapi.dto.mapper.PageableMapper;
+import com.ufrn.nei.almoxarifadoapi.dto.pageable.PageableDTO;
 import com.ufrn.nei.almoxarifadoapi.infra.RestErrorMessage;
+import com.ufrn.nei.almoxarifadoapi.repository.projection.ItemProjection;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -38,19 +41,11 @@ public class ItemController {
         })
         @GetMapping
         @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-        public ResponseEntity<Page<ItemResponseDTO>> getAllItems(@RequestParam(defaultValue = "0") int page,
-                                                                 @RequestParam(defaultValue = "10") int size) {
-                ValidatePagination.validatePageParameters(page, size);
+        public ResponseEntity<PageableDTO> getAllItems(Pageable pageable) {
+                Page<ItemProjection> data = itemService.findAllItems(pageable);
+                PageableDTO page = PageableMapper.toDto(data);
 
-                Pageable pageable = PageRequest.of(page, size);
-                Page<ItemEntity> data = itemService.findAllItems(pageable);
-
-                ValidatePagination.validateTotalPages(page, data.getTotalPages());
-
-
-                Page<ItemResponseDTO> items = ItemMapper.toPageResponseDTO(data);
-
-                return ResponseEntity.status(HttpStatus.OK).body(items);
+                return ResponseEntity.status(HttpStatus.OK).body(page);
         }
 
         @Operation(summary = "Buscar itens pelo ID.", description = "Listará o item encontrado com o ID informado.", responses = {
