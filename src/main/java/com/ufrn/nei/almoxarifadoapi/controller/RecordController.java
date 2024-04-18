@@ -1,11 +1,8 @@
 package com.ufrn.nei.almoxarifadoapi.controller;
 
-import com.ufrn.nei.almoxarifadoapi.controller.utils.ValidatePagination;
 import com.ufrn.nei.almoxarifadoapi.dto.mapper.PageableMapper;
-import com.ufrn.nei.almoxarifadoapi.dto.mapper.RecordMapper;
 import com.ufrn.nei.almoxarifadoapi.dto.pageable.PageableDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.record.RecordResponseDTO;
-import com.ufrn.nei.almoxarifadoapi.entity.RecordEntity;
 import com.ufrn.nei.almoxarifadoapi.infra.RestErrorMessage;
 import com.ufrn.nei.almoxarifadoapi.repository.projection.RecordProjection;
 import com.ufrn.nei.almoxarifadoapi.service.RecordService;
@@ -16,7 +13,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
