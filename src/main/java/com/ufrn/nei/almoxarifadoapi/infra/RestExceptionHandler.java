@@ -97,12 +97,4 @@ public class RestExceptionHandler {
                                 .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST,
                                                 exception.getLocalizedMessage()));
         }
-
-        @ExceptionHandler(PageableException.class)
-        public ResponseEntity<RestErrorMessage> handleErrorOnDatabase(PageableException exception,
-                                                                      HttpServletRequest request) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST,
-                                exception.getLocalizedMessage()));
-        }
 }
