@@ -2,6 +2,8 @@ package com.ufrn.nei.almoxarifadoapi.repository.projection;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.ufrn.nei.almoxarifadoapi.entity.RoleEntity;
+import com.ufrn.nei.almoxarifadoapi.repository.projection.component.RemoveRolePrefixComponent;
 
 public interface UserProjection {
     Long getId();
@@ -10,12 +12,9 @@ public interface UserProjection {
     Boolean getActive();
     @JsonIgnore
     RoleEntity getRole();
-    interface RoleEntity {
-        String getRole();
-    }
 
     @JsonProperty("role")
-    default String getRoleWithoutPrefix() {
-        return getRole().getRole().substring("ROLE_".length());
+    default String removeRolePrefix() {
+        return RemoveRolePrefixComponent.getRoleWithoutPrefix(getRole());
     }
 }
