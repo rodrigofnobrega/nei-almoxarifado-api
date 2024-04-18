@@ -95,13 +95,7 @@ public class RequestController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PageableDTO> findByStatus(@PathVariable String status,
                                                                  Pageable pageable) {
-        // Convertendo a string de status para o enum statusEnum
-        RequestStatusEnum statusEnum = Arrays.stream(RequestStatusEnum.values())
-                .filter(e -> e.name().equalsIgnoreCase(status))
-                .findFirst()
-                .orElseThrow(() -> new StatusNotFoundException(String.format("Status='%s' não encontrado", status)));
-
-        Page<RequestProjection> requestPage = requestService.findByStatus(statusEnum, pageable);
+        Page<RequestProjection> requestPage = requestService.findByStatus(status, pageable);
         PageableDTO response = PageableMapper.toDto(requestPage);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);

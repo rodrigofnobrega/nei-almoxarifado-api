@@ -9,12 +9,14 @@ import com.ufrn.nei.almoxarifadoapi.entity.UserEntity;
 import com.ufrn.nei.almoxarifadoapi.enums.RequestStatusEnum;
 import com.ufrn.nei.almoxarifadoapi.exception.EntityNotFoundException;
 import com.ufrn.nei.almoxarifadoapi.exception.ModifyStatusException;
+import com.ufrn.nei.almoxarifadoapi.exception.StatusNotFoundException;
 import com.ufrn.nei.almoxarifadoapi.exception.UnauthorizedAccessException;
 import com.ufrn.nei.almoxarifadoapi.infra.jwt.JwtAuthenticationContext;
 import com.ufrn.nei.almoxarifadoapi.repository.RequestRepository;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Objects;
 
 import com.ufrn.nei.almoxarifadoapi.repository.projection.RequestProjection;
@@ -113,8 +115,14 @@ public class RequestService {
     }
 
     @Transactional(readOnly = true)
-    public Page<RequestProjection> findByStatus(RequestStatusEnum status, Pageable pageable) {
-        Page<RequestProjection> requests = requestRepository.findByStatus(status, pageable);
+    public Page<RequestProjection> findByStatus(String status, Pageable pageable) {
+        // Convertendo a string de status para o enum statusEnum
+        RequestStatusEnum statusEnum = Arrays.stream(RequestStatusEnum.values())
+                .filter(e -> e.name().equalsIgnoreCase(status))
+                .findFirst()
+                .orElseThrow(() -> new StatusNotFoundException(String.format("Status='%s' não encontrado", status)));
+
+        Page<RequestProjection> requests = requestRepository.findByStatus(statusEnum, pageable);
 
         return requests;
     }
