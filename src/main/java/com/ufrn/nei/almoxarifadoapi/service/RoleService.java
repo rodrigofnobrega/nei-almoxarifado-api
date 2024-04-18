@@ -5,6 +5,7 @@ import com.ufrn.nei.almoxarifadoapi.dto.role.RoleCreateDto;
 import com.ufrn.nei.almoxarifadoapi.dto.role.RoleUpdateDto;
 import com.ufrn.nei.almoxarifadoapi.entity.RoleEntity;
 import com.ufrn.nei.almoxarifadoapi.repository.RoleRepository;
+import com.ufrn.nei.almoxarifadoapi.repository.projection.RoleProjection;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -34,8 +35,8 @@ public class RoleService {
     }
 
     @Transactional(readOnly = true)
-    public Page<RoleEntity> findAllRoles(Pageable pageable) {
-        return roleRepository.findAll(pageable);
+    public Page<RoleProjection> findAllRoles(Pageable pageable) {
+        return roleRepository.findAllPageable(pageable);
     }
 
     @Transactional
