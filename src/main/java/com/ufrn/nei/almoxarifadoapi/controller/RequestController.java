@@ -1,17 +1,18 @@
 package com.ufrn.nei.almoxarifadoapi.controller;
 
+import com.ufrn.nei.almoxarifadoapi.dto.mapper.PageableMapper;
 import com.ufrn.nei.almoxarifadoapi.dto.mapper.RequestMapper;
+import com.ufrn.nei.almoxarifadoapi.dto.pageable.PageableDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.request.RequestCreateDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.request.RequestResponseDTO;
 import com.ufrn.nei.almoxarifadoapi.entity.RequestEntity;
 import com.ufrn.nei.almoxarifadoapi.enums.RequestStatusEnum;
-import com.ufrn.nei.almoxarifadoapi.exception.PageableException;
 import com.ufrn.nei.almoxarifadoapi.exception.StatusNotFoundException;
+import com.ufrn.nei.almoxarifadoapi.repository.projection.RequestProjection;
 import com.ufrn.nei.almoxarifadoapi.service.RequestService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -73,16 +74,9 @@ public class RequestController {
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Page<RequestResponseDTO>> findAll(@RequestParam(defaultValue = "0") int page,
-                                                            @RequestParam(defaultValue = "10") int size) {
-        validatePageParameters(page, size);
-
-        Pageable pageable = PageRequest.of(page, size);
-        Page<RequestEntity> requestPage = requestService.findAll(pageable);
-
-        validateTotalPages(page, requestPage.getTotalPages());
-
-        Page<RequestResponseDTO> response = RequestMapper.toPageResponseDTO(requestPage);
+    public ResponseEntity<PageableDTO> findAll(Pageable pageable) {
+        Page<RequestProjection> requestPage = requestService.findAll(pageable);
+        PageableDTO response = PageableMapper.toDto(requestPage);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -99,75 +93,37 @@ public class RequestController {
 
     @GetMapping("/status/{status}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Page<RequestResponseDTO>> findByStatus(@PathVariable String status,
-                                                                 @RequestParam(defaultValue = "0") int page,
-                                                                 @RequestParam(defaultValue = "10") int size) {
-        validatePageParameters(page, size);
-
+    public ResponseEntity<PageableDTO> findByStatus(@PathVariable String status,
+                                                                 Pageable pageable) {
         // Convertendo a string de status para o enum statusEnum
         RequestStatusEnum statusEnum = Arrays.stream(RequestStatusEnum.values())
                 .filter(e -> e.name().equalsIgnoreCase(status))
                 .findFirst()
                 .orElseThrow(() -> new StatusNotFoundException(String.format("Status='%s' não encontrado", status)));
 
-        Pageable pageable = PageRequest.of(page, size);
-        Page<RequestEntity> requestPage = requestService.findByStatus(statusEnum, pageable);
-
-        validateTotalPages(page, requestPage.getTotalPages());
-
-        Page<RequestResponseDTO> response = RequestMapper.toPageResponseDTO(requestPage);
+        Page<RequestProjection> requestPage = requestService.findByStatus(statusEnum, pageable);
+        PageableDTO response = PageableMapper.toDto(requestPage);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @GetMapping("/user/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Page<RequestResponseDTO>> findByUserId(@PathVariable Long id,
-                                                                 @RequestParam(defaultValue = "0") int page,
-                                                                 @RequestParam(defaultValue = "10") int size) {
-        validatePageParameters(page, size);
-
-        Pageable pageable = PageRequest.of(page, size);
-        Page<RequestEntity> requestPage = requestService.findByUserID(id, pageable);
-
-        validateTotalPages(page, requestPage.getTotalPages());
-
-        Page<RequestResponseDTO> response = RequestMapper.toPageResponseDTO(requestPage);
+    public ResponseEntity<PageableDTO> findByUserId(@PathVariable Long id,
+                                                                 Pageable pageable) {
+        Page<RequestProjection> requestPage = requestService.findByUserID(id, pageable);
+        PageableDTO response = PageableMapper.toDto(requestPage);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @GetMapping("/item/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Page<RequestResponseDTO>> findByItemId(@PathVariable Long id,
-                                                                 @RequestParam(defaultValue = "0") int page,
-                                                                 @RequestParam(defaultValue = "10") int size) {
-        validatePageParameters(page, size);
-
-        Pageable pageable = PageRequest.of(page, size);
-        Page<RequestEntity> requestPage = requestService.findByItemID(id, pageable);
-
-        validateTotalPages(page, requestPage.getTotalPages());
-
-        Page<RequestResponseDTO> response = RequestMapper.toPageResponseDTO(requestPage);
+    public ResponseEntity<PageableDTO> findByItemId(@PathVariable Long id,
+                                                                 Pageable pageable) {
+        Page<RequestProjection> requestPage = requestService.findByItemID(id, pageable);
+        PageableDTO response = PageableMapper.toDto(requestPage);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
-
-    // Métodos auxiliares
-
-    private void validatePageParameters(int page, int size) {
-        if (size == 0) {
-            throw new PageableException("O tamanho não pode ser zero");
-        } else if (page < 0) {
-            throw new PageableException("O tamanho da página não pode ser negativo");
-        }
-    }
-
-    private void validateTotalPages(int page, int totalPages) {
-        if (page >= totalPages) {
-            throw new PageableException("Tamanho de páginas solicitados maior que o total");
-        }
-
     }
 }

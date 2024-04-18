@@ -17,6 +17,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import com.ufrn.nei.almoxarifadoapi.repository.projection.RequestProjection;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -85,8 +86,8 @@ public class RequestService {
     }
 
     @Transactional(readOnly = true)
-    public Page<RequestEntity> findAll(Pageable pageable) {
-        Page<RequestEntity> requests = requestRepository.findAll(pageable);
+    public Page<RequestProjection> findAll(Pageable pageable) {
+        Page<RequestProjection> requests = requestRepository.findAllPageable(pageable);
 
         return requests;
     }
@@ -112,22 +113,22 @@ public class RequestService {
     }
 
     @Transactional(readOnly = true)
-    public Page<RequestEntity> findByStatus(RequestStatusEnum status, Pageable pageable) {
-        Page<RequestEntity> requests = requestRepository.findByStatus(status, pageable);
+    public Page<RequestProjection> findByStatus(RequestStatusEnum status, Pageable pageable) {
+        Page<RequestProjection> requests = requestRepository.findByStatus(status, pageable);
 
         return requests;
     }
 
     @Transactional(readOnly = true)
-    public Page<RequestEntity> findByUserID(Long id, Pageable pageable) {
-        Page<RequestEntity> requests = requestRepository.findByUserId(id, pageable);
+    public Page<RequestProjection> findByUserID(Long id, Pageable pageable) {
+        Page<RequestProjection> requests = requestRepository.findByUserId(id, pageable);
 
         return requests;
     }
 
     @Transactional(readOnly = true)
-    public Page<RequestEntity> findByItemID(Long id, Pageable pageable) {
-        Page<RequestEntity> requests = requestRepository.findByItemId(id, pageable);
+    public Page<RequestProjection> findByItemID(Long id, Pageable pageable) {
+        Page<RequestProjection> requests = requestRepository.findByItemId(id, pageable);
 
         return requests;
     }

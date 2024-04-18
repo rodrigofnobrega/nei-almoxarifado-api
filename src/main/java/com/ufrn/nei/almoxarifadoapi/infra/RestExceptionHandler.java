@@ -98,14 +98,6 @@ public class RestExceptionHandler {
                                                 exception.getLocalizedMessage()));
         }
 
-        @ExceptionHandler(PageableException.class)
-        public ResponseEntity<RestErrorMessage> handleErrorOnDatabase(PageableException exception,
-                                                                      HttpServletRequest request) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST,
-                                exception.getLocalizedMessage()));
-        }
-
         @ExceptionHandler(UnauthorizedAccessException.class)
         public ResponseEntity<RestErrorMessage> handleErrorOnDatabase(UnauthorizedAccessException exception,
                                                                       HttpServletRequest request) {
