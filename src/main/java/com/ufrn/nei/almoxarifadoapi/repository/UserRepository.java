@@ -1,10 +1,11 @@
 package com.ufrn.nei.almoxarifadoapi.repository;
 
 import com.ufrn.nei.almoxarifadoapi.entity.UserEntity;
+import com.ufrn.nei.almoxarifadoapi.repository.projection.UserProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.lang.NonNull;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -13,6 +14,6 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
     Optional<UserEntity> findByEmail(String email);
 
-    @NonNull
-    Page<UserEntity> findAll(@NonNull Pageable pageable);
+    @Query("SELECT u FROM UserEntity u")
+    Page<UserProjection> findAllPageable(Pageable pageable);
 }

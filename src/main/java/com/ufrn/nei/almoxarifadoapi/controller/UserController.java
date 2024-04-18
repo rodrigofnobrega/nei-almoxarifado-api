@@ -1,12 +1,14 @@
 package com.ufrn.nei.almoxarifadoapi.controller;
 
-import com.ufrn.nei.almoxarifadoapi.controller.utils.ValidatePagination;
+import com.ufrn.nei.almoxarifadoapi.dto.mapper.PageableMapper;
 import com.ufrn.nei.almoxarifadoapi.dto.mapper.UserMapper;
+import com.ufrn.nei.almoxarifadoapi.dto.pageable.PageableDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.user.UserCreateDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.user.UserPasswordUpdateDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.user.UserResponseDTO;
 import com.ufrn.nei.almoxarifadoapi.entity.UserEntity;
 import com.ufrn.nei.almoxarifadoapi.infra.RestErrorMessage;
+import com.ufrn.nei.almoxarifadoapi.repository.projection.UserProjection;
 import com.ufrn.nei.almoxarifadoapi.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -16,7 +18,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -62,16 +63,9 @@ public class UserController {
         })
         @GetMapping
         @PreAuthorize("hasRole('ADMIN')")
-        public ResponseEntity<Page<UserResponseDTO>> findAll(@RequestParam(defaultValue = "0") int page,
-                                                             @RequestParam(defaultValue = "10") int size) {
-                ValidatePagination.validatePageParameters(page, size);
-
-                Pageable pageable = PageRequest.of(page, size);
-                Page<UserEntity> users = userService.findAll(pageable);
-
-                ValidatePagination.validateTotalPages(page, users.getTotalPages());
-
-                Page<UserResponseDTO> response = UserMapper.toPageResponseDTO(users);
+        public ResponseEntity<PageableDTO> findAll(Pageable pageable) {
+                Page<UserProjection> users = userService.findAllPageable(pageable);
+                PageableDTO response = PageableMapper.toDto(users);
 
                 return ResponseEntity.status(HttpStatus.OK).body(response);
         }

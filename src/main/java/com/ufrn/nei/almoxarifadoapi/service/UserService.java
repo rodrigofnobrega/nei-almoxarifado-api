@@ -7,6 +7,7 @@ import com.ufrn.nei.almoxarifadoapi.entity.UserEntity;
 import com.ufrn.nei.almoxarifadoapi.exception.EntityNotFoundException;
 import com.ufrn.nei.almoxarifadoapi.exception.PasswordInvalidException;
 import com.ufrn.nei.almoxarifadoapi.repository.UserRepository;
+import com.ufrn.nei.almoxarifadoapi.repository.projection.UserProjection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -55,8 +56,8 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public Page<UserEntity> findAll(Pageable pageable) {
-        return userRepository.findAll(pageable);
+    public Page<UserProjection> findAllPageable(Pageable pageable) {
+        return userRepository.findAllPageable(pageable);
     }
 
     @Transactional
