@@ -24,20 +24,18 @@ public class UserCreateDTO {
     @NotBlank
     @Size(min = 5)
     private String password;
-    @Positive
-    private Long roleId;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserCreateDTO that = (UserCreateDTO) o;
-        return Objects.equals(name, that.name) && Objects.equals(email, that.email) && Objects.equals(password, that.password) && Objects.equals(roleId, that.roleId);
+        return Objects.equals(name, that.name) && Objects.equals(email, that.email) && Objects.equals(password, that.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, email, password, roleId);
+        return Objects.hash(name, email, password);
     }
 
     @Override
@@ -46,7 +44,6 @@ public class UserCreateDTO {
                 "name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
-                ", idRole=" + roleId +
                 '}';
     }
 }

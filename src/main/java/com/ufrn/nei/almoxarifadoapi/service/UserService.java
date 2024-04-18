@@ -29,11 +29,9 @@ public class UserService {
     public UserEntity save(UserCreateDTO createDTO) {
         UserEntity user = UserMapper.toUser(createDTO);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        RoleEntity role = roleService.findById(createDTO.getRoleId());
+        RoleEntity role = getRoleUser();
 
-        if (role != null) {
-            user.setRole(role);
-        }
+        user.setRole(role);
 
         userRepository.save(user);
 
@@ -84,4 +82,14 @@ public class UserService {
 
         user.setActive(false);
     }
+
+    // Método(s) Auxiliar(es)
+    private RoleEntity getRoleUser() {
+        final String ROLE_USER = "ROLE_USER";
+
+        return roleService.findByRoleName(ROLE_USER).orElseThrow(
+                () -> new EntityNotFoundException("Não foi possível encontrar a role de usuários")
+        );
+    }
+
 }

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -31,6 +32,11 @@ public class RoleService {
         RoleEntity role = roleRepository.findById(id).orElseThrow(
                 () -> new RuntimeException(String.format("Role não encontrada com o id: %d", id)));
         return role;
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<RoleEntity> findByRoleName(String role) {
+        return roleRepository.findByRole(role);
     }
 
     @Transactional(readOnly = true)
