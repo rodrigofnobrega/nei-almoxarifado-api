@@ -1,15 +1,18 @@
 package com.ufrn.nei.almoxarifadoapi.controller;
 
-import java.util.List;
-
 import com.ufrn.nei.almoxarifadoapi.dto.item.ItemDeleteDTO;
+import com.ufrn.nei.almoxarifadoapi.dto.mapper.PageableMapper;
+import com.ufrn.nei.almoxarifadoapi.dto.pageable.PageableDTO;
 import com.ufrn.nei.almoxarifadoapi.infra.RestErrorMessage;
+import com.ufrn.nei.almoxarifadoapi.repository.projection.ItemProjection;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -36,12 +39,11 @@ public class ItemController {
         })
         @GetMapping
         @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-        public ResponseEntity<List<ItemResponseDTO>> getAllItems() {
-                List<ItemEntity> data = itemService.findAllItems();
+        public ResponseEntity<PageableDTO> getAllItems(Pageable pageable) {
+                Page<ItemProjection> data = itemService.findAllItems(pageable);
+                PageableDTO page = PageableMapper.toDto(data);
 
-                List<ItemResponseDTO> items = ItemMapper.toListResponseDTO(data);
-
-                return ResponseEntity.status(HttpStatus.OK).body(items);
+                return ResponseEntity.status(HttpStatus.OK).body(page);
         }
 
         @Operation(summary = "Buscar itens pelo ID.", description = "Listará o item encontrado com o ID informado.", responses = {
