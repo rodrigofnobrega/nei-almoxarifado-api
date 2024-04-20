@@ -1,10 +1,11 @@
 package com.ufrn.nei.almoxarifadoapi.service;
 
 import com.ufrn.nei.almoxarifadoapi.dto.item.ItemCreateDTO;
-import com.ufrn.nei.almoxarifadoapi.dto.record.RecordRegisterDTO;
+import com.ufrn.nei.almoxarifadoapi.dto.record.RecordCreateDTO;
 import com.ufrn.nei.almoxarifadoapi.entity.ItemEntity;
 import com.ufrn.nei.almoxarifadoapi.entity.RecordEntity;
 import com.ufrn.nei.almoxarifadoapi.enums.RecordOperationEnum;
+import com.ufrn.nei.almoxarifadoapi.infra.jwt.JwtAuthenticationContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +17,8 @@ public class OperationService {
     @Autowired
     private RecordService recordService;
 
-    public RecordEntity toConsume(RecordRegisterDTO createDTO) {
-        itemService.deleteItem(createDTO.getItemID(), createDTO.getQuantity());
+    public RecordEntity toConsume(RecordCreateDTO createDTO) {
+        itemService.deleteOrConsumeItem(createDTO.getItemID(), createDTO.getQuantity());
 
         RecordEntity record = recordService.save(createDTO, RecordOperationEnum.CONSUMO);
 
@@ -26,16 +27,17 @@ public class OperationService {
 
     public RecordEntity toRegister(ItemCreateDTO createDTO) {
         ItemEntity item = itemService.createItem(createDTO);
-
-        RecordEntity record = recordService.save(createDTO, item, RecordOperationEnum.CADASTRO);
+        RecordCreateDTO recordCreateDTO =
+                new RecordCreateDTO(JwtAuthenticationContext.getId(), item.getId(), createDTO.getQuantity());
+        RecordEntity record = recordService.save(recordCreateDTO, RecordOperationEnum.CADASTRO);
 
         return record;
     }
 
-    public RecordEntity toDelete(RecordRegisterDTO deleteDTO) {
-        itemService.deleteItem(deleteDTO.getItemID(), deleteDTO.getQuantity());
+    public RecordEntity toDelete(RecordCreateDTO createDTO) {
+        itemService.deleteOrConsumeItem(createDTO.getItemID(), createDTO.getQuantity());
 
-        RecordEntity record = recordService.save(deleteDTO, RecordOperationEnum.EXCLUSAO);
+        RecordEntity record = recordService.save(createDTO, RecordOperationEnum.EXCLUSAO);
 
         return record;
     }

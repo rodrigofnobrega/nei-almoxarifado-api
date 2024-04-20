@@ -10,7 +10,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RecordRegisterDTO {
+public class RecordCreateDTO {
+    @Positive
+    private Long userID;
     @Positive
     private Long itemID;
     @Positive
