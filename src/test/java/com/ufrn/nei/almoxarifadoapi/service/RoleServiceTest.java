@@ -10,6 +10,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
@@ -75,16 +79,25 @@ class RoleServiceTest {
     @DisplayName("Teste para encontrar todas as roles cadastradas")
     @Transactional(readOnly = true)
     void testFindAllRoles() {
-        when(roleRepository.findAll()).thenReturn(Collections.singletonList(role));
+        // Criar uma lista paginada com a entidade de papel
+        Page<RoleEntity> mockPage = new PageImpl<>(Collections.singletonList(role));
 
-        List<RoleEntity> roleResponse = roleService.findAllRoles();
+        // Configurar o mock para retornar a lista paginada
+        when(roleRepository.findAll(any(Pageable.class))).thenReturn(mockPage);
 
-        verify(roleRepository, times(1)).findAll();
+        // Chamar o método do serviço
+        Page<RoleEntity> rolePage = roleService.findAllRoles(PageRequest.of(0, 10));
 
-        assertNotNull(roleResponse);
+        // Verificar se o método do repositório foi chamado
+        verify(roleRepository, times(1)).findAll(any(Pageable.class));
 
-        assertEquals(role.getRole(), roleResponse.get(0).getRole());
-        assertEquals(role.getId(), roleResponse.get(0).getId());
+        // Verificar se a lista não é nula
+        assertNotNull(rolePage);
+
+        // Verificar se os valores da primeira entidade na lista correspondem aos valores esperados
+        RoleEntity roleEntity = rolePage.getContent().get(0);
+        assertEquals(role.getId(), roleEntity.getId());
+        assertEquals(role.getRole(), roleEntity.getRole());
     }
 
     @Test

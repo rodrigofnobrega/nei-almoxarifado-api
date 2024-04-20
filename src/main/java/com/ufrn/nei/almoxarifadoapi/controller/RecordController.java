@@ -1,9 +1,10 @@
 package com.ufrn.nei.almoxarifadoapi.controller;
 
-import com.ufrn.nei.almoxarifadoapi.dto.mapper.RecordMapper;
+import com.ufrn.nei.almoxarifadoapi.dto.mapper.PageableMapper;
+import com.ufrn.nei.almoxarifadoapi.dto.pageable.PageableDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.record.RecordResponseDTO;
-import com.ufrn.nei.almoxarifadoapi.entity.RecordEntity;
 import com.ufrn.nei.almoxarifadoapi.infra.RestErrorMessage;
+import com.ufrn.nei.almoxarifadoapi.repository.projection.RecordProjection;
 import com.ufrn.nei.almoxarifadoapi.service.RecordService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -11,12 +12,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Tag(name = "Records", description = "Contém todas as operações relativas aos recursos para criação e leitura dos registros")
 @RestController
@@ -27,10 +28,11 @@ public class RecordController {
 
         @GetMapping
         @PreAuthorize("hasRole('ADMIN')")
-        public ResponseEntity<List<RecordResponseDTO>> findAll() {
-                List<RecordEntity> recordEntityList = recordService.findAll();
+        public ResponseEntity<PageableDTO> findAll(Pageable pageable) {
+                Page<RecordProjection> records = recordService.findAll(pageable);
+                PageableDTO response = PageableMapper.toDto(records);
 
-                return ResponseEntity.status(HttpStatus.OK).body(RecordMapper.toListResponseDTO(recordEntityList));
+                return ResponseEntity.status(HttpStatus.OK).body(response);
         }
 
         @Operation(summary = "Listar registros pelo ID.", description = "Listará os registros com o ID informado.", responses = {
@@ -39,10 +41,10 @@ public class RecordController {
         })
         @GetMapping("/{id}")
         @PreAuthorize("hasRole('ADMIN')")
-        public ResponseEntity<RecordResponseDTO> findById(@PathVariable Long id) {
-                RecordEntity response = recordService.findById(id);
+        public ResponseEntity<RecordProjection> findById(@PathVariable Long id) {
+                RecordProjection response = recordService.findById(id);
 
-                return ResponseEntity.status(HttpStatus.OK).body(RecordMapper.toResponseDTO(response));
+                return ResponseEntity.status(HttpStatus.OK).body(response);
         }
 
         @Operation(summary = "Listar registros por informações do usuário.", description = "Listará os registros utilizando as informações dos usuários.", responses = {
@@ -50,13 +52,15 @@ public class RecordController {
         })
         @GetMapping("/query/users")
         @PreAuthorize("hasRole('ADMIN')")
-        public ResponseEntity<List<RecordResponseDTO>> findByUsers(@RequestParam(required = false) Long id,
-                        @RequestParam(required = false) String name,
-                        @RequestParam(required = false) String email,
-                        @RequestParam(required = false) String role) {
-                List<RecordEntity> response = recordService.findByUsers(id, name, email, role);
+        public ResponseEntity<PageableDTO> findByUsers(@RequestParam(required = false) Long id,
+                                                       @RequestParam(required = false) String name,
+                                                       @RequestParam(required = false) String email,
+                                                       @RequestParam(required = false) String role,
+                                                       Pageable pageable) {
+                Page<RecordProjection> records = recordService.findByUsers(id, name, email, role, pageable);
+                PageableDTO response = PageableMapper.toDto(records);
 
-                return ResponseEntity.status(HttpStatus.OK).body(RecordMapper.toListResponseDTO(response));
+                return ResponseEntity.status(HttpStatus.OK).body(response);
         }
 
         @Operation(summary = "Listar registros por informações do item.", description = "Listará os registros utilizando as informações dos itens.", responses = {
@@ -64,11 +68,13 @@ public class RecordController {
         })
         @GetMapping("/query/itens")
         @PreAuthorize("hasRole('ADMIN')")
-        public ResponseEntity<List<RecordResponseDTO>> findByItens(@RequestParam(required = false) Long id,
-                        @RequestParam(required = false) Long itemTagging,
-                        @RequestParam(required = false) String name) {
-                List<RecordEntity> response = recordService.findByItens(id, itemTagging, name);
+        public ResponseEntity<PageableDTO> findByItens(@RequestParam(required = false) Long id,
+                                                                   @RequestParam(required = false) Long itemTagging,
+                                                                   @RequestParam(required = false) String name,
+                                                                   Pageable pageable) {
+                Page<RecordProjection> records = recordService.findByItens(id, itemTagging, name, pageable);
+                PageableDTO response = PageableMapper.toDto(records);
 
-                return ResponseEntity.status(HttpStatus.OK).body(RecordMapper.toListResponseDTO(response));
+                return ResponseEntity.status(HttpStatus.OK).body(response);
         }
 }
