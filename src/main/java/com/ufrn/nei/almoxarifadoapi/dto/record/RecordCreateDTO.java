@@ -1,6 +1,5 @@
 package com.ufrn.nei.almoxarifadoapi.dto.record;
 
-import com.ufrn.nei.almoxarifadoapi.enums.RecordOperationEnum;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,5 +17,4 @@ public class RecordCreateDTO {
     private Long itemID;
     @Positive
     private Integer quantity;
-    private RecordOperationEnum operation;
 }

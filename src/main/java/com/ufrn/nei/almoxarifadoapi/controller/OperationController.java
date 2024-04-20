@@ -1,8 +1,8 @@
 package com.ufrn.nei.almoxarifadoapi.controller;
 
+import com.ufrn.nei.almoxarifadoapi.dto.item.ItemCreateDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.mapper.RecordMapper;
 import com.ufrn.nei.almoxarifadoapi.dto.record.RecordCreateDTO;
-import com.ufrn.nei.almoxarifadoapi.dto.record.RecordCreateItemDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.record.RecordResponseDTO;
 import com.ufrn.nei.almoxarifadoapi.entity.RecordEntity;
 import com.ufrn.nei.almoxarifadoapi.infra.RestErrorMessage;
@@ -47,7 +47,7 @@ public class OperationController {
         })
         @PostMapping("/cadastro")
         @PreAuthorize("hasRole('ADMIN')")
-        public ResponseEntity<RecordResponseDTO> toRegister(@RequestBody @Valid RecordCreateItemDTO createDTO) {
+        public ResponseEntity<RecordResponseDTO> toRegister(@RequestBody @Valid ItemCreateDTO createDTO) {
                 RecordEntity record = operationService.toRegister(createDTO);
 
                 return ResponseEntity.status(HttpStatus.OK).body(RecordMapper.toResponseDTO(record));

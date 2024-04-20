@@ -66,7 +66,7 @@ public class UserMapper {
         return new PageImpl<>(dtos, data.getPageable(), data.getTotalElements());
     }
 
-    private static String refactorRoleName(String role) {
+    public static String refactorRoleName(String role) {
         if (role.startsWith("ROLE_")) {
             role = role.substring("ROLE_".length());
         }

@@ -12,4 +12,3 @@ public class PageableMapper {
         return new ModelMapper().map(page, PageableDTO.class);
     }
 }
-

@@ -1,10 +1,11 @@
 package com.ufrn.nei.almoxarifadoapi.service;
 
+import com.ufrn.nei.almoxarifadoapi.dto.item.ItemCreateDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.record.RecordCreateDTO;
-import com.ufrn.nei.almoxarifadoapi.dto.record.RecordCreateItemDTO;
 import com.ufrn.nei.almoxarifadoapi.entity.ItemEntity;
 import com.ufrn.nei.almoxarifadoapi.entity.RecordEntity;
 import com.ufrn.nei.almoxarifadoapi.enums.RecordOperationEnum;
+import com.ufrn.nei.almoxarifadoapi.infra.jwt.JwtAuthenticationContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,23 +18,24 @@ public class OperationService {
     private RecordService recordService;
 
     public RecordEntity toConsume(RecordCreateDTO createDTO) {
-        itemService.deleteItem(createDTO.getItemID(), createDTO.getQuantity());
+        itemService.deleteOrConsumeItem(createDTO.getItemID(), createDTO.getQuantity());
 
         RecordEntity record = recordService.save(createDTO, RecordOperationEnum.CONSUMO);
 
         return record;
     }
 
-    public RecordEntity toRegister(RecordCreateItemDTO createDTO) {
-        ItemEntity item = itemService.createItem(createDTO.getItem());
-
-        RecordEntity record = recordService.save(createDTO, item, RecordOperationEnum.CADASTRO);
+    public RecordEntity toRegister(ItemCreateDTO createDTO) {
+        ItemEntity item = itemService.createItem(createDTO);
+        RecordCreateDTO recordCreateDTO =
+                new RecordCreateDTO(JwtAuthenticationContext.getId(), item.getId(), createDTO.getQuantity());
+        RecordEntity record = recordService.save(recordCreateDTO, RecordOperationEnum.CADASTRO);
 
         return record;
     }
 
     public RecordEntity toDelete(RecordCreateDTO createDTO) {
-        itemService.deleteItem(createDTO.getItemID(), createDTO.getQuantity());
+        itemService.deleteOrConsumeItem(createDTO.getItemID(), createDTO.getQuantity());
 
         RecordEntity record = recordService.save(createDTO, RecordOperationEnum.EXCLUSAO);
 
