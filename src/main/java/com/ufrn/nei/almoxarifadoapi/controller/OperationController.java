@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +30,18 @@ public class OperationController {
         @Autowired
         private OperationService operationService;
 
-        @Operation(summary = "Criar registro de consumo.", description = "Criará um novo registro de consumo no sistema.", responses = {
-                        @ApiResponse(responseCode = "200", description = "Registro criado com sucesso.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = RecordResponseDTO.class))),
-                        @ApiResponse(responseCode = "400", description = "Não foi possível criar o registro.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class)))
+        @Operation(summary = "Criar registro de consumo.",
+                description = "Consumirá um item. Requsição exige o uso de um bearer token. Acesso restrito a role='ADMIN'.",
+                security = @SecurityRequirement(name = "security"),
+                responses = {
+                        @ApiResponse(responseCode = "200", description = "Consumo criado com sucesso.",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = RecordResponseDTO.class))),
+                        @ApiResponse(responseCode = "401", description = "Usuário não está autenticado",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class))),
+                        @ApiResponse(responseCode = "404", description = "Erro ao consumir item. Item já consta como inativo ou item não existe.",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class))),
+                        @ApiResponse(responseCode = "500", description = "Erro ao consumir item. Quantidade de itens disponiveis insuficientes.",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class))),
         })
         @PostMapping("/consumo")
         @PreAuthorize("hasRole('ADMIN')")
@@ -41,22 +51,41 @@ public class OperationController {
                 return ResponseEntity.status(HttpStatus.OK).body(RecordMapper.toResponseDTO(record));
         }
 
-        @Operation(summary = "Adicionar itens.", description = "Realizará o cadastro de novos itens ao sistema.", responses = {
-                        @ApiResponse(responseCode = "200", description = "Cadastro realizada com sucesso.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = RecordResponseDTO.class))),
-                        @ApiResponse(responseCode = "400", description = "Não foi possível realizar o cadastro.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class)))
+        @Operation(summary = "Criar registro de cadastro.",
+                description = "Cadastrará um novo item. Requsição exige o uso de um bearer token. Acesso restrito a role='ADMIN'.",
+                security = @SecurityRequirement(name = "security"),
+                responses = {
+                        @ApiResponse(responseCode = "201", description = "Registro criado com sucesso.",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = RecordResponseDTO.class))),
+                        @ApiResponse(responseCode = "401", description = "Usuário não está autenticado",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class))),
+                        @ApiResponse(responseCode = "404", description = "Erro ao cadastrar item.",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class))),
+                        @ApiResponse(responseCode = "500", description = "Erro ao cadastrar item. Objeto de criação nulo ou conflito entre códigos sipac.",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class))),
         })
         @PostMapping("/cadastro")
         @PreAuthorize("hasRole('ADMIN')")
         public ResponseEntity<RecordResponseDTO> toRegister(@RequestBody @Valid ItemCreateDTO createDTO) {
                 RecordEntity record = operationService.toRegister(createDTO);
 
-                return ResponseEntity.status(HttpStatus.OK).body(RecordMapper.toResponseDTO(record));
+                return ResponseEntity.status(HttpStatus.CREATED).body(RecordMapper.toResponseDTO(record));
         }
 
-        @Operation(summary = "Excluir itens.", description = "Deletará o item desejado do sistema.", responses = {
-                        @ApiResponse(responseCode = "200", description = "Deleção realizada com sucesso.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = RecordResponseDTO.class))),
-                        @ApiResponse(responseCode = "400", description = "Não foi possível deletar o item.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class)))
-        })
+        @Operation(summary = "Criar registro de exclusão.",
+                description = "Excluirá um item. Requsição exige o uso de um bearer token. Acesso restrito a role='ADMIN'.",
+                deprecated = true,
+                security = @SecurityRequirement(name = "security"),
+                responses = {
+                        @ApiResponse(responseCode = "200", description = "Registro excluido com sucesso.",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = RecordResponseDTO.class))),
+                        @ApiResponse(responseCode = "401", description = "Usuário não está autenticado",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class))),
+                        @ApiResponse(responseCode = "404", description = "Erro ao excluir item. Item não encontrado",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class))),
+                        @ApiResponse(responseCode = "500", description = "Erro ao excluir item. Quantidade de itens disponíveis insuficientes.",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class))),
+                })
         @PostMapping("/exclusao")
         @PreAuthorize("hasRole('ADMIN')")
         public ResponseEntity<RecordResponseDTO> toDelete(@RequestBody @Valid RecordCreateDTO createDTO) {
