@@ -39,8 +39,8 @@ public class RestExceptionHandler {
                         HttpServletRequest request) {
                 log.info("API ERROR - ", exception);
 
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                                .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST, "Campo(s) invalido(s)"));
+                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
+                                .body(new RestErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY, "Campo(s) invalido(s)"));
         }
 
         @ExceptionHandler(HttpMessageNotReadableException.class)
