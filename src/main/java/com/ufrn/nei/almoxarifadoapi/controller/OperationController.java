@@ -6,6 +6,7 @@ import com.ufrn.nei.almoxarifadoapi.dto.record.RecordCreateDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.record.RecordResponseDTO;
 import com.ufrn.nei.almoxarifadoapi.entity.RecordEntity;
 import com.ufrn.nei.almoxarifadoapi.infra.RestErrorMessage;
+import com.ufrn.nei.almoxarifadoapi.repository.projection.component.FormatDateComponent;
 import com.ufrn.nei.almoxarifadoapi.service.OperationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -37,6 +38,8 @@ public class OperationController {
         @PreAuthorize("hasRole('ADMIN')")
         public ResponseEntity<RecordResponseDTO> consume(@RequestBody @Valid RecordCreateDTO createDTO) {
                 RecordEntity record = operationService.toConsume(createDTO);
+                RecordResponseDTO response = RecordMapper.toResponseDTO(record);
+                response.setData(FormatDateComponent.formatDate(record.getData()));
 
                 return ResponseEntity.status(HttpStatus.OK).body(RecordMapper.toResponseDTO(record));
         }
@@ -50,7 +53,7 @@ public class OperationController {
         public ResponseEntity<RecordResponseDTO> toRegister(@RequestBody @Valid ItemCreateDTO createDTO) {
                 RecordEntity record = operationService.toRegister(createDTO);
 
-                return ResponseEntity.status(HttpStatus.OK).body(RecordMapper.toResponseDTO(record));
+                return ResponseEntity.status(HttpStatus.CREATED).body(RecordMapper.toResponseDTO(record));
         }
 
         @Operation(summary = "Excluir itens.", description = "Deletará o item desejado do sistema.", responses = {

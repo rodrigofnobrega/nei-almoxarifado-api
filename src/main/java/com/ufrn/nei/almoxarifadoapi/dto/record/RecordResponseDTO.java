@@ -20,5 +20,5 @@ public class RecordResponseDTO {
     private ItemRecordDTO item;
     private Integer quantity;
     private RecordOperationEnum operation;
-    private Timestamp data;
+    private String data;
 }
