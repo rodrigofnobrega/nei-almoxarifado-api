@@ -3,7 +3,6 @@ package com.ufrn.nei.almoxarifadoapi.repository.projection;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ufrn.nei.almoxarifadoapi.enums.RequestStatusEnum;
-import com.ufrn.nei.almoxarifadoapi.repository.projection.component.FormatDateComponent;
 
 import java.sql.Timestamp;
 
@@ -22,12 +21,12 @@ public interface RequestProjection {
 
     @JsonProperty("creationDate")
     default String getFormattedDateByCreatedAt() {
-        return FormatDateComponent.formatDate(getCreatedAt());
+        return getCreatedAt().toString();
     }
 
     @JsonProperty("updatedDate")
     default String getFormattedDateByUpdatedAt() {
-        return FormatDateComponent.formatDate(getUpdatedAt());
+        return getUpdatedAt().toString();
     }
 
     interface UserEntity extends UserProjection {}

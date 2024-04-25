@@ -6,7 +6,6 @@ import com.ufrn.nei.almoxarifadoapi.dto.record.RecordCreateDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.record.RecordResponseDTO;
 import com.ufrn.nei.almoxarifadoapi.entity.RecordEntity;
 import com.ufrn.nei.almoxarifadoapi.infra.RestErrorMessage;
-import com.ufrn.nei.almoxarifadoapi.repository.projection.component.FormatDateComponent;
 import com.ufrn.nei.almoxarifadoapi.service.OperationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -39,7 +38,6 @@ public class OperationController {
         public ResponseEntity<RecordResponseDTO> consume(@RequestBody @Valid RecordCreateDTO createDTO) {
                 RecordEntity record = operationService.toConsume(createDTO);
                 RecordResponseDTO response = RecordMapper.toResponseDTO(record);
-                response.setData(FormatDateComponent.formatDate(record.getData()));
 
                 return ResponseEntity.status(HttpStatus.OK).body(RecordMapper.toResponseDTO(record));
         }
