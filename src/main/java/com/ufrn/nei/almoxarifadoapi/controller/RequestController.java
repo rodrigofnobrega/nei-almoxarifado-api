@@ -42,7 +42,7 @@ public class RequestController {
         Boolean request = requestService.accept(id);
 
         if (request == Boolean.TRUE) {
-            return ResponseEntity.status(HttpStatus.OK).build();
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
@@ -54,7 +54,7 @@ public class RequestController {
         Boolean request = requestService.decline(id);
 
         if (request == Boolean.TRUE) {
-            return ResponseEntity.status(HttpStatus.OK).build();
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
@@ -66,7 +66,7 @@ public class RequestController {
         Boolean request = requestService.cancel(id);
 
         if (request == Boolean.TRUE) {
-            return ResponseEntity.status(HttpStatus.OK).build();
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
