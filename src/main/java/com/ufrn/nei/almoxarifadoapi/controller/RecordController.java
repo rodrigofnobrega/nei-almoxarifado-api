@@ -25,7 +25,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "Records", description = "Contém todas as operações relativas aos recursos para leitura dos registros")
+@Tag(name = "Registros", description = "Contém todas as operações relativas aos recursos para leitura dos registros")
 @RestController
 @RequestMapping("/api/v1/records")
 public class RecordController {

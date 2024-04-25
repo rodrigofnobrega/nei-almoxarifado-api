@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "Operations", description = "Contém as operações para gerenciar os itens e persistir com a tabela registro")
+@Tag(name = "Operações Itens", description = "Contém as operações para gerenciar os itens e persistir com a tabela registro")
 @RestController
 @RequestMapping("/api/v1/operacoes")
 public class OperationController {
