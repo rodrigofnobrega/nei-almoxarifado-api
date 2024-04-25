@@ -20,6 +20,12 @@ public class UserMapper {
             @Override
             protected void configure() {
                 map().setRole(role);
+                if (userEntity.getRecords().isEmpty()) {
+                    map().setExistRecord(Boolean.FALSE);
+                } else {
+                    map().setExistRecord(Boolean.TRUE);
+                }
+
             }
         };
 

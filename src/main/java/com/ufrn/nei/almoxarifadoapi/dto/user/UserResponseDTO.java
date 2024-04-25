@@ -1,13 +1,11 @@
 package com.ufrn.nei.almoxarifadoapi.dto.user;
 
-import com.ufrn.nei.almoxarifadoapi.entity.RecordEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Timestamp;
-import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -19,9 +17,7 @@ public class UserResponseDTO {
     public String name;
     public String email;
     private String role;
-    private List<RecordEntity> records;
-    public Timestamp createdAt;
-    public Timestamp updatedAt;
+    private Boolean existRecord;
     public boolean active;
 
     @Override
@@ -29,12 +25,12 @@ public class UserResponseDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserResponseDTO that = (UserResponseDTO) o;
-        return active == that.active && Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(email, that.email) && Objects.equals(role, that.role) && Objects.equals(records, that.records) && Objects.equals(createdAt, that.createdAt) && Objects.equals(updatedAt, that.updatedAt);
+        return active == that.active && Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(email, that.email) && Objects.equals(role, that.role) && Objects.equals(existRecord, that.existRecord);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, email, role, records, createdAt, updatedAt, active);
+        return Objects.hash(id, name, email, role, existRecord, active);
     }
 
     @Override
@@ -44,9 +40,7 @@ public class UserResponseDTO {
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", role='" + role + '\'' +
-                ", records=" + records +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
+                ", existRecord=" + existRecord +
                 ", active=" + active +
                 '}';
     }
