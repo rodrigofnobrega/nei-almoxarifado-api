@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @Slf4j
 @ControllerAdvice
 public class RestExceptionHandler {
-        @ExceptionHandler({EntityNotFoundException.class, ItemNotActiveException.class})
+        @ExceptionHandler({EntityNotFoundException.class, ItemNotActiveException.class, StatusNotFoundException.class})
         public ResponseEntity<RestErrorMessage> handleItemNotFoundException(EntityNotFoundException exception,
                         HttpServletRequest request) {
                 log.info("API ERROR - ", exception);
@@ -90,16 +90,8 @@ public class RestExceptionHandler {
         @ExceptionHandler(ModifyStatusException.class)
         public ResponseEntity<RestErrorMessage> handleErrorOnDatabase(ModifyStatusException exception,
                                                                       HttpServletRequest request) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST,
-                                exception.getLocalizedMessage()));
-        }
-
-        @ExceptionHandler(StatusNotFoundException.class)
-        public ResponseEntity<RestErrorMessage> handleErrorOnDatabase(StatusNotFoundException exception,
-                                                                      HttpServletRequest request) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST,
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                        .body(new RestErrorMessage(request, HttpStatus.CONFLICT,
                                 exception.getLocalizedMessage()));
         }
 }
