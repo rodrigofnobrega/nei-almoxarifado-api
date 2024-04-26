@@ -1,5 +1,6 @@
 package com.ufrn.nei.almoxarifadoapi.controller;
 
+import com.ufrn.nei.almoxarifadoapi.dto.item.ItemResponseDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.mapper.PageableMapper;
 import com.ufrn.nei.almoxarifadoapi.dto.mapper.UserMapper;
 import com.ufrn.nei.almoxarifadoapi.dto.pageable.PageableDTO;
@@ -11,9 +12,13 @@ import com.ufrn.nei.almoxarifadoapi.infra.RestErrorMessage;
 import com.ufrn.nei.almoxarifadoapi.repository.projection.UserProjection;
 import com.ufrn.nei.almoxarifadoapi.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,10 +36,14 @@ public class UserController {
         @Autowired
         UserService userService;
 
-        @Operation(summary = "Cadastrar novos usuários.", description = "Cadastrará novos usuários no sistema.", responses = {
-                        @ApiResponse(responseCode = "201", description = "Usuário cadastrado com sucesso.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDTO.class))),
-                        @ApiResponse(responseCode = "400", description = "Não foi possível cadastrar o item.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class)))
-        })
+        @Operation(summary = "Cadastrar um usuário",
+                description = "Cadastrará um novo usuário no sistema. NÃO precisa de Bearer Token.",
+                responses = {
+                        @ApiResponse(responseCode = "201", description = "Usuário cadastrado com sucesso.",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDTO.class))),
+                        @ApiResponse(responseCode = "422", description = "Campo(s) inválido(s)",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class)))
+                })
         @PostMapping
         public ResponseEntity<UserResponseDTO> createUser(@RequestBody @Valid UserCreateDTO createDTO) {
                 UserEntity user = userService.save(createDTO);
@@ -44,10 +53,19 @@ public class UserController {
                 return ResponseEntity.status(HttpStatus.CREATED).body(response);
         }
 
-        @Operation(summary = "Buscar usuário pelo ID.", description = "Listará o usuário encontrado com o ID informado.", responses = {
-                        @ApiResponse(responseCode = "200", description = "Usuário encontrado com sucesso.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDTO.class))),
-                        @ApiResponse(responseCode = "400", description = "Usuário não foi encontrado.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class)))
-        })
+        @Operation(summary = "Buscar um usuário pelo ID",
+                description = "Requsição exige o uso de um bearer token. Acesso restrito a role='ADMIN', 'USER'.",
+                security = @SecurityRequirement(name = "security"),
+                responses = {
+                        @ApiResponse(responseCode = "200", description = "Usuário encontrado com sucesso.",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDTO.class))),
+                        @ApiResponse(responseCode = "401", description = "Usuário não está autenticado",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class))),
+                        @ApiResponse(responseCode = "403", description = "Erro. O usuário passou o ID de outro usuário.",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class))),
+                        @ApiResponse(responseCode = "404", description = "Usuário não encontrado.",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class)))
+                })
         @GetMapping("/{id}")
         @PreAuthorize("hasRole('ADMIN') OR ( hasRole('USER') AND #id == authentication.principal.id )")
         public ResponseEntity<UserResponseDTO> findById(@PathVariable Long id) {
@@ -58,9 +76,29 @@ public class UserController {
                 return ResponseEntity.status(HttpStatus.OK).body(response);
         }
 
-        @Operation(summary = "Buscar todos os usuários.", description = "Listará todos os usuários.", responses = {
-                        @ApiResponse(responseCode = "200", description = "Usuário encontrado com sucesso.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDTO.class)))
-        })
+        @Operation(summary = "Buscar todos os usuários.",
+                description = "Requsição exige o uso de um bearer token. Acesso restrito a role='ADMIN'.",
+                security = @SecurityRequirement(name = "security"),
+                parameters = {
+                        @Parameter(in = ParameterIn.QUERY, name = "page",
+                                content = @Content(schema = @Schema(type = "integer", defaultValue = "0")),
+                                description = "Representa a página retornada."
+                        ),
+                        @Parameter(in = ParameterIn.QUERY, name = "size",
+                                content = @Content(schema = @Schema(type = "integer", defaultValue = "20")),
+                                description = "Representa o total de elementos por página."
+                        ),
+                        @Parameter(in = ParameterIn.QUERY, name = "sort", hidden = true,
+                                array = @ArraySchema(schema = @Schema(type = "string", defaultValue = "id,asc")),
+                                description = "Representa a ordenação dos resultados. Aceita múltiplos critérios de ordenação."
+                        ),
+                },
+                responses = {
+                        @ApiResponse(responseCode = "200", description = "Usuários encontrados com sucesso",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = PageableDTO.class))),
+                        @ApiResponse(responseCode = "401", description = "Usuário não está autenticado",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class)))
+                })
         @GetMapping
         @PreAuthorize("hasRole('ADMIN')")
         public ResponseEntity<PageableDTO> findAll(Pageable pageable) {
@@ -70,10 +108,33 @@ public class UserController {
                 return ResponseEntity.status(HttpStatus.OK).body(response);
         }
 
-        @Operation(summary = "Buscar usuários pelo email.", description = "Buscará usuários pelo email utilizarando Query Params", responses = {
-                        @ApiResponse(responseCode = "200", description = "Usuário encontrado com sucesso.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDTO.class))),
-                        @ApiResponse(responseCode = "400", description = "Usuário não foi encontrado.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class)))
-        })
+        @Operation(summary = "Buscar todos os usuários.",
+                description = "Requsição exige o uso de um bearer token. Acesso restrito a role='ADMIN'.",
+                security = @SecurityRequirement(name = "security"),
+                parameters = {
+                        @Parameter(in = ParameterIn.QUERY, name = "page",
+                                content = @Content(schema = @Schema(type = "integer", defaultValue = "0")),
+                                description = "Representa a página retornada."
+                        ),
+                        @Parameter(in = ParameterIn.QUERY, name = "size",
+                                content = @Content(schema = @Schema(type = "integer", defaultValue = "20")),
+                                description = "Representa o total de elementos por página."
+                        ),
+                        @Parameter(in = ParameterIn.QUERY, name = "sort", hidden = true,
+                                array = @ArraySchema(schema = @Schema(type = "string", defaultValue = "id,asc")),
+                                description = "Representa a ordenação dos resultados. Aceita múltiplos critérios de ordenação."
+                        ),
+                },
+                responses = {
+                        @ApiResponse(responseCode = "200", description = "Usuário encontrado com sucesso",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = PageableDTO.class))),
+                        @ApiResponse(responseCode = "401", description = "Usuário não está autenticado",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class))),
+                        @ApiResponse(responseCode = "403", description = "Erro. O usuário passou o email de outro usuário.",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class))),
+                        @ApiResponse(responseCode = "404", description = "Erro. O usuário não foi encontrado.",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class)))
+                })
         @GetMapping("/query")
         @PreAuthorize("hasRole('ADMIN') OR ( hasRole('USER') AND #email == authentication.principal.username )")
         public ResponseEntity<UserResponseDTO> findByEmail(@RequestParam String email) {
@@ -84,10 +145,22 @@ public class UserController {
                 return ResponseEntity.status(HttpStatus.OK).body(response);
         }
 
-        @Operation(summary = "Atualizar senha de usuário", description = "Atualizará a senha do usuário.", responses = {
-                        @ApiResponse(responseCode = "200", description = "Senha atualizada com sucesso."),
-                        @ApiResponse(responseCode = "400", description = "Erro na validação das senhas informadas.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class)))
-        })
+        @Operation(summary = "Atualizar senha de usuário",
+                description = "Requsição exige o uso de um bearer token. Acesso restrito a role='ADMIN', 'USER'.",
+                deprecated = true,
+                security = @SecurityRequirement(name = "security"),
+                responses = {
+                        @ApiResponse(responseCode = "204", description = "Senha atualizada com sucesso.",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDTO.class))),
+                        @ApiResponse(responseCode = "400", description = "Erro na validação da senha",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class))),
+                        @ApiResponse(responseCode = "401", description = "Usuário não está autenticado",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class))),
+                        @ApiResponse(responseCode = "403", description = "Erro. O usuário passou o ID de outro usuário.",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class))),
+                        @ApiResponse(responseCode = "404", description = "Usuário não encontrado.",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class)))
+                })
         @PutMapping("/{id}")
         @PreAuthorize("hasRole('ADMIN') OR ( hasRole('USER') AND #id == authentication.principal.id )")
         public ResponseEntity<Void> updatePassword(@RequestBody @Valid UserPasswordUpdateDTO passwordUpdateDTO,
@@ -95,13 +168,22 @@ public class UserController {
                 userService.updatePassword(passwordUpdateDTO.getCurrentPassword(),
                                 passwordUpdateDTO.getNewPassword(), passwordUpdateDTO.getConfirmPassword(), id);
 
-                return ResponseEntity.ok().build();
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
 
-        @Operation(summary = "Deletar usuários cadastrados.", description = "Excluirá o usuário pelo ID.", responses = {
-                        @ApiResponse(responseCode = "204", description = "Usuário deletado com sucesso.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDTO.class))),
-                        @ApiResponse(responseCode = "400", description = "O usuário especificado não foi encontrado.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class)))
-        })
+        @Operation(summary = "Excluir conta de usuário",
+                description = "Requsição exige o uso de um bearer token. Acesso restrito a role='ADMIN', 'USER'.",
+                security = @SecurityRequirement(name = "security"),
+                responses = {
+                        @ApiResponse(responseCode = "204", description = "Usuário deletado com sucesso.",
+                                content = @Content(mediaType = "application/json")),
+                        @ApiResponse(responseCode = "401", description = "Usuário não está autenticado",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class))),
+                        @ApiResponse(responseCode = "403", description = "Erro. O usuário passou o ID de outro usuário.",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class))),
+                        @ApiResponse(responseCode = "404", description = "Usuário não encontrado.",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class)))
+                })
         @DeleteMapping("/{id}")
         @PreAuthorize("hasRole('ADMIN') OR ( hasRole('USER') AND #id == authentication.principal.id )")
         public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
