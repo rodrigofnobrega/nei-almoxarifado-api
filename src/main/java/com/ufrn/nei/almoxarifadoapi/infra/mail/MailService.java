@@ -2,7 +2,6 @@ package com.ufrn.nei.almoxarifadoapi.infra.mail;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailAuthenticationException;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
@@ -17,18 +16,23 @@ import java.util.concurrent.CompletableFuture;
 public class MailService {
     @Autowired
     private JavaMailSender javaMailSender;
+    @Autowired
+    private MailTemplates mailTemplates;
 
-    @Value("${spring.mail.username}")
-    private String sender;
+    public Boolean sendMailUserCreated(String userEmail, String userName) {
+        SimpleMailMessage message = mailTemplates.buildMailMessageUserCreated(userEmail, userName);
+
+        CompletableFuture<Boolean> sender = buildSendEmailAsync(message);
+
+        sender.join();
+
+        return Boolean.TRUE;
+    }
 
     public Boolean buildMail(MailSendDTO mailSend) {
-        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-        simpleMailMessage.setFrom(sender);
-        simpleMailMessage.setTo(mailSend.getSendTo());
-        simpleMailMessage.setSubject(mailSend.getSubject());
-        simpleMailMessage.setText(mailSend.getText());
+        SimpleMailMessage message = mailTemplates.buildMailGeneric(mailSend);
 
-        CompletableFuture<Boolean> sender = buildSendEmailAsync(simpleMailMessage);
+        CompletableFuture<Boolean> sender = buildSendEmailAsync(message);
 
         sender.join();
 
@@ -41,7 +45,7 @@ public class MailService {
         try {
             javaMailSender.send(simpleMailMessage);
 
-            log.info("Email enviado com sucesso para {}", simpleMailMessage.getFrom());
+            log.info("Email enviado com sucesso para {}", simpleMailMessage.getTo());
             future.complete(Boolean.TRUE);
         } catch (MailSendException ex) {
             log.error("Erro ao enviar email para {}: {}", simpleMailMessage.getTo(), ex.getMessage());
