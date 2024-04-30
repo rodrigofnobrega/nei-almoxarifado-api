@@ -73,16 +73,6 @@ public class MailService {
         sender.join();
     }
 
-    public Boolean buildMail(MailSendDTO mailSend) {
-        SimpleMailMessage message = mailTemplates.buildMailGeneric(mailSend);
-
-        CompletableFuture<Boolean> sender = buildSendEmailAsync(message);
-
-        sender.join();
-
-        return Boolean.TRUE;
-    }
-
     @Async
     private CompletableFuture<Boolean> buildSendEmailAsync(SimpleMailMessage simpleMailMessage) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();

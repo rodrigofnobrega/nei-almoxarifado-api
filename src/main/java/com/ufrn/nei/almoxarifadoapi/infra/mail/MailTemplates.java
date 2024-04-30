@@ -42,15 +42,6 @@ public class MailTemplates {
 
         return simpleMailMessage;
     }
-    public SimpleMailMessage buildMailGeneric(MailSendDTO mailSendDTO) {
-        String subject = mailSendDTO.getSubject();
-        String text = mailSendDTO.getText();
-        simpleMailMessage.setTo(mailSendDTO.getSendTo());
-        simpleMailMessage.setSubject(subject);
-        simpleMailMessage.setText(text);
-
-        return simpleMailMessage;
-    }
 
     public SimpleMailMessage buildMailMessageRequestCreated(String userEmail, String userName,
                                                             String itemName, Timestamp date, Long itemQuantity) {
