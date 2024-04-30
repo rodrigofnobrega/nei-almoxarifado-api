@@ -30,14 +30,14 @@ public class MailService {
     }
 
     @Async
-    public Boolean sendMailRequestCreatedAsync(String userEmail, String userName,
-                                               String itemName, Timestamp date, Integer itemQuantity) {
+    public void sendMailRequestCreatedAsync(String userEmail, String userName,
+                                               String itemName, Timestamp date, Long itemQuantity) {
         SimpleMailMessage message =
                 mailTemplates.buildMailMessageRequestCreated(userEmail, userName, itemName, date, itemQuantity);
 
         CompletableFuture<Boolean> sender = buildSendEmailAsync(message);
 
-        return sender.join();
+        sender.join();
     }
 
     @Async

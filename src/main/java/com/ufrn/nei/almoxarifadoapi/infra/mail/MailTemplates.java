@@ -45,7 +45,7 @@ public class MailTemplates {
     }
 
     public SimpleMailMessage buildMailMessageRequestCreated(String userEmail, String userName,
-                                                            String itemName, Timestamp date, Integer itemQuantity) {
+                                                            String itemName, Timestamp date, Long itemQuantity) {
         String formatDate = RefactorDate.refactorTimestamp(date);
 
         String subject = "Sua Solicitação foi criada com sucesso!";

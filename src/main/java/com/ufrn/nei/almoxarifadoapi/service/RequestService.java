@@ -56,7 +56,7 @@ public class RequestService {
 
         requestRepository.save(request);
         mailService.sendMailRequestCreatedAsync(user.getEmail(), user.getName(),
-                item.getName(), request.getCreatedAt(), item.getQuantity());
+                item.getName(), request.getCreatedAt(), request.getQuantity());
 
         return request;
     }
