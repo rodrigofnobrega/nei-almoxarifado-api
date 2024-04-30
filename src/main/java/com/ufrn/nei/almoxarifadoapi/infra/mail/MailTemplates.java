@@ -1,8 +1,11 @@
 package com.ufrn.nei.almoxarifadoapi.infra.mail;
 
+import com.ufrn.nei.almoxarifadoapi.utils.RefactorDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Component;
+
+import java.sql.Timestamp;
 
 @Component
 public class MailTemplates {
@@ -41,4 +44,24 @@ public class MailTemplates {
         return simpleMailMessage;
     }
 
+    public SimpleMailMessage buildMailMessageRequestCreated(String userEmail, String userName,
+                                                            String itemName, Timestamp date, Integer itemQuantity) {
+        String formatDate = RefactorDate.refactorTimestamp(date);
+
+        String subject = "Sua Solicitação foi criada com sucesso!";
+        String text = String.format("Olá %s,\n\n"
+                        + "Sua solicitação do item '%s' foi realizada com sucesso!\n\n"
+                        + "Detalhes:\n"
+                        + "- Item: %s\n"
+                        + "- Quantidade: %d\n"
+                        + "- Hora da Solicitação: %s\n\n"
+                        + "Obrigado por utilizar nosso sistema.",
+                userName, itemName, itemName, itemQuantity, formatDate);
+
+        simpleMailMessage.setTo(userEmail);
+        simpleMailMessage.setSubject(subject);
+        simpleMailMessage.setText(text);
+
+        return simpleMailMessage;
+    }
 }

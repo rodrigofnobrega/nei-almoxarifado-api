@@ -12,6 +12,7 @@ import com.ufrn.nei.almoxarifadoapi.exception.ModifyStatusException;
 import com.ufrn.nei.almoxarifadoapi.exception.StatusNotFoundException;
 import com.ufrn.nei.almoxarifadoapi.exception.UnauthorizedAccessException;
 import com.ufrn.nei.almoxarifadoapi.infra.jwt.JwtAuthenticationContext;
+import com.ufrn.nei.almoxarifadoapi.infra.mail.MailService;
 import com.ufrn.nei.almoxarifadoapi.repository.RequestRepository;
 
 import java.sql.Timestamp;
@@ -42,6 +43,9 @@ public class RequestService {
     @Autowired
     private OperationService operationService;
 
+    @Autowired
+    private MailService mailService;
+
     @Transactional
     public RequestEntity create(RequestCreateDTO data) {
         UserEntity user = userService.findById(JwtAuthenticationContext.getId());
@@ -51,6 +55,8 @@ public class RequestService {
         RequestEntity request = RequestMapper.toRequest(data, user, item, status);
 
         requestRepository.save(request);
+        mailService.sendMailRequestCreatedAsync(user.getEmail(), user.getName(),
+                item.getName(), request.getCreatedAt(), item.getQuantity());
 
         return request;
     }

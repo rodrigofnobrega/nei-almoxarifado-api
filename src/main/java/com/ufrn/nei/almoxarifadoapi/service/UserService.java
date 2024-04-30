@@ -40,7 +40,7 @@ public class UserService {
 
         userRepository.save(user);
 
-        mailService.sendMailUserCreated(user.getEmail(), user.getName());
+        mailService.sendMailUserCreatedAsync(user.getEmail(), user.getName());
 
         return user;
     }

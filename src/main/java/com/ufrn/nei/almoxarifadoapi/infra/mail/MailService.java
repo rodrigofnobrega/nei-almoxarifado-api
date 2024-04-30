@@ -9,6 +9,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
@@ -19,14 +20,24 @@ public class MailService {
     @Autowired
     private MailTemplates mailTemplates;
 
-    public Boolean sendMailUserCreated(String userEmail, String userName) {
+    @Async
+    public Boolean sendMailUserCreatedAsync(String userEmail, String userName) {
         SimpleMailMessage message = mailTemplates.buildMailMessageUserCreated(userEmail, userName);
 
         CompletableFuture<Boolean> sender = buildSendEmailAsync(message);
 
-        sender.join();
+        return sender.join();
+    }
 
-        return Boolean.TRUE;
+    @Async
+    public Boolean sendMailRequestCreatedAsync(String userEmail, String userName,
+                                               String itemName, Timestamp date, Integer itemQuantity) {
+        SimpleMailMessage message =
+                mailTemplates.buildMailMessageRequestCreated(userEmail, userName, itemName, date, itemQuantity);
+
+        CompletableFuture<Boolean> sender = buildSendEmailAsync(message);
+
+        return sender.join();
     }
 
     public Boolean buildMail(MailSendDTO mailSend) {
