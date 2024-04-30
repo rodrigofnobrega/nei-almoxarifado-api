@@ -74,14 +74,16 @@ public class RequestService {
             return Boolean.FALSE;
         }
 
-        updateRequestStatus(request, RequestStatusEnum.ACEITO);
+        if (updateRequestStatus(request, RequestStatusEnum.ACEITO)) {
+            UserEntity user = request.getUser();
+            ItemEntity item = request.getItem();
+            mailService.sendMailRequestAcceptedAsync(user.getEmail(), user.getName(),
+                    item.getName(), request.getUpdatedAt(), request.getQuantity());
 
-        UserEntity user = userService.findById(requestDTO.getUserID());
-        ItemEntity item = itemService.findById(requestDTO.getItemID());
-        mailService.sendMailRequestAcceptedAsync(user.getEmail(), user.getName(),
-                item.getName(), request.getUpdatedAt(), request.getQuantity());
+            return Boolean.TRUE;
+        }
 
-        return Boolean.TRUE;
+        return Boolean.FALSE;
     }
 
     @Transactional
