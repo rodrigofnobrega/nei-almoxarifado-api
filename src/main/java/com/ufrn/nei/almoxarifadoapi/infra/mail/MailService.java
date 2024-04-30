@@ -21,12 +21,12 @@ public class MailService {
     private MailTemplates mailTemplates;
 
     @Async
-    public Boolean sendMailUserCreatedAsync(String userEmail, String userName) {
+    public void sendMailUserCreatedAsync(String userEmail, String userName) {
         SimpleMailMessage message = mailTemplates.buildMailMessageUserCreated(userEmail, userName);
 
         CompletableFuture<Boolean> sender = buildSendEmailAsync(message);
 
-        return sender.join();
+        sender.join();
     }
 
     @Async
