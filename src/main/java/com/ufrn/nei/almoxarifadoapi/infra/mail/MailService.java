@@ -40,6 +40,17 @@ public class MailService {
         return sender.join();
     }
 
+    @Async
+    public void sendMailRequestAcceptedAsync(String userEmail, String userName,
+                                               String itemName, Timestamp date, Long itemQuantity) {
+        SimpleMailMessage message =
+                mailTemplates.buildMailMessageRequestAccepted(userEmail, userName, itemName, date, itemQuantity);
+
+        CompletableFuture<Boolean> sender = buildSendEmailAsync(message);
+
+        sender.join();
+    }
+
     public Boolean buildMail(MailSendDTO mailSend) {
         SimpleMailMessage message = mailTemplates.buildMailGeneric(mailSend);
 

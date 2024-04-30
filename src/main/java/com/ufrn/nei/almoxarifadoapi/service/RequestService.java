@@ -76,6 +76,11 @@ public class RequestService {
 
         updateRequestStatus(request, RequestStatusEnum.ACEITO);
 
+        UserEntity user = userService.findById(requestDTO.getUserID());
+        ItemEntity item = itemService.findById(requestDTO.getItemID());
+        mailService.sendMailRequestAcceptedAsync(user.getEmail(), user.getName(),
+                item.getName(), request.getUpdatedAt(), request.getQuantity());
+
         return Boolean.TRUE;
     }
 
