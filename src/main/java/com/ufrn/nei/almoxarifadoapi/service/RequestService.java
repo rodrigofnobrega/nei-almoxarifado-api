@@ -88,7 +88,16 @@ public class RequestService {
     public Boolean decline(Long id) {
         RequestEntity request = findById(id);
 
-        return updateRequestStatus(request, RequestStatusEnum.RECUSADO);
+        if (updateRequestStatus(request, RequestStatusEnum.RECUSADO)) {
+            UserEntity user = request.getUser();
+            ItemEntity item = request.getItem();
+            mailService.sendMailRequestDeniedAsync(user.getEmail(), user.getName(),
+                    item.getName(), request.getUpdatedAt(), request.getQuantity());
+
+            return Boolean.TRUE;
+        }
+
+        return Boolean.FALSE;
     }
 
     @Transactional

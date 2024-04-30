@@ -85,4 +85,27 @@ public class MailTemplates {
 
         return simpleMailMessage;
     }
+
+    public SimpleMailMessage buildMailMessageRequestDenied(String userEmail, String userName,
+                                                             String itemName, Timestamp date, Long itemQuantity) {
+        String formatDate = RefactorDate.refactorTimestamp(date);
+
+        String subject = "Sua solicitação foi recusada.";
+        String text = String.format("Olá %s,\n\n"
+                        + "Sua solicitação para o item '%s' foi recusada.\n\n"
+                        + "Detalhes:\n"
+                        + "- Item: %s\n"
+                        + "- Quantidade: %d\n"
+                        + "- Hora da Recusa: %s\n\n"
+                        + "Por favor, entre em contato conosco para mais informações.\n\n"
+                        + "Atenciosamente,\n"
+                        + "Equipe do Almoxarifado",
+                userName, itemName, itemName, itemQuantity, formatDate);
+
+        simpleMailMessage.setTo(userEmail);
+        simpleMailMessage.setSubject(subject);
+        simpleMailMessage.setText(text);
+
+        return simpleMailMessage;
+    }
 }
