@@ -106,7 +106,16 @@ public class RequestService {
     public Boolean cancel(Long id) {
         RequestEntity request = findById(id);
 
-        return updateRequestStatus(request, RequestStatusEnum.CANCELADO);
+        if (updateRequestStatus(request, RequestStatusEnum.CANCELADO)) {
+            UserEntity user = request.getUser();
+            ItemEntity item = request.getItem();
+            mailService.sendMailRequestCanceledAsync(user.getEmail(), user.getName(),
+                    item.getName(), request.getUpdatedAt(), request.getQuantity());
+
+            return Boolean.TRUE;
+        }
+
+        return Boolean.FALSE;
     }
 
     @Transactional(readOnly = true)

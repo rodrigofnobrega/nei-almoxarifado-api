@@ -62,6 +62,17 @@ public class MailService {
         sender.join();
     }
 
+    @Async
+    public void sendMailRequestCanceledAsync(String userEmail, String userName,
+                                           String itemName, Timestamp date, Long itemQuantity) {
+        SimpleMailMessage message =
+                mailTemplates.buildMailMessageRequestCanceled(userEmail, userName, itemName, date, itemQuantity);
+
+        CompletableFuture<Boolean> sender = buildSendEmailAsync(message);
+
+        sender.join();
+    }
+
     public Boolean buildMail(MailSendDTO mailSend) {
         SimpleMailMessage message = mailTemplates.buildMailGeneric(mailSend);
 
