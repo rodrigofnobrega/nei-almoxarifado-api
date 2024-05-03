@@ -4,6 +4,7 @@ import com.ufrn.nei.almoxarifadoapi.dto.user.UserCreateDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.user.UserRecordDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.user.UserResponseDTO;
 import com.ufrn.nei.almoxarifadoapi.entity.UserEntity;
+import com.ufrn.nei.almoxarifadoapi.utils.RemoveRolePrefix;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.springframework.data.domain.Page;
@@ -14,12 +15,18 @@ import java.util.stream.Collectors;
 
 public class UserMapper {
     public static UserResponseDTO toResponseDTO(UserEntity userEntity) {
-        String role = refactorRoleName(userEntity.getRole().getRole());
+        String role = RemoveRolePrefix.getRoleWithoutPrefix(userEntity.getRole());
 
         PropertyMap<UserEntity, UserResponseDTO> propertyMap = new PropertyMap<>() {
             @Override
             protected void configure() {
                 map().setRole(role);
+                if (userEntity.getRecords().isEmpty()) {
+                    map().setExistRecord(Boolean.FALSE);
+                } else {
+                    map().setExistRecord(Boolean.TRUE);
+                }
+
             }
         };
 
@@ -44,7 +51,7 @@ public class UserMapper {
     }
 
     public static UserRecordDTO toRecordDTO(UserEntity userEntity) {
-        String role = refactorRoleName(userEntity.getRole().getRole());
+        String role = RemoveRolePrefix.getRoleWithoutPrefix(userEntity.getRole());
 
         PropertyMap<UserEntity, UserRecordDTO> propertyMap = new PropertyMap<>() {
             @Override
@@ -64,13 +71,5 @@ public class UserMapper {
                 .map(UserMapper::toResponseDTO)
                 .collect(Collectors.toList());
         return new PageImpl<>(dtos, data.getPageable(), data.getTotalElements());
-    }
-
-    public static String refactorRoleName(String role) {
-        if (role.startsWith("ROLE_")) {
-            role = role.substring("ROLE_".length());
-        }
-
-        return role;
     }
 }

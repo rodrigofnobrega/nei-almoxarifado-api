@@ -19,8 +19,6 @@ public class ItemResponseDTO {
     private Long sipacCode;
     private int quantity;
     private String type;
-    private Timestamp createdAt;
-    private Timestamp updatedAt;
     private boolean available;
 
     @Override

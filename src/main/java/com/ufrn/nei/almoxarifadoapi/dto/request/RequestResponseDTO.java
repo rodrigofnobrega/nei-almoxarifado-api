@@ -22,8 +22,8 @@ public class RequestResponseDTO {
     private RequestStatusEnum status;
     private String description;
     private UserResponseDTO user;
-    private Timestamp createdAt;
-    private Timestamp updatedAt;
+    private String createdAt;
+    private String updatedAt;
 
     @Override
     public boolean equals(Object o) {

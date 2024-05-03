@@ -37,6 +37,7 @@ public class OperationController {
         @PreAuthorize("hasRole('ADMIN')")
         public ResponseEntity<RecordResponseDTO> consume(@RequestBody @Valid RecordCreateDTO createDTO) {
                 RecordEntity record = operationService.toConsume(createDTO);
+                RecordResponseDTO response = RecordMapper.toResponseDTO(record);
 
                 return ResponseEntity.status(HttpStatus.OK).body(RecordMapper.toResponseDTO(record));
         }
@@ -50,7 +51,7 @@ public class OperationController {
         public ResponseEntity<RecordResponseDTO> toRegister(@RequestBody @Valid ItemCreateDTO createDTO) {
                 RecordEntity record = operationService.toRegister(createDTO);
 
-                return ResponseEntity.status(HttpStatus.OK).body(RecordMapper.toResponseDTO(record));
+                return ResponseEntity.status(HttpStatus.CREATED).body(RecordMapper.toResponseDTO(record));
         }
 
         @Operation(summary = "Excluir itens.", description = "Deletará o item desejado do sistema.", responses = {
