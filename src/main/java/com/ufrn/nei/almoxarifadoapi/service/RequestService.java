@@ -77,12 +77,16 @@ public class RequestService {
     public Boolean decline(Long id) {
         RequestEntity request = findById(id);
 
+        validateRequestStatus(request, RequestStatusEnum.RECUSADO);
+
         return updateRequestStatus(request, RequestStatusEnum.RECUSADO);
     }
 
     @Transactional
     public Boolean cancel(Long id) {
         RequestEntity request = findById(id);
+
+        validateRequestStatus(request, RequestStatusEnum.CANCELADO);
 
         return updateRequestStatus(request, RequestStatusEnum.CANCELADO);
     }
@@ -163,7 +167,7 @@ public class RequestService {
     private void validateRequestStatus(RequestEntity request, RequestStatusEnum status) {
         // Verificar se a solicitação já possui o novo status
         if (request.getStatus().equals(status)) {
-            log.info("Solicitação já foi" +  status.toString().toLowerCase() +  "anteriormente");
+            log.info("Solicitação já foi " +  status.toString().toLowerCase() +  " anteriormente");
             throw new ModifyStatusException("Solicitação já foi" +  status.toString().toLowerCase() +  "anteriormente");
         }
 
