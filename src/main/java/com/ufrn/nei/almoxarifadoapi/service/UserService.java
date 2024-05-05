@@ -15,6 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class UserService {
     @Autowired
@@ -33,7 +35,7 @@ public class UserService {
         RoleEntity role = getRoleUser();
 
         user.setRole(role);
-
+        user.setRecords(List.of());
         userRepository.save(user);
 
         return user;
