@@ -6,6 +6,7 @@ import com.ufrn.nei.almoxarifadoapi.entity.RoleEntity;
 import com.ufrn.nei.almoxarifadoapi.entity.UserEntity;
 import com.ufrn.nei.almoxarifadoapi.exception.EntityNotFoundException;
 import com.ufrn.nei.almoxarifadoapi.exception.PasswordInvalidException;
+import com.ufrn.nei.almoxarifadoapi.infra.mail.MailService;
 import com.ufrn.nei.almoxarifadoapi.repository.UserRepository;
 import com.ufrn.nei.almoxarifadoapi.repository.projection.UserProjection;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,9 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private MailService mailService;
+
     @Transactional
     public UserEntity save(UserCreateDTO createDTO) {
         UserEntity user = UserMapper.toUser(createDTO);
@@ -35,6 +39,8 @@ public class UserService {
         user.setRole(role);
 
         userRepository.save(user);
+
+        mailService.sendMailUserCreatedAsync(user.getEmail(), user.getName());
 
         return user;
     }
