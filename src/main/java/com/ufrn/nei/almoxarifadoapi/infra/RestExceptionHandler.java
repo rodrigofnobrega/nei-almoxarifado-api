@@ -19,13 +19,13 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @Slf4j
 @ControllerAdvice
 public class RestExceptionHandler {
-        @ExceptionHandler(EntityNotFoundException.class)
+        @ExceptionHandler({EntityNotFoundException.class, ItemNotActiveException.class, StatusNotFoundException.class})
         public ResponseEntity<RestErrorMessage> handleItemNotFoundException(EntityNotFoundException exception,
                         HttpServletRequest request) {
                 log.info("API ERROR - ", exception);
                 return ResponseEntity
-                                .status(HttpStatus.BAD_REQUEST)
-                                .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST, exception.getMessage()));
+                                .status(HttpStatus.NOT_FOUND)
+                                .body(new RestErrorMessage(request, HttpStatus.NOT_FOUND, exception.getMessage()));
         }
 
         @ExceptionHandler(CreateEntityException.class)
@@ -42,8 +42,8 @@ public class RestExceptionHandler {
                         HttpServletRequest request) {
                 log.info("API ERROR - ", exception);
 
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                                .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST, "Campo(s) invalido(s)"));
+                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
+                                .body(new RestErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY, "Campo(s) invalido(s)"));
         }
 
         @ExceptionHandler(HttpMessageNotReadableException.class)
@@ -56,25 +56,6 @@ public class RestExceptionHandler {
                                 .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST, "Campo(s) invalido(s)"));
         }
 
-        @ExceptionHandler(ItemNotActiveException.class)
-        public ResponseEntity<RestErrorMessage> handleItemNotActiveException(ItemNotActiveException exception,
-                        HttpServletRequest request) {
-                log.info("API ERROR - ", exception);
-
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                                .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST, exception.getMessage()));
-        }
-
-        @ExceptionHandler(NotAvailableQuantityException.class)
-        public ResponseEntity<RestErrorMessage> handleQuantityNotAvailableToLend(
-                        NotAvailableQuantityException exception,
-                        HttpServletRequest request) {
-                log.info("API ERROR - ", exception);
-
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                                .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST, exception.getMessage()));
-        }
-
         @ExceptionHandler(PasswordInvalidException.class)
         public ResponseEntity<RestErrorMessage> handlePasswordInvalidException(PasswordInvalidException exception,
                         HttpServletRequest request) {
@@ -84,13 +65,13 @@ public class RestExceptionHandler {
                                 .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST, exception.getMessage()));
         }
 
-        @ExceptionHandler(OperationErrorException.class)
+        @ExceptionHandler({OperationErrorException.class, NotAvailableQuantityException.class})
         public ResponseEntity<RestErrorMessage> handlePasswordInvalidException(OperationErrorException exception,
                         HttpServletRequest request) {
                 log.info("API ERROR - ", exception);
 
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                                .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST, exception.getMessage()));
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                .body(new RestErrorMessage(request, HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage()));
         }
 
         @ExceptionHandler(DataIntegrityViolationException.class)
@@ -112,16 +93,8 @@ public class RestExceptionHandler {
         @ExceptionHandler(ModifyStatusException.class)
         public ResponseEntity<RestErrorMessage> handleErrorOnDatabase(ModifyStatusException exception,
                                                                       HttpServletRequest request) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST,
-                                exception.getLocalizedMessage()));
-        }
-
-        @ExceptionHandler(StatusNotFoundException.class)
-        public ResponseEntity<RestErrorMessage> handleErrorOnDatabase(StatusNotFoundException exception,
-                                                                      HttpServletRequest request) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST,
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                        .body(new RestErrorMessage(request, HttpStatus.CONFLICT,
                                 exception.getLocalizedMessage()));
         }
 

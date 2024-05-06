@@ -8,6 +8,7 @@ import com.ufrn.nei.almoxarifadoapi.entity.ItemEntity;
 import com.ufrn.nei.almoxarifadoapi.entity.RequestEntity;
 import com.ufrn.nei.almoxarifadoapi.entity.UserEntity;
 import com.ufrn.nei.almoxarifadoapi.enums.RequestStatusEnum;
+import com.ufrn.nei.almoxarifadoapi.utils.RemoveRolePrefix;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.springframework.data.domain.Page;
@@ -44,7 +45,7 @@ public class RequestMapper {
             @Override
             protected void configure() {
                 map().setUser(user);
-                map().getUser().setRole(UserMapper.refactorRoleName(role));
+                map().getUser().setRole(RemoveRolePrefix.getRoleWithoutPrefix(role));
                 map().setItem(item);
             }
         };

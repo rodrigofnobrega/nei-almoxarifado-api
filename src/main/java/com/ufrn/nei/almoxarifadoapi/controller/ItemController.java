@@ -6,9 +6,13 @@ import com.ufrn.nei.almoxarifadoapi.dto.pageable.PageableDTO;
 import com.ufrn.nei.almoxarifadoapi.infra.RestErrorMessage;
 import com.ufrn.nei.almoxarifadoapi.repository.projection.ItemProjection;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -34,8 +38,28 @@ public class ItemController {
         @Autowired
         private ItemService itemService;
 
-        @Operation(summary = "Buscar todos os itens", description = "Listará todos os itens cadastrados", responses = {
-                        @ApiResponse(responseCode = "200", description = "Itens encontrados com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ItemResponseDTO.class)))
+        @Operation(summary = "Buscar todos os itens.",
+                description = "Buscará todos os itens cadastrados. Requsição exige o uso de um bearer token. Acesso restrito a role='ADMIN', 'USER'.",
+                security = @SecurityRequirement(name = "security"),
+                parameters = {
+                        @Parameter(in = ParameterIn.QUERY, name = "page",
+                                content = @Content(schema = @Schema(type = "integer", defaultValue = "0")),
+                                description = "Representa a página retornada."
+                        ),
+                        @Parameter(in = ParameterIn.QUERY, name = "size",
+                                content = @Content(schema = @Schema(type = "integer", defaultValue = "20")),
+                                description = "Representa o total de elementos por página."
+                        ),
+                        @Parameter(in = ParameterIn.QUERY, name = "sort", hidden = true,
+                                array = @ArraySchema(schema = @Schema(type = "string", defaultValue = "id,asc")),
+                                description = "Representa a ordenação dos resultados. Aceita múltiplos critérios de ordenação."
+                        ),
+                },
+                responses = {
+                        @ApiResponse(responseCode = "200", description = "Itens encontrados com sucesso",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = PageableDTO.class))),
+                        @ApiResponse(responseCode = "401", description = "Usuário não está autenticado",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class)))
         })
         @GetMapping
         @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
@@ -46,9 +70,16 @@ public class ItemController {
                 return ResponseEntity.status(HttpStatus.OK).body(page);
         }
 
-        @Operation(summary = "Buscar itens pelo ID.", description = "Listará o item encontrado com o ID informado.", responses = {
-                        @ApiResponse(responseCode = "200", description = "Item encontrado com sucesso.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ItemResponseDTO.class))),
-                        @ApiResponse(responseCode = "400", description = "Item não foi encontrado.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class)))
+        @Operation(summary = "Buscar um item",
+                description = "Buscará um item pelo seu ID. Requsição exige o uso de um bearer token. Acesso restrito a role='ADMIN', 'USER'.",
+                security = @SecurityRequirement(name = "security"),
+                responses = {
+                        @ApiResponse(responseCode = "200", description = "Itens encontrados com sucesso.",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = ItemResponseDTO.class))),
+                        @ApiResponse(responseCode = "401", description = "Usuário não está autenticado",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class))),
+                        @ApiResponse(responseCode = "404", description = "Itens não encontrado.",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class)))
         })
         @GetMapping("/{id}")
         @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
@@ -60,9 +91,17 @@ public class ItemController {
                 return ResponseEntity.status(HttpStatus.OK).body(item);
         }
 
-        @Operation(summary = "Cadastrar novos itens.", description = "Cadastrará novos itens no sistema.", responses = {
-                        @ApiResponse(responseCode = "201", description = "Item cadastrado com sucesso.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ItemResponseDTO.class))),
-                        @ApiResponse(responseCode = "400", description = "Não foi possível cadastrar o item.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class)))
+        @Operation(summary = "Cadastrar um item",
+                description = "Cadastrará um item. Requsição exige o uso de um bearer token. Acesso restrito a role='ADMIN'.",
+                deprecated = true,
+                security = @SecurityRequirement(name = "security"),
+                responses = {
+                        @ApiResponse(responseCode = "201", description = "Itens cadastrado com sucesso.",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = ItemResponseDTO.class))),
+                        @ApiResponse(responseCode = "401", description = "Usuário não está autenticado",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class))),
+                        @ApiResponse(responseCode = "500", description = "Erro ao cadastrar item.",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class)))
         })
         @PostMapping
         @PreAuthorize("hasRole('ADMIN')")
@@ -74,9 +113,15 @@ public class ItemController {
                 return ResponseEntity.status(HttpStatus.CREATED).body(item);
         }
 
-        @Operation(summary = "Atualizar itens cadastrados.", description = "Atualizará as informações do item específicado.", responses = {
-                        @ApiResponse(responseCode = "200", description = "Item atualizado com sucesso.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ItemResponseDTO.class))),
-                        @ApiResponse(responseCode = "400", description = "O item especificado não foi encontrado.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class)))
+        @Operation(summary = "Atualizar itens cadastrados.",
+                description = "Atualizará as informações de um item. Requsição exige o uso de um bearer token. Acesso restrito a role='ADMIN'.",
+                deprecated = true,
+                security = @SecurityRequirement(name = "security"),
+                responses = {
+                        @ApiResponse(responseCode = "200", description = "Item atualizado com sucesso.",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = ItemResponseDTO.class))),
+                        @ApiResponse(responseCode = "401", description = "Usuário não está autenticado",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class)))
         })
         @PutMapping("/{id}")
         @PreAuthorize("hasRole('ADMIN')")
@@ -89,9 +134,19 @@ public class ItemController {
                 return ResponseEntity.status(HttpStatus.OK).body(item);
         }
 
-        @Operation(summary = "Deletar itens cadastrados.", description = "Excluirá o item especificado.", responses = {
-                        @ApiResponse(responseCode = "204", description = "Item deletado com sucesso.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ItemResponseDTO.class))),
-                        @ApiResponse(responseCode = "400", description = "O item especificado não foi encontrado.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class)))
+        @Operation(summary = "Deletará um item.",
+                description = "Deletará um item. Requsição exige o uso de um bearer token. Acesso restrito a role='ADMIN'.",
+                deprecated = true,
+                security = @SecurityRequirement(name = "security"),
+                responses = {
+                        @ApiResponse(responseCode = "204", description = "Item deletado com sucesso.",
+                                content = @Content(mediaType = "application/json")),
+                        @ApiResponse(responseCode = "401", description = "Usuário não está autenticado",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class))),
+                        @ApiResponse(responseCode = "404", description = "Erro ao remover item. Item já consta como inativo ou item não existe.",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class))),
+                        @ApiResponse(responseCode = "500", description = "Erro ao remover item. Quantidade de itens disponiveis insuficientes.",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class))),
         })
         @DeleteMapping("/{id}")
         @PreAuthorize("hasRole('ADMIN')")

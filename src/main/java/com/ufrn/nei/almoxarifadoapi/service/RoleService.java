@@ -4,6 +4,7 @@ import com.ufrn.nei.almoxarifadoapi.dto.mapper.RoleMapper;
 import com.ufrn.nei.almoxarifadoapi.dto.role.RoleCreateDto;
 import com.ufrn.nei.almoxarifadoapi.dto.role.RoleUpdateDto;
 import com.ufrn.nei.almoxarifadoapi.entity.RoleEntity;
+import com.ufrn.nei.almoxarifadoapi.exception.EntityNotFoundException;
 import com.ufrn.nei.almoxarifadoapi.repository.RoleRepository;
 import com.ufrn.nei.almoxarifadoapi.repository.projection.RoleProjection;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +33,7 @@ public class RoleService {
     @Transactional(readOnly = true)
     public RoleEntity findById(Long id) {
         RoleEntity role = roleRepository.findById(id).orElseThrow(
-                () -> new RuntimeException(String.format("Role não encontrada com o id: %d", id)));
+                () -> new EntityNotFoundException(String.format("Role não encontrada com o id: %d", id)));
         return role;
     }
 
