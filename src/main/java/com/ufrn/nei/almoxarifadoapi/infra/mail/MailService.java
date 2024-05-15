@@ -74,6 +74,16 @@ public class MailService {
     }
 
     @Async
+    public void sendMailForgotPassword(String userEmail, String token) {
+        SimpleMailMessage message = 
+                mailTemplates.buildMailMessageForgotPassword(userEmail, token);
+
+        CompletableFuture<Boolean> sender = buildSendEmailAsync(message);
+
+        sender.join();
+    }
+
+    @Async
     private CompletableFuture<Boolean> buildSendEmailAsync(SimpleMailMessage simpleMailMessage) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
         try {
