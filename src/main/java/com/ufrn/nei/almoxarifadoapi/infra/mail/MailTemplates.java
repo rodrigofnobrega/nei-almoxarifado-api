@@ -1,10 +1,15 @@
 package com.ufrn.nei.almoxarifadoapi.infra.mail;
 
 import com.ufrn.nei.almoxarifadoapi.utils.RefactorDate;
+
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Component;
-import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.mail.javamail.JavaMailSender;
 
 import java.sql.Timestamp;
 
@@ -12,6 +17,9 @@ import java.sql.Timestamp;
 public class MailTemplates {
   @Autowired
   private SimpleMailMessage simpleMailMessage;
+
+  @Autowired
+  private MimeMessage mimeMessage;
 
   public SimpleMailMessage buildMailMessageUserCreated(String userEmail, String userName) {
     String subject = "Sua conta foi criada com sucesso!";
@@ -149,16 +157,17 @@ public class MailTemplates {
     return simpleMailMessage;
   }
 
-  public SimpleMailMessage buildMailMessageForgotPassword(String userEmail, String token) {
-    String subject = "Esqueci a senha.";
+  public MimeMessage buildMailMessageForgotPassword(String userEmail, String token)
+      throws MessagingException {
+    String subject = "Redefinição de senha no NEI Almoxarifado";
 
-    String text = "Seu código para a redefinição de senha no NEI Almoxarifado é " + token
-        + ". Se você não fez essa solicitação, pode ignorar este e-mail";
+    mimeMessage.setRecipients(Message.RecipientType.TO, userEmail);
+    mimeMessage.setSubject(subject);
+    mimeMessage.setContent(
+        "<h3> Código de redefinição de senha </h3> <br> <span> Seu código para a redefinição de senha é <strong>"
+            + token + "</strong>. Se você não fez essa solicitação, pode ignorar esse e-mail com segurança.",
+        "text/html; charset=UTF-8");
 
-    simpleMailMessage.setTo(userEmail);
-    simpleMailMessage.setSubject(subject);
-    simpleMailMessage.setText(text);
-
-    return simpleMailMessage;
+    return mimeMessage;
   }
 }

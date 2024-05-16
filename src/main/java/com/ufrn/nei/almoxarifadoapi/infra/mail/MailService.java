@@ -9,6 +9,10 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+
 import java.sql.Timestamp;
 import java.util.concurrent.CompletableFuture;
 
@@ -74,13 +78,34 @@ public class MailService {
     }
 
     @Async
-    public void sendMailForgotPassword(String userEmail, String token) {
-        SimpleMailMessage message = 
-                mailTemplates.buildMailMessageForgotPassword(userEmail, token);
+    public void sendMailForgotPassword(String userEmail, String token) throws MessagingException {
+        try {
+          MimeMessage message = mailTemplates.buildMailMessageForgotPassword(userEmail, token);
+          CompletableFuture<Boolean> sender = buildSendEmailAsync(message);
 
-        CompletableFuture<Boolean> sender = buildSendEmailAsync(message);
+          sender.join();
+        } catch (MessagingException e) {
+          e.printStackTrace();
+        }
+    }
 
-        sender.join();
+    @Async
+    private CompletableFuture<Boolean> buildSendEmailAsync(MimeMessage mimeMessage) throws MessagingException {
+        CompletableFuture<Boolean> future = new CompletableFuture<>();
+        try {
+            javaMailSender.send(mimeMessage);
+
+            log.info("Email enviado com sucesso para {}", mimeMessage.getRecipients(Message.RecipientType.TO));
+            future.complete(Boolean.TRUE);
+        } catch (MailAuthenticationException ex) {
+            log.error("Erro na autenticação do email - {}", ex.getMessage());
+            future.completeExceptionally(new MailAuthenticationException("Erro na autenticação do email"));
+        } catch (Exception ex) {
+            log.error("Erro ao enviar email para {}: {}", mimeMessage.getRecipients(Message.RecipientType.TO), ex.getMessage());
+            future.completeExceptionally(new MailSendException("Erro ao enviar email"));
+        }
+
+        return future;
     }
 
     @Async
