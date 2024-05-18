@@ -4,11 +4,13 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 import com.ufrn.nei.almoxarifadoapi.dto.item.ItemResponseDTO;
+import com.ufrn.nei.almoxarifadoapi.entity.UserEntity;
 import com.ufrn.nei.almoxarifadoapi.exception.EntityNotFoundException;
 import com.ufrn.nei.almoxarifadoapi.exception.ItemNotActiveException;
 import com.ufrn.nei.almoxarifadoapi.exception.NotAvailableQuantityException;
 import com.ufrn.nei.almoxarifadoapi.exception.OperationErrorException;
 
+import com.ufrn.nei.almoxarifadoapi.infra.jwt.JwtAuthenticationContext;
 import com.ufrn.nei.almoxarifadoapi.repository.projection.ItemProjection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,6 +29,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class ItemService {
     @Autowired
     private ItemRepository itemRepository;
+
+    @Autowired
+    private UserService userService;
 
     @Transactional(readOnly = true)
     public Page<ItemProjection> findAllItems(Pageable pageable) {
@@ -86,7 +91,10 @@ public class ItemService {
         } catch (EntityNotFoundException ex) {
         }
 
+        UserEntity user = userService.findById(JwtAuthenticationContext.getId());
+
         item.setAvailable(true);
+        item.setCreatedBy(user);
         itemRepository.save(item);
 
         return item;

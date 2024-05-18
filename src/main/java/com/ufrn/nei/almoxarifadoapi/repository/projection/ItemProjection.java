@@ -1,5 +1,7 @@
 package com.ufrn.nei.almoxarifadoapi.repository.projection;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public interface ItemProjection {
     Long getId();
     String getName();
@@ -7,4 +9,8 @@ public interface ItemProjection {
     Long getSipacCode();
     int getQuantity();
     Boolean getAvailable();
+    @JsonProperty("createdBy")
+    UserEntity getCreatedBy();
+
+    interface UserEntity extends UserProjection {}
 }

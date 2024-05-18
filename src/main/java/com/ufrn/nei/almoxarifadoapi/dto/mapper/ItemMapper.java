@@ -3,6 +3,8 @@ package com.ufrn.nei.almoxarifadoapi.dto.mapper;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.ufrn.nei.almoxarifadoapi.dto.user.UserResponseDTO;
+import com.ufrn.nei.almoxarifadoapi.entity.UserEntity;
 import org.modelmapper.ModelMapper;
 
 import com.ufrn.nei.almoxarifadoapi.dto.item.ItemCreateDTO;
@@ -14,7 +16,13 @@ import org.springframework.data.domain.PageImpl;
 public class ItemMapper {
 
     public static ItemResponseDTO toResponseDTO(ItemEntity itemEntity) {
-        return new ModelMapper().map(itemEntity, ItemResponseDTO.class);
+        ModelMapper modelMapper = new ModelMapper();
+        ItemResponseDTO itemResponse = modelMapper.map(itemEntity, ItemResponseDTO.class);
+        UserEntity user = itemEntity.getCreatedBy();
+        UserResponseDTO userResponse = UserMapper.toResponseDTO(user);
+        itemResponse.setCreatedBy(userResponse);
+
+        return  itemResponse;
     }
 
     public static Page<ItemResponseDTO> toPageResponseDTO(Page<ItemEntity> data) {

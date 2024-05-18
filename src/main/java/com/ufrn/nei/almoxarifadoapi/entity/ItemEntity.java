@@ -1,5 +1,6 @@
 package com.ufrn.nei.almoxarifadoapi.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -50,6 +51,11 @@ public class ItemEntity implements Serializable {
 
     @OneToMany(mappedBy = "item")
     private List<RecordEntity> records;
+
+    @OneToOne
+    @JsonManagedReference
+    @JoinColumn(name = "criado_por", nullable = false)
+    private UserEntity createdBy;
 
     @Override
     public boolean equals(Object o) {

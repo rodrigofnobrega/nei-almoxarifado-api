@@ -100,10 +100,6 @@ public class RequestService {
         }
 
         return Boolean.FALSE;
-
-        validateRequestStatus(request, RequestStatusEnum.RECUSADO);
-
-        return updateRequestStatus(request, RequestStatusEnum.RECUSADO);
     }
 
     @Transactional
@@ -120,10 +116,6 @@ public class RequestService {
         }
 
         return Boolean.FALSE;
-
-        validateRequestStatus(request, RequestStatusEnum.CANCELADO);
-
-        return updateRequestStatus(request, RequestStatusEnum.CANCELADO);
     }
 
     @Transactional(readOnly = true)
