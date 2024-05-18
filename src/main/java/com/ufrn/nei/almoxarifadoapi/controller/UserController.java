@@ -5,9 +5,13 @@ import com.ufrn.nei.almoxarifadoapi.dto.mapper.PageableMapper;
 import com.ufrn.nei.almoxarifadoapi.dto.mapper.UserMapper;
 import com.ufrn.nei.almoxarifadoapi.dto.pageable.PageableDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.user.UserCreateDTO;
+import com.ufrn.nei.almoxarifadoapi.dto.user.UserPasswordForgotUpdateDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.user.UserPasswordUpdateDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.user.UserResponseDTO;
+import com.ufrn.nei.almoxarifadoapi.entity.RecoveryTokenEntity;
 import com.ufrn.nei.almoxarifadoapi.entity.UserEntity;
+import com.ufrn.nei.almoxarifadoapi.exception.ConflictUpdatePasswordException;
+import com.ufrn.nei.almoxarifadoapi.exception.EntityNotFoundException;
 import com.ufrn.nei.almoxarifadoapi.infra.RestErrorMessage;
 import com.ufrn.nei.almoxarifadoapi.repository.projection.UserProjection;
 import com.ufrn.nei.almoxarifadoapi.service.UserService;
@@ -21,6 +25,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -147,7 +154,7 @@ public class UserController {
 
         @Operation(summary = "Atualizar senha de usuário",
                 description = "Requsição exige o uso de um bearer token. Acesso restrito a role='ADMIN', 'USER'.",
-                deprecated = true,
+                // deprecated = true,
                 security = @SecurityRequirement(name = "security"),
                 responses = {
                         @ApiResponse(responseCode = "204", description = "Senha atualizada com sucesso.",
@@ -161,12 +168,24 @@ public class UserController {
                         @ApiResponse(responseCode = "404", description = "Usuário não encontrado.",
                                 content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class)))
                 })
+
         @PutMapping("/{id}")
         @PreAuthorize("hasRole('ADMIN') OR ( hasRole('USER') AND #id == authentication.principal.id )")
-        public ResponseEntity<Void> updatePassword(@RequestBody @Valid UserPasswordUpdateDTO passwordUpdateDTO,
-                        @PathVariable Long id) {
-                userService.updatePassword(passwordUpdateDTO.getCurrentPassword(),
+        public ResponseEntity<Void> updatePassword(@RequestBody @Valid UserPasswordUpdateDTO passwordUpdateDTO, @PathVariable Long id) throws ConflictUpdatePasswordException {
+              try {
+                if (passwordUpdateDTO.getRecoveryToken() != null 
+                    && passwordUpdateDTO.getCurrentPassword() == null) { 
+                    userService.updatePassword(id, passwordUpdateDTO.getRecoveryToken(),
+                                passwordUpdateDTO.getNewPassword(), passwordUpdateDTO.getConfirmPassword());
+                }
+                else if (passwordUpdateDTO.getCurrentPassword() != null 
+                    && passwordUpdateDTO.getRecoveryToken() == null) { 
+                    userService.updatePassword(passwordUpdateDTO.getCurrentPassword(),
                                 passwordUpdateDTO.getNewPassword(), passwordUpdateDTO.getConfirmPassword(), id);
+                }
+                else 
+                    throw new ConflictUpdatePasswordException();
+                } catch (Exception ex) { throw ex; }
 
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }

@@ -12,7 +12,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserPasswordUpdateDTO {
-    @NotBlank
+    @Size(min = 6, max = 6)
+    private String recoveryToken;
     @Size(min = 5)
     private String currentPassword;
     @NotBlank

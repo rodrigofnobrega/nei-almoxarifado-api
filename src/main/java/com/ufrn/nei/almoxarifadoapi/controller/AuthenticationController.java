@@ -126,10 +126,6 @@ public class AuthenticationController {
         throw new Exception("Código expirado.");
       }
 
-      recoveryToken.setUsed(true);
-      recoveryToken.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
-      recoveryTokenRepository.save(recoveryToken);
-
       return ResponseEntity.status(HttpStatus.OK).body(true);
 
     } catch (Exception ex) {
