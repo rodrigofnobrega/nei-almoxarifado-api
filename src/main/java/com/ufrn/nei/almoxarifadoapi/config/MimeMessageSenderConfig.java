@@ -30,9 +30,6 @@ public class MimeMessageSenderConfig {
         props.put("mail.smtp.user", sender);
         props.put("mail.smtp.from", sender);
 
-        System.out.println("FROM: " + sender);
-        System.out.println("props: " + props);
-
         Session session = Session.getInstance(props);
 
         MimeMessage message = new MimeMessage(session);
