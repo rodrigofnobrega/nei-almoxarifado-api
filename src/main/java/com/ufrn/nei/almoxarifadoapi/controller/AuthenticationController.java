@@ -6,6 +6,7 @@ import com.ufrn.nei.almoxarifadoapi.dto.user.UserLoginDTO;
 import com.ufrn.nei.almoxarifadoapi.entity.RecoveryTokenEntity;
 import com.ufrn.nei.almoxarifadoapi.entity.UserEntity;
 import com.ufrn.nei.almoxarifadoapi.exception.EntityNotFoundException;
+import com.ufrn.nei.almoxarifadoapi.exception.InvalidRecoveryTokenException;
 import com.ufrn.nei.almoxarifadoapi.infra.RestErrorMessage;
 import com.ufrn.nei.almoxarifadoapi.infra.jwt.JwtToken;
 import com.ufrn.nei.almoxarifadoapi.infra.jwt.JwtUserDetailsService;
@@ -85,6 +86,11 @@ public class AuthenticationController {
         .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST, "Credenciais inválidas"));
   }
 
+  @Operation(summary = "Esqueceu a senha", description = "Solicita um token de redefinição de senha no e-mail", responses = {
+      @ApiResponse(responseCode = "204", description = "Envio de um token de redefinição de senha para o e-mail enviado", content = @Content(mediaType = "application/json")),
+      @ApiResponse(responseCode = "400", description = "E-mail de usuário não encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class)))
+  })
+
   @PostMapping("/forgotPassword")
   public ResponseEntity<?> forgotPassword(@RequestBody @Valid EmailForgotPasswordDTO emailDTO,
       HttpServletRequest request) {
@@ -114,24 +120,23 @@ public class AuthenticationController {
     }
   }
 
+  @Operation(summary = "Validar token de recuperação", description = "Valida o token de redefinição de senha enviado no e-mail", responses = {
+      @ApiResponse(responseCode = "200", description = "Token é válido para ser usado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Boolean.class))),
+      @ApiResponse(responseCode = "400", description = "Token expirado/já usado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class))),
+      @ApiResponse(responseCode = "404", description = "Token não encontrado no banco de dados", content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class)))
+  })
+
   @PostMapping("/validateRecoveryToken")
-  public ResponseEntity<?> validateRecoveryToken(@RequestBody @Valid RecoveryTokenValidateDTO tokenDTO,
-      HttpServletRequest request) {
-    try {
+  public ResponseEntity<?> validateRecoveryToken(@RequestBody @Valid RecoveryTokenValidateDTO tokenDTO) {
       String token = tokenDTO.getToken();
       RecoveryTokenEntity recoveryToken = recoveryTokenRepository.findByToken(token).orElseThrow(
           () -> new EntityNotFoundException("Código digitado não existe."));
 
       if (recoveryToken.isUsed() || isRecoveryTokenExpired(recoveryToken)) {
-        throw new Exception("Código expirado.");
+        throw new InvalidRecoveryTokenException("Código expirado.");
       }
 
       return ResponseEntity.status(HttpStatus.OK).body(true);
-
-    } catch (Exception ex) {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-          .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST, ex.getMessage()));
-    }
   }
 
   private boolean isRecoveryTokenExpired(RecoveryTokenEntity token) {

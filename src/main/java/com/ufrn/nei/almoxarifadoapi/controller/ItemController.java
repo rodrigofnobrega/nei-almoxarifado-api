@@ -78,7 +78,7 @@ public class ItemController {
                                 content = @Content(mediaType = "application/json", schema = @Schema(implementation = ItemResponseDTO.class))),
                         @ApiResponse(responseCode = "401", description = "Usuário não está autenticado",
                                 content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class))),
-                        @ApiResponse(responseCode = "404", description = "Itens não encontrado.",
+                        @ApiResponse(responseCode = "404", description = "Itens não encontrados.",
                                 content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class)))
         })
         @GetMapping("/{id}")

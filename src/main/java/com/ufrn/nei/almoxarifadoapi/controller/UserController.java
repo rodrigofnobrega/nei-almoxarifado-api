@@ -5,7 +5,6 @@ import com.ufrn.nei.almoxarifadoapi.dto.mapper.PageableMapper;
 import com.ufrn.nei.almoxarifadoapi.dto.mapper.UserMapper;
 import com.ufrn.nei.almoxarifadoapi.dto.pageable.PageableDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.user.UserCreateDTO;
-import com.ufrn.nei.almoxarifadoapi.dto.user.UserPasswordForgotUpdateDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.user.UserPasswordUpdateDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.user.UserResponseDTO;
 import com.ufrn.nei.almoxarifadoapi.entity.RecoveryTokenEntity;
@@ -153,7 +152,7 @@ public class UserController {
         }
 
         @Operation(summary = "Atualizar senha de usuário",
-                description = "Requsição exige o uso de um bearer token. Acesso restrito a role='ADMIN', 'USER'.",
+                description = "Requsição exige o uso de um bearer token. Somente um dos campos entre 'recoveryToken' e 'confirmPassword' deve vir preenchido.",
                 // deprecated = true,
                 security = @SecurityRequirement(name = "security"),
                 responses = {
@@ -166,11 +165,13 @@ public class UserController {
                         @ApiResponse(responseCode = "403", description = "Erro. O usuário passou o ID de outro usuário.",
                                 content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class))),
                         @ApiResponse(responseCode = "404", description = "Usuário não encontrado.",
+                                content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class))),
+                        @ApiResponse(responseCode = "422", description = "Campos 'recoveryToken' e 'confirmPassword' em conflito.",
                                 content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class)))
-                })
+    })
 
         @PutMapping("/{id}")
-        @PreAuthorize("hasRole('ADMIN') OR ( hasRole('USER') AND #id == authentication.principal.id )")
+        @PreAuthorize("hasRole('ADMIN') OR ( hasRole('USER'))")
         public ResponseEntity<Void> updatePassword(@RequestBody @Valid UserPasswordUpdateDTO passwordUpdateDTO, @PathVariable Long id) throws ConflictUpdatePasswordException {
               try {
                 if (passwordUpdateDTO.getRecoveryToken() != null 
