@@ -65,6 +65,15 @@ public class RestExceptionHandler {
                                 .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST, exception.getMessage()));
         }
 
+        @ExceptionHandler(InvalidRecoveryTokenException.class)
+        public ResponseEntity<RestErrorMessage> handleInvalidRecoveryToken(InvalidRecoveryTokenException exception,
+                        HttpServletRequest request) {
+                log.info("API ERROR - ", exception);
+
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST, exception.getMessage()));
+        }
+
         @ExceptionHandler({OperationErrorException.class, NotAvailableQuantityException.class})
         public ResponseEntity<RestErrorMessage> handlePasswordInvalidException(OperationErrorException exception,
                         HttpServletRequest request) {
