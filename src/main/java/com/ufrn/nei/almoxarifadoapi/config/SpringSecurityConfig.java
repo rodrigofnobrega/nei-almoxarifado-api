@@ -41,6 +41,7 @@ public class SpringSecurityConfig {
                                 antMatcher(HttpMethod.POST, "/api/v1/auth"),
                                 antMatcher(HttpMethod.POST, "/api/v1/auth/validateRecoveryToken"),
                                 antMatcher(HttpMethod.POST, "/api/v1/auth/forgotPassword"),
+                                antMatcher(HttpMethod.PUT, "/api/v1/users/updateForgotPassword/**"),
                                 antMatcher("/docs-almoxarifado.html"),
                                 antMatcher("/docs-almoxarifado/**"),
                                 antMatcher("/swagger-ui.html"),

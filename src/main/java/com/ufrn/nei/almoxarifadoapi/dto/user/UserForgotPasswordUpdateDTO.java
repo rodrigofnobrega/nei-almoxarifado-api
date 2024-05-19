@@ -11,10 +11,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserPasswordUpdateDTO {
+public class UserForgotPasswordUpdateDTO {
     @NotBlank
-    @Size(min = 5)
-    private String currentPassword;
+    @Size(min = 6, max = 6)
+    private String recoveryToken;
     @NotBlank
     @Size(min = 5)
     private String newPassword;
