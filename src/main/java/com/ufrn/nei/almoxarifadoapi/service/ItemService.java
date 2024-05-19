@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 import com.ufrn.nei.almoxarifadoapi.dto.item.ItemResponseDTO;
+import com.ufrn.nei.almoxarifadoapi.entity.RecordEntity;
 import com.ufrn.nei.almoxarifadoapi.entity.UserEntity;
 import com.ufrn.nei.almoxarifadoapi.exception.EntityNotFoundException;
 import com.ufrn.nei.almoxarifadoapi.exception.ItemNotActiveException;
@@ -89,13 +90,20 @@ public class ItemService {
 
             item.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
         } catch (EntityNotFoundException ex) {
+            UserEntity user = userService.findById(JwtAuthenticationContext.getId());
+            item.setCreatedBy(user);
         }
 
-        UserEntity user = userService.findById(JwtAuthenticationContext.getId());
-
         item.setAvailable(true);
-        item.setCreatedBy(user);
         itemRepository.save(item);
+
+        return item;
+    }
+
+    @Transactional
+    public ItemEntity setLastRecord(ItemEntity item, RecordEntity record) {
+        item.setLastRecord(record);
+        item = itemRepository.save(item);
 
         return item;
     }

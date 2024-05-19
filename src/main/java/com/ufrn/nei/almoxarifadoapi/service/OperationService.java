@@ -22,6 +22,8 @@ public class OperationService {
 
         RecordEntity record = recordService.save(createDTO, RecordOperationEnum.CONSUMO);
 
+        itemService.setLastRecord(itemService.findById(createDTO.getItemID()), record);
+
         return record;
     }
 
@@ -31,6 +33,8 @@ public class OperationService {
                 new RecordCreateDTO(JwtAuthenticationContext.getId(), item.getId(), createDTO.getQuantity());
         RecordEntity record = recordService.save(recordCreateDTO, RecordOperationEnum.CADASTRO);
 
+        itemService.setLastRecord(item, record);
+
         return record;
     }
 
@@ -38,6 +42,8 @@ public class OperationService {
         itemService.deleteOrConsumeItem(createDTO.getItemID(), createDTO.getQuantity());
 
         RecordEntity record = recordService.save(createDTO, RecordOperationEnum.EXCLUSAO);
+
+        itemService.setLastRecord(itemService.findById(createDTO.getItemID()), record);
 
         return record;
     }

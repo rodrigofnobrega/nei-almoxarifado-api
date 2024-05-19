@@ -1,7 +1,6 @@
 package com.ufrn.nei.almoxarifadoapi.dto.item;
 
-import java.sql.Timestamp;
-
+import com.ufrn.nei.almoxarifadoapi.dto.record.RecordResponseDTO;
 import com.ufrn.nei.almoxarifadoapi.dto.user.UserResponseDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,6 +21,7 @@ public class ItemResponseDTO {
     private String type;
     private boolean available;
     private UserResponseDTO createdBy;
+    private RecordResponseDTO lastRecord;
 
     @Override
     public boolean equals(Object o) {

@@ -57,6 +57,11 @@ public class ItemEntity implements Serializable {
     @JoinColumn(name = "criado_por", nullable = false)
     private UserEntity createdBy;
 
+    @OneToOne
+    @JsonManagedReference
+    @JoinColumn(name = "ultimo_registro")
+    private RecordEntity lastRecord;
+
     @Override
     public boolean equals(Object o) {
         if (this == o)
