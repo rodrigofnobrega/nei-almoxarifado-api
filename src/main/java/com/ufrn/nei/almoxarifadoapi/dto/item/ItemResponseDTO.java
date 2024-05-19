@@ -20,6 +20,7 @@ public class ItemResponseDTO {
     private int quantity;
     private String type;
     private boolean available;
+    private String createdAt;
     private UserResponseDTO createdBy;
     private RecordResponseDTO lastRecord;
 
