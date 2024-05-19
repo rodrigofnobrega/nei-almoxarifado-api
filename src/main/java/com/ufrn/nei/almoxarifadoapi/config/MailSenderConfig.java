@@ -35,7 +35,6 @@ public class MailSenderConfig {
         Properties props = new Properties();
         props.put("mail.smtp.host", host);
         props.put("mail.smtp.port", port);
-        props.put("mail.smtp.user", sender);
 
         Session session = Session.getInstance(props);
 
