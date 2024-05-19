@@ -6,6 +6,7 @@ import com.ufrn.nei.almoxarifadoapi.entity.RecoveryTokenEntity;
 import com.ufrn.nei.almoxarifadoapi.entity.RoleEntity;
 import com.ufrn.nei.almoxarifadoapi.entity.UserEntity;
 import com.ufrn.nei.almoxarifadoapi.exception.EntityNotFoundException;
+import com.ufrn.nei.almoxarifadoapi.exception.InvalidRecoveryTokenException;
 import com.ufrn.nei.almoxarifadoapi.exception.PasswordInvalidException;
 import com.ufrn.nei.almoxarifadoapi.infra.mail.MailService;
 import com.ufrn.nei.almoxarifadoapi.repository.RecoveryTokenRepository;
@@ -83,7 +84,7 @@ public class UserService {
     if (storedToken == null || storedToken.isUsed()) 
       throw new EntityNotFoundException("Não há token de recuperação válido para o usuário de id " + id);
     else if (!storedToken.getToken().equals(token)) {
-      throw new EntityNotFoundException("Token de recuperação enviado é diferente do armazenado para o usuário.");
+      throw new InvalidRecoveryTokenException("Token de recuperação enviado é diferente do armazenado para o usuário.");
     }
 
     if (!newPassword.equals(confirmPassword)) {
