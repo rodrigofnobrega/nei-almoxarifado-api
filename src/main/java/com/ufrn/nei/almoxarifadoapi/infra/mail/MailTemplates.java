@@ -8,6 +8,7 @@ import jakarta.mail.internet.MimeMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 import org.springframework.mail.javamail.JavaMailSender;
 
@@ -157,17 +158,19 @@ public class MailTemplates {
     return simpleMailMessage;
   }
 
-  public MimeMessage buildMailMessageForgotPassword(String userEmail, String token)
+  public MimeMessageHelper buildMailMessageForgotPassword(String userEmail, String token, MimeMessage mime)
       throws MessagingException {
+    MimeMessageHelper helper = new MimeMessageHelper(mime, true);
+
     String subject = "Redefinição de senha no NEI Almoxarifado";
 
-    mimeMessage.setRecipients(Message.RecipientType.TO, userEmail);
-    mimeMessage.setSubject(subject);
-    mimeMessage.setContent(
-        "<h3> Código de redefinição de senha </h3> <br> <span> Seu código para a redefinição de senha é <strong>"
-            + token + "</strong>. Se você não fez essa solicitação, pode ignorar esse e-mail com segurança.",
-        "text/html; charset=UTF-8");
+    helper.setTo(userEmail);
+    helper.setSubject(subject);
+    helper.setText(
+        "",
+            "<h3> Código de redefinição de senha </h3> <br> <span> Seu código para a redefinição de senha é <strong>"
+                    + token + "</strong>. Se você não fez essa solicitação, pode ignorar esse e-mail com segurança.");
 
-    return mimeMessage;
+    return helper;
   }
 }

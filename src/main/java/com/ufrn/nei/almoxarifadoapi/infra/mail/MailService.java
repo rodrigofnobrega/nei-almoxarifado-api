@@ -23,6 +23,8 @@ public class MailService {
     private JavaMailSender javaMailSender;
     @Autowired
     private MailTemplates mailTemplates;
+    @Autowired
+    private MimeMessage mime;
 
     @Async
     public void sendMailUserCreatedAsync(String userEmail, String userName) {
@@ -80,8 +82,9 @@ public class MailService {
     @Async
     public void sendMailForgotPassword(String userEmail, String token) throws MessagingException {
         try {
-          MimeMessage message = mailTemplates.buildMailMessageForgotPassword(userEmail, token);
-          CompletableFuture<Boolean> sender = buildSendEmailAsync(message);
+          mailTemplates.buildMailMessageForgotPassword(userEmail, token, mime);
+
+          CompletableFuture<Boolean> sender = buildSendEmailAsync(mime);
 
           sender.join();
         } catch (MessagingException e) {
