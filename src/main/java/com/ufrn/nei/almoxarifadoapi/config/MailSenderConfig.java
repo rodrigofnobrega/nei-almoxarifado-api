@@ -20,7 +20,6 @@ public class MailSenderConfig {
     @Value("${spring.mail.username}")
     private String sender;
 
-
     @Bean
     SimpleMailMessage configSimpleMailMessage() {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
@@ -30,6 +29,8 @@ public class MailSenderConfig {
 
     @Bean
     MimeMessage configMimeMessage() throws MessagingException {
-        return javaMailSender.createMimeMessage();
+        MimeMessage mime = javaMailSender.createMimeMessage();
+        mime.setFrom(sender);
+        return mime;
     }
 }
