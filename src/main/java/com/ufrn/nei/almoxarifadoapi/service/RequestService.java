@@ -115,8 +115,8 @@ public class RequestService {
             return Boolean.TRUE;
         }
 
-        return Boolean.FALSE;
-    }
+    return Boolean.FALSE;
+  }
 
     @Transactional(readOnly = true)
     public Page<RequestProjection> findAll(Pageable pageable) {

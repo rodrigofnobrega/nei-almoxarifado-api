@@ -65,6 +65,15 @@ public class RestExceptionHandler {
                                 .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST, exception.getMessage()));
         }
 
+        @ExceptionHandler(InvalidRecoveryTokenException.class)
+        public ResponseEntity<RestErrorMessage> handleInvalidRecoveryToken(InvalidRecoveryTokenException exception,
+                        HttpServletRequest request) {
+                log.info("API ERROR - ", exception);
+
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                .body(new RestErrorMessage(request, HttpStatus.BAD_REQUEST, exception.getMessage()));
+        }
+
         @ExceptionHandler({OperationErrorException.class, NotAvailableQuantityException.class})
         public ResponseEntity<RestErrorMessage> handlePasswordInvalidException(OperationErrorException exception,
                         HttpServletRequest request) {
@@ -93,6 +102,13 @@ public class RestExceptionHandler {
         @ExceptionHandler(ModifyStatusException.class)
         public ResponseEntity<RestErrorMessage> handleErrorOnDatabase(ModifyStatusException exception,
                                                                       HttpServletRequest request) {
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                        .body(new RestErrorMessage(request, HttpStatus.CONFLICT,
+                                exception.getLocalizedMessage()));
+        }
+
+        @ExceptionHandler(ConflictUpdatePasswordException.class)
+        public ResponseEntity<RestErrorMessage> handleMultipleIntentionsOnUpdatePassword(ConflictUpdatePasswordException exception, HttpServletRequest request) {
                 return ResponseEntity.status(HttpStatus.CONFLICT)
                         .body(new RestErrorMessage(request, HttpStatus.CONFLICT,
                                 exception.getLocalizedMessage()));
