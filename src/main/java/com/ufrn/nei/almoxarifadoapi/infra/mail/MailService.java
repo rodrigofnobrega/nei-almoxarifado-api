@@ -28,7 +28,7 @@ public class MailService {
     public void sendMailUserCreatedAsync(String userEmail, String userName) {
         SimpleMailMessage message = mailTemplates.buildMailMessageUserCreated(userEmail, userName);
 
-        CompletableFuture<Boolean> sender = buildSendEmailAsync(message);
+        buildSendEmailAsync(message);
     }
 
     @Async
@@ -37,7 +37,7 @@ public class MailService {
         SimpleMailMessage message =
                 mailTemplates.buildMailMessageRequestCreated(userEmail, userName, itemName, date, itemQuantity);
 
-        CompletableFuture<Boolean> sender = buildSendEmailAsync(message);
+        buildSendEmailAsync(message);
     }
 
     @Async
@@ -46,7 +46,7 @@ public class MailService {
         SimpleMailMessage message =
                 mailTemplates.buildMailMessageRequestAccepted(userEmail, userName, itemName, date, itemQuantity);
 
-        CompletableFuture<Boolean> sender = buildSendEmailAsync(message);
+        buildSendEmailAsync(message);
     }
 
     @Async
@@ -55,7 +55,7 @@ public class MailService {
         SimpleMailMessage message =
                 mailTemplates.buildMailMessageRequestDenied(userEmail, userName, itemName, date, itemQuantity);
 
-        CompletableFuture<Boolean> sender = buildSendEmailAsync(message);
+        buildSendEmailAsync(message);
     }
 
     @Async
@@ -64,7 +64,7 @@ public class MailService {
         SimpleMailMessage message =
                 mailTemplates.buildMailMessageRequestCanceled(userEmail, userName, itemName, date, itemQuantity);
 
-        CompletableFuture<Boolean> sender = buildSendEmailAsync(message);
+        buildSendEmailAsync(message);
     }
 
     @Async
@@ -72,49 +72,37 @@ public class MailService {
         try {
             MimeMessage mime = javaMailSender.createMimeMessage();
             mailTemplates.buildMailMessageForgotPassword(userEmail, token, mime);
-
-            CompletableFuture<Boolean> sender = buildSendEmailAsync(mime);
-
+            buildSendEmailAsync(mime);
         } catch (MessagingException e) {
           e.printStackTrace();
         }
     }
 
     @Async
-    private CompletableFuture<Boolean> buildSendEmailAsync(MimeMessage mimeMessage) throws MessagingException {
-        CompletableFuture<Boolean> future = new CompletableFuture<>();
+    private void buildSendEmailAsync(MimeMessage mimeMessage) throws MessagingException {
         try {
             javaMailSender.send(mimeMessage);
-
             log.info("Email enviado com sucesso para {}", mimeMessage.getRecipients(Message.RecipientType.TO));
-            future.complete(Boolean.TRUE);
         } catch (MailAuthenticationException ex) {
             log.error("Erro na autenticação do email - {}", ex.getMessage());
-            future.completeExceptionally(new MailAuthenticationException("Erro na autenticação do email"));
-        } catch (Exception ex) {
+        } catch (MailSendException ex) {
             log.error("Erro ao enviar email para {}: {}", mimeMessage.getRecipients(Message.RecipientType.TO), ex.getMessage());
-            future.completeExceptionally(new MailSendException("Erro ao enviar email"));
+        } catch (Exception ex) {
+            log.error("Erro desconhecido ao enviar email para {}: {}", mimeMessage.getRecipients(Message.RecipientType.TO), ex.getMessage());
         }
-
-        return future;
     }
 
     @Async
-    private CompletableFuture<Boolean> buildSendEmailAsync(SimpleMailMessage simpleMailMessage) {
-        CompletableFuture<Boolean> future = new CompletableFuture<>();
+    private void buildSendEmailAsync(SimpleMailMessage simpleMailMessage) {
         try {
             javaMailSender.send(simpleMailMessage);
-
             log.info("Email enviado com sucesso para {}", simpleMailMessage.getTo());
-            future.complete(Boolean.TRUE);
-        } catch (MailSendException ex) {
-            log.error("Erro ao enviar email para {}: {}", simpleMailMessage.getTo(), ex.getMessage());
-            future.completeExceptionally(new MailSendException("Erro ao enviar email"));
         } catch (MailAuthenticationException ex) {
             log.error("Erro na autenticação do email - {}", ex.getMessage());
-            future.completeExceptionally(new MailAuthenticationException("Erro na autenticação do email"));
+        } catch (MailSendException ex) {
+            log.error("Erro ao enviar email para {}: {}", simpleMailMessage.getTo(), ex.getMessage());
+        } catch (Exception ex) {
+            log.error("Erro desconhecido ao enviar email para {}: {}", simpleMailMessage.getTo(), ex.getMessage());
         }
-
-        return future;
     }
 }
