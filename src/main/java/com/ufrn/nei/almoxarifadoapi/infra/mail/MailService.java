@@ -31,8 +31,6 @@ public class MailService {
         SimpleMailMessage message = mailTemplates.buildMailMessageUserCreated(userEmail, userName);
 
         CompletableFuture<Boolean> sender = buildSendEmailAsync(message);
-
-        sender.join();
     }
 
     @Async
@@ -42,8 +40,6 @@ public class MailService {
                 mailTemplates.buildMailMessageRequestCreated(userEmail, userName, itemName, date, itemQuantity);
 
         CompletableFuture<Boolean> sender = buildSendEmailAsync(message);
-
-        sender.join();
     }
 
     @Async
@@ -53,8 +49,6 @@ public class MailService {
                 mailTemplates.buildMailMessageRequestAccepted(userEmail, userName, itemName, date, itemQuantity);
 
         CompletableFuture<Boolean> sender = buildSendEmailAsync(message);
-
-        sender.join();
     }
 
     @Async
@@ -64,8 +58,6 @@ public class MailService {
                 mailTemplates.buildMailMessageRequestDenied(userEmail, userName, itemName, date, itemQuantity);
 
         CompletableFuture<Boolean> sender = buildSendEmailAsync(message);
-
-        sender.join();
     }
 
     @Async
@@ -75,8 +67,6 @@ public class MailService {
                 mailTemplates.buildMailMessageRequestCanceled(userEmail, userName, itemName, date, itemQuantity);
 
         CompletableFuture<Boolean> sender = buildSendEmailAsync(message);
-
-        sender.join();
     }
 
     @Async
@@ -86,7 +76,6 @@ public class MailService {
 
           CompletableFuture<Boolean> sender = buildSendEmailAsync(mime);
 
-          sender.join();
         } catch (MessagingException e) {
           e.printStackTrace();
         }
