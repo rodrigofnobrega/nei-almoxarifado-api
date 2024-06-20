@@ -19,9 +19,6 @@ public class MailTemplates {
   @Autowired
   private SimpleMailMessage simpleMailMessage;
 
-  @Autowired
-  private MimeMessage mimeMessage;
-
   public SimpleMailMessage buildMailMessageUserCreated(String userEmail, String userName) {
     String subject = "Sua conta foi criada com sucesso!";
     String text = String.format(
