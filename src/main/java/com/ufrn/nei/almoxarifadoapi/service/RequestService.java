@@ -12,6 +12,7 @@ import com.ufrn.nei.almoxarifadoapi.exception.ModifyStatusException;
 import com.ufrn.nei.almoxarifadoapi.exception.StatusNotFoundException;
 import com.ufrn.nei.almoxarifadoapi.exception.UnauthorizedAccessException;
 import com.ufrn.nei.almoxarifadoapi.infra.jwt.JwtAuthenticationContext;
+import com.ufrn.nei.almoxarifadoapi.infra.jwt.JwtUserDetails;
 import com.ufrn.nei.almoxarifadoapi.infra.mail.MailService;
 import com.ufrn.nei.almoxarifadoapi.repository.RequestRepository;
 
@@ -25,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -159,8 +161,17 @@ public class RequestService {
     }
 
     @Transactional(readOnly = true)
-    public Page<RequestProjection> findByUserID(Long id, Pageable pageable) {
-        Page<RequestProjection> requests = requestRepository.findByUserId(id, pageable);
+    public Page<RequestProjection> findByUserID(Integer userId, JwtUserDetails userDetails, Pageable pageable) {
+        Page<RequestProjection> requests;
+        String userRole = userDetails.getRole();
+
+        if (userRole.equalsIgnoreCase("ROLE_ADMIN")) {
+            Long userIdLong = userId == 0 ? userDetails.getId() : userId.longValue();
+
+            requests = requestRepository.findByUserId(userIdLong, pageable);
+        } else {
+            requests = requestRepository.findByUserId(userDetails.getId(), pageable);
+        }
 
         return requests;
     }

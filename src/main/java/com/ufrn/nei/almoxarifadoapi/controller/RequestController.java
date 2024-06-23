@@ -10,6 +10,7 @@ import com.ufrn.nei.almoxarifadoapi.entity.RequestEntity;
 import com.ufrn.nei.almoxarifadoapi.enums.RequestStatusEnum;
 import com.ufrn.nei.almoxarifadoapi.exception.StatusNotFoundException;
 import com.ufrn.nei.almoxarifadoapi.infra.RestErrorMessage;
+import com.ufrn.nei.almoxarifadoapi.infra.jwt.JwtUserDetails;
 import com.ufrn.nei.almoxarifadoapi.repository.projection.RequestProjection;
 import com.ufrn.nei.almoxarifadoapi.service.RequestService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,6 +22,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,6 +30,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -215,19 +218,38 @@ public class RequestController {
     }
 
     @Operation(summary = "Recuperar solicitação pelo ID de usuário",
-            description = "Requisição exige uso de um bearer token. Acesso restrito a Role='ADMIN'",
+            description = "Requisição exige uso de um bearer token. Acesso restrito a Role='ADMIN','USER'",
             security = @SecurityRequirement(name = "security"),
+            parameters = {
+                    @Parameter(in = ParameterIn.QUERY, name = "userId",
+                            content = @Content(schema = @Schema(type = "integer", defaultValue = "0")),
+                            description = "Seleciona o usuário desejado"
+                    ),
+                    @Parameter(in = ParameterIn.QUERY, name = "page",
+                            content = @Content(schema = @Schema(type = "integer", defaultValue = "0")),
+                            description = "Representa a página retornada"
+                    ),
+                    @Parameter(in = ParameterIn.QUERY, name = "size",
+                            content = @Content(schema = @Schema(type = "integer", defaultValue = "20")),
+                            description = "Representa o total de elementos por página"
+                    ),
+                    @Parameter(in = ParameterIn.QUERY, name = "sort", hidden = true,
+                            array = @ArraySchema(schema = @Schema(type = "string", defaultValue = "id,asc")),
+                            description = "Representa a ordenação dos resultados. Aceita múltiplos critérios de ordenação"
+                    ),
+            },
             responses = {
                     @ApiResponse(responseCode = "200", description = "Recurso localizado com sucesso",
                             content = @Content(mediaType = "applicaton/json;charset=UTF-8", schema = @Schema(implementation = PageableDTO.class))),
                     @ApiResponse(responseCode = "401", description = "Usuário não está autenticado",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class)))
             })
-    @GetMapping("/user/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<PageableDTO> findByUserId(@PathVariable Long id,
-                                                                 Pageable pageable) {
-        Page<RequestProjection> requestPage = requestService.findByUserID(id, pageable);
+    @GetMapping("/user")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public ResponseEntity<PageableDTO> findByUserId(@RequestParam(required = false, defaultValue = "0") Integer userId,
+                                                    Pageable pageable,
+                                                    @AuthenticationPrincipal JwtUserDetails userDetails) {
+        Page<RequestProjection> requestPage = requestService.findByUserID(userId, userDetails, pageable);
         PageableDTO response = PageableMapper.toDto(requestPage);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
