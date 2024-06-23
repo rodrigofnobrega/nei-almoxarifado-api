@@ -93,6 +93,20 @@ public class MailService {
     }
 
     @Async
+    public void sendMailLowStock(String[] sendTo, String itemName, Integer currentQuantity,
+                                 Integer idealAmount) {
+        try {
+            mailTemplates.buildMailMessageLowStock(sendTo, itemName, currentQuantity, idealAmount, mime);
+
+            CompletableFuture<Boolean> sender = buildSendEmailAsync(mime);
+
+            sender.join();
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Async
     private CompletableFuture<Boolean> buildSendEmailAsync(MimeMessage mimeMessage) throws MessagingException {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
         try {
