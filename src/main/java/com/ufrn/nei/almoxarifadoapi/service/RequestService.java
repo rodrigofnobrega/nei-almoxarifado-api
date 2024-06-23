@@ -182,8 +182,14 @@ public class RequestService {
     }
 
     @Transactional(readOnly = true)
-    public Page<RequestProjection> findByItemID(Long id, Pageable pageable) {
-        Page<RequestProjection> requests = requestRepository.findByItemId(id, pageable);
+    public Page<RequestProjection> findByItemID(Long id, JwtUserDetails userDetails, Pageable pageable) {
+        Page<RequestProjection> requests;
+
+        if (userDetails.getRole().equalsIgnoreCase("ROLE_ADMIN")) {
+            requests = requestRepository.findByItemId(id, pageable);
+        } else {
+            requests = requestRepository.findByItemId(id, userDetails.getId(), pageable);
+        }
 
         return requests;
     }

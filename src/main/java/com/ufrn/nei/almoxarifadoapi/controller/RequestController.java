@@ -267,10 +267,11 @@ public class RequestController {
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class)))
             })
     @GetMapping("/item/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<PageableDTO> findByItemId(@PathVariable Long id,
-                                                                 Pageable pageable) {
-        Page<RequestProjection> requestPage = requestService.findByItemID(id, pageable);
+                                                    Pageable pageable,
+                                                    @AuthenticationPrincipal JwtUserDetails userDetails) {
+        Page<RequestProjection> requestPage = requestService.findByItemID(id, userDetails,pageable);
         PageableDTO response = PageableMapper.toDto(requestPage);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
