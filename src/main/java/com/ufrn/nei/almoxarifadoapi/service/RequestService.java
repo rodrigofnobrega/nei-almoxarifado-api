@@ -49,6 +49,8 @@ public class RequestService {
     @Autowired
     private MailService mailService;
 
+    private final String ROLE_ADMIN = "ROLE_ADMIN";
+
     @Transactional
     public RequestEntity create(RequestCreateDTO data) {
         UserEntity user = userService.findById(JwtAuthenticationContext.getId());
@@ -125,7 +127,7 @@ public class RequestService {
     public Page<RequestProjection> findAll(JwtUserDetails userDetails, Pageable pageable) {
         Page<RequestProjection> requests;
 
-        if (userDetails.getRole().equalsIgnoreCase("ROLE_ADMIN")) {
+        if (userDetails.getRole().equalsIgnoreCase(ROLE_ADMIN)) {
             requests = requestRepository.findAllPageable(pageable);
         } else {
             requests = requestRepository.findAllPageable(userDetails.getId(), pageable);
@@ -163,7 +165,7 @@ public class RequestService {
                 .findFirst()
                 .orElseThrow(() -> new StatusNotFoundException(String.format("Status='%s' não encontrado", status)));
 
-        if (userDetails.getRole().equalsIgnoreCase("ROLE_ADMIN")) {
+        if (userDetails.getRole().equalsIgnoreCase(ROLE_ADMIN)) {
             requests = requestRepository.findByStatus(statusEnum, pageable);
         } else {
             requests = requestRepository.findByStatus(statusEnum, userDetails.getId(), pageable);
@@ -177,7 +179,7 @@ public class RequestService {
         Page<RequestProjection> requests;
         String userRole = userDetails.getRole();
 
-        if (userRole.equalsIgnoreCase("ROLE_ADMIN")) {
+        if (userRole.equalsIgnoreCase(ROLE_ADMIN)) {
             Long userIdLong = userId == 0 ? userDetails.getId() : userId.longValue();
 
             requests = requestRepository.findByUserId(userIdLong, pageable);
@@ -192,7 +194,7 @@ public class RequestService {
     public Page<RequestProjection> findByItemID(Long id, JwtUserDetails userDetails, Pageable pageable) {
         Page<RequestProjection> requests;
 
-        if (userDetails.getRole().equalsIgnoreCase("ROLE_ADMIN")) {
+        if (userDetails.getRole().equalsIgnoreCase(ROLE_ADMIN)) {
             requests = requestRepository.findByItemId(id, pageable);
         } else {
             requests = requestRepository.findByItemId(id, userDetails.getId(), pageable);
