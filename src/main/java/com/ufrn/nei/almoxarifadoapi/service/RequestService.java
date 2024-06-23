@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -121,8 +122,14 @@ public class RequestService {
   }
 
     @Transactional(readOnly = true)
-    public Page<RequestProjection> findAll(Pageable pageable) {
-        Page<RequestProjection> requests = requestRepository.findAllPageable(pageable);
+    public Page<RequestProjection> findAll(JwtUserDetails userDetails, Pageable pageable) {
+        Page<RequestProjection> requests;
+
+        if (userDetails.getRole().equalsIgnoreCase("ROLE_ADMIN")) {
+            requests = requestRepository.findAllPageable(pageable);
+        } else {
+            requests = requestRepository.findAllPageable(userDetails.getId(), pageable);
+        }
 
         return requests;
     }

@@ -168,9 +168,10 @@ public class RequestController {
                             content = @Content(mediaType = "applicaton/json;charset=UTF-8", schema = @Schema(implementation = PageableDTO.class)))
             })
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<PageableDTO> findAll(Pageable pageable) {
-        Page<RequestProjection> requestPage = requestService.findAll(pageable);
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public ResponseEntity<PageableDTO> findAll(Pageable pageable,
+                                               @AuthenticationPrincipal JwtUserDetails userDetails) {
+        Page<RequestProjection> requestPage = requestService.findAll(userDetails, pageable);
         PageableDTO response = PageableMapper.toDto(requestPage);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
