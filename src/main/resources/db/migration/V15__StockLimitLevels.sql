@@ -1,0 +1,2 @@
+ALTER TABLE itens
+ADD COLUMN quantidade_ideal INTEGER DEFAULT 0;
