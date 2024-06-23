@@ -147,7 +147,7 @@ public class RequestController {
     }
 
     @Operation(summary = "Recuperar todas solicitações",
-            description = "Requisição exige uso de um bearer token. Acesso restrito a Role='ADMIN'",
+            description = "Requisição exige uso de um bearer token. Acesso restrito a Role='ADMIN','USER'",
             security = @SecurityRequirement(name = "security"),
             parameters = {
                     @Parameter(in = ParameterIn.QUERY, name = "page",
@@ -178,7 +178,7 @@ public class RequestController {
     }
 
     @Operation(summary = "Recuperar solicitação pelo ID",
-            description = "Requisição exige uso de um bearer token. Acesso restrito a Role='ADMIN'",
+            description = "Requisição exige uso de um bearer token. Acesso restrito a Role='ADMIN','USER'",
             security = @SecurityRequirement(name = "security"),
             responses = {
                     @ApiResponse(responseCode = "200", description = "Recurso localizado com sucesso",
@@ -199,7 +199,7 @@ public class RequestController {
     }
 
     @Operation(summary = "Recuperar solicitação pelo Status",
-            description = "Requisição exige uso de um bearer token. Acesso restrito a Role='ADMIN'",
+            description = "Requisição exige uso de um bearer token. Acesso restrito a Role='ADMIN','USER'",
             security = @SecurityRequirement(name = "security"),
             responses = {
                     @ApiResponse(responseCode = "200", description = "Recurso localizado com sucesso",
@@ -259,7 +259,7 @@ public class RequestController {
     }
 
     @Operation(summary = "Recuperar solicitação pelo ID do item",
-            description = "Requisição exige uso de um bearer token. Acesso restrito a Role='ADMIN'",
+            description = "Requisição exige uso de um bearer token. Acesso restrito a Role='ADMIN','USER'",
             security = @SecurityRequirement(name = "security"),
             responses = {
                     @ApiResponse(responseCode = "200", description = "Recurso localizado com sucesso",
