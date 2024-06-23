@@ -13,6 +13,7 @@ import com.ufrn.nei.almoxarifadoapi.infra.RestErrorMessage;
 import com.ufrn.nei.almoxarifadoapi.infra.jwt.JwtUserDetails;
 import com.ufrn.nei.almoxarifadoapi.repository.projection.RequestProjection;
 import com.ufrn.nei.almoxarifadoapi.service.RequestService;
+import io.jsonwebtoken.Jwt;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -208,10 +209,11 @@ public class RequestController {
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestErrorMessage.class)))
             })
     @GetMapping("/status/{status}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<PageableDTO> findByStatus(@PathVariable String status,
-                                                                 Pageable pageable) {
-        Page<RequestProjection> requestPage = requestService.findByStatus(status, pageable);
+                                                    Pageable pageable,
+                                                    @AuthenticationPrincipal JwtUserDetails userDetails) {
+        Page<RequestProjection> requestPage = requestService.findByStatus(userDetails, status, pageable);
         PageableDTO response = PageableMapper.toDto(requestPage);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);

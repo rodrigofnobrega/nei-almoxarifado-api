@@ -18,6 +18,9 @@ public interface RequestRepository extends JpaRepository<RequestEntity, Long> {
     @Query("SELECT r FROM RequestEntity r WHERE (r.status = :status)")
     Page<RequestProjection> findByStatus(RequestStatusEnum status, Pageable pageable);
 
+    @Query("SELECT r FROM RequestEntity r WHERE (r.status = :status AND r.user.id = :userId)")
+    Page<RequestProjection> findByStatus(RequestStatusEnum status, Long userId, Pageable pageable);
+
     @Query("SELECT r FROM RequestEntity r WHERE (r.user.id = :id)")
     Page<RequestProjection> findByUserId(Long id, Pageable pageable);
 

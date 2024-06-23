@@ -148,14 +148,19 @@ public class RequestService {
     }
 
     @Transactional(readOnly = true)
-    public Page<RequestProjection> findByStatus(String status, Pageable pageable) {
+    public Page<RequestProjection> findByStatus(JwtUserDetails userDetails, String status, Pageable pageable) {
+        Page<RequestProjection> requests;
         // Convertendo a string de status para o enum statusEnum
         RequestStatusEnum statusEnum = Arrays.stream(RequestStatusEnum.values())
                 .filter(e -> e.name().equalsIgnoreCase(status))
                 .findFirst()
                 .orElseThrow(() -> new StatusNotFoundException(String.format("Status='%s' não encontrado", status)));
 
-        Page<RequestProjection> requests = requestRepository.findByStatus(statusEnum, pageable);
+        if (userDetails.getRole().equalsIgnoreCase("ROLE_ADMIN")) {
+            requests = requestRepository.findByStatus(statusEnum, pageable);
+        } else {
+            requests = requestRepository.findByStatus(statusEnum, userDetails.getId(), pageable);
+        }
 
         return requests;
     }
