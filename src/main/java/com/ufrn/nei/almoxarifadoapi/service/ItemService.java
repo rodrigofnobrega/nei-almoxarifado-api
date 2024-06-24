@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.ufrn.nei.almoxarifadoapi.dto.item.ItemResponseDTO;
+import com.ufrn.nei.almoxarifadoapi.dto.item.ItemUpdateIdealAmountDTO;
 import com.ufrn.nei.almoxarifadoapi.entity.RecordEntity;
 import com.ufrn.nei.almoxarifadoapi.entity.RoleEntity;
 import com.ufrn.nei.almoxarifadoapi.entity.UserEntity;
@@ -184,6 +185,22 @@ public class ItemService {
 
         setItemQuantity(item, quantity, ItemQuantityOperation.SUBTRACT);
 
+        sendMailLowStock(item, sendMail);
+
+        itemRepository.save(item);
+    }
+
+    @Transactional
+    public void updateIdealAmount(Long id, ItemUpdateIdealAmountDTO dto) {
+        ItemEntity item = findById(id);
+        item.setIdealAmount(dto.getIdealAmount());
+
+        sendMailLowStock(item, Boolean.TRUE);
+
+        itemRepository.save(item);
+    }
+
+    private void sendMailLowStock(ItemEntity item, Boolean sendMail) {
         if (item.getQuantity() <= item.getIdealAmount() && sendMail) {
             RoleEntity roleAdmin = roleService.findByRoleName(ROLE_ADMIN).get();
             List<UserEntity> users = userService.findAllByRole(roleAdmin);
@@ -194,7 +211,5 @@ public class ItemService {
 
             mailService.sendMailLowStock(usersEmail, item.getName(), item.getQuantity(), item.getIdealAmount());
         }
-
-        itemRepository.save(item);
     }
 }
