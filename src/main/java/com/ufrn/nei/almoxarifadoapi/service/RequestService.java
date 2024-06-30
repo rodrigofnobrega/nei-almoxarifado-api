@@ -12,6 +12,7 @@ import com.ufrn.nei.almoxarifadoapi.exception.ModifyStatusException;
 import com.ufrn.nei.almoxarifadoapi.exception.StatusNotFoundException;
 import com.ufrn.nei.almoxarifadoapi.exception.UnauthorizedAccessException;
 import com.ufrn.nei.almoxarifadoapi.infra.jwt.JwtAuthenticationContext;
+import com.ufrn.nei.almoxarifadoapi.infra.jwt.JwtUserDetails;
 import com.ufrn.nei.almoxarifadoapi.infra.mail.MailService;
 import com.ufrn.nei.almoxarifadoapi.repository.RequestRepository;
 
@@ -25,6 +26,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,6 +48,8 @@ public class RequestService {
 
     @Autowired
     private MailService mailService;
+
+    private final String ROLE_ADMIN = "ROLE_ADMIN";
 
     @Transactional
     public RequestEntity create(RequestCreateDTO data) {
@@ -119,8 +124,14 @@ public class RequestService {
   }
 
     @Transactional(readOnly = true)
-    public Page<RequestProjection> findAll(Pageable pageable) {
-        Page<RequestProjection> requests = requestRepository.findAllPageable(pageable);
+    public Page<RequestProjection> findAll(JwtUserDetails userDetails, Pageable pageable) {
+        Page<RequestProjection> requests;
+
+        if (userDetails.getRole().equalsIgnoreCase(ROLE_ADMIN)) {
+            requests = requestRepository.findAllPageable(pageable);
+        } else {
+            requests = requestRepository.findAllPageable(userDetails.getId(), pageable);
+        }
 
         return requests;
     }
@@ -146,28 +157,48 @@ public class RequestService {
     }
 
     @Transactional(readOnly = true)
-    public Page<RequestProjection> findByStatus(String status, Pageable pageable) {
+    public Page<RequestProjection> findByStatus(JwtUserDetails userDetails, String status, Pageable pageable) {
+        Page<RequestProjection> requests;
         // Convertendo a string de status para o enum statusEnum
         RequestStatusEnum statusEnum = Arrays.stream(RequestStatusEnum.values())
                 .filter(e -> e.name().equalsIgnoreCase(status))
                 .findFirst()
                 .orElseThrow(() -> new StatusNotFoundException(String.format("Status='%s' não encontrado", status)));
 
-        Page<RequestProjection> requests = requestRepository.findByStatus(statusEnum, pageable);
+        if (userDetails.getRole().equalsIgnoreCase(ROLE_ADMIN)) {
+            requests = requestRepository.findByStatus(statusEnum, pageable);
+        } else {
+            requests = requestRepository.findByStatus(statusEnum, userDetails.getId(), pageable);
+        }
 
         return requests;
     }
 
     @Transactional(readOnly = true)
-    public Page<RequestProjection> findByUserID(Long id, Pageable pageable) {
-        Page<RequestProjection> requests = requestRepository.findByUserId(id, pageable);
+    public Page<RequestProjection> findByUserID(Integer userId, JwtUserDetails userDetails, Pageable pageable) {
+        Page<RequestProjection> requests;
+        String userRole = userDetails.getRole();
+
+        if (userRole.equalsIgnoreCase(ROLE_ADMIN)) {
+            Long userIdLong = userId == 0 ? userDetails.getId() : userId.longValue();
+
+            requests = requestRepository.findByUserId(userIdLong, pageable);
+        } else {
+            requests = requestRepository.findByUserId(userDetails.getId(), pageable);
+        }
 
         return requests;
     }
 
     @Transactional(readOnly = true)
-    public Page<RequestProjection> findByItemID(Long id, Pageable pageable) {
-        Page<RequestProjection> requests = requestRepository.findByItemId(id, pageable);
+    public Page<RequestProjection> findByItemID(Long id, JwtUserDetails userDetails, Pageable pageable) {
+        Page<RequestProjection> requests;
+
+        if (userDetails.getRole().equalsIgnoreCase(ROLE_ADMIN)) {
+            requests = requestRepository.findByItemId(id, pageable);
+        } else {
+            requests = requestRepository.findByItemId(id, userDetails.getId(), pageable);
+        }
 
         return requests;
     }
