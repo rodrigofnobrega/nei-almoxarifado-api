@@ -84,7 +84,7 @@ public class UserService {
       RecoveryTokenEntity storedToken = userRecToken.isEmpty() ? null : userRecToken.get();
 
       if (storedToken == null || storedToken.isUsed()) {
-        throw new EntityNotFoundException("Não há token de recuperação válido para o usuário de id " + userId);
+        throw new EntityNotFoundException("Não há token de recuperação válido para o usuário de email " + user.getEmail());
       } else if (!storedToken.getToken().equals(token)) {
         throw new InvalidRecoveryTokenException("Token de recuperação enviado é diferente do armazenado para o usuário.");
       }
