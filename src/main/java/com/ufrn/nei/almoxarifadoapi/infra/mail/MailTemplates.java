@@ -11,14 +11,12 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
+import java.util.Date;
 
 @Component
 public class MailTemplates {
   @Autowired
   private SimpleMailMessage simpleMailMessage;
-
-  @Autowired
-  private MimeMessage mimeMessage;
 
   public SimpleMailMessage buildMailMessageUserCreated(String userEmail, String userName) {
     String subject = "Sua conta foi criada com sucesso!";
@@ -48,6 +46,7 @@ public class MailTemplates {
 
     simpleMailMessage.setTo(userEmail);
     simpleMailMessage.setSubject(subject);
+    simpleMailMessage.setSentDate(new Date());
     simpleMailMessage.setText(text);
 
     return simpleMailMessage;
@@ -73,6 +72,7 @@ public class MailTemplates {
 
     simpleMailMessage.setTo(userEmail);
     simpleMailMessage.setSubject(subject);
+    simpleMailMessage.setSentDate(new Date());
     simpleMailMessage.setText(text);
 
     return simpleMailMessage;
@@ -98,6 +98,7 @@ public class MailTemplates {
 
     simpleMailMessage.setTo(userEmail);
     simpleMailMessage.setSubject(subject);
+    simpleMailMessage.setSentDate(new Date());
     simpleMailMessage.setText(text);
 
     return simpleMailMessage;
@@ -126,6 +127,7 @@ public class MailTemplates {
 
     simpleMailMessage.setTo(userEmail);
     simpleMailMessage.setSubject(subject);
+    simpleMailMessage.setSentDate(new Date());
     simpleMailMessage.setText(text);
 
     return simpleMailMessage;
@@ -151,6 +153,7 @@ public class MailTemplates {
 
     simpleMailMessage.setTo(userEmail);
     simpleMailMessage.setSubject(subject);
+    simpleMailMessage.setSentDate(new Date());
     simpleMailMessage.setText(text);
 
     return simpleMailMessage;
@@ -164,10 +167,11 @@ public class MailTemplates {
 
     helper.setTo(userEmail);
     helper.setSubject(subject);
+    helper.setSentDate(new Date());
     helper.setText(
-        "",
-            "<h3> Código de redefinição de senha </h3> <br> <span> Seu código para a redefinição de senha é <strong>"
-                    + token + "</strong>. Se você não fez essa solicitação, pode ignorar esse e-mail com segurança.");
+    "<h3> Código de redefinição de senha </h3> <br> <span> Seu código para a redefinição de senha é <strong>"
+            + token + "</strong>. Se você não fez essa solicitação, pode ignorar esse e-mail com segurança.",
+            true);
 
     return helper;
   }
