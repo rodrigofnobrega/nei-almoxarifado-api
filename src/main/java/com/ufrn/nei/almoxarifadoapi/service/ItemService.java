@@ -180,7 +180,8 @@ public class ItemService {
         // O e-mail só será enviado se após a diminuição do item pelo método 'setItemQuantity()' satisfazer a condição
         // descrita acima.
 
-        Boolean sendMail = item.getQuantity() <=item.getMinimumStockLevel() ? Boolean.FALSE : Boolean.TRUE;
+        int quantityBeforeUpdate = item.getQuantity();
+        Boolean sendMail = quantityBeforeUpdate <= item.getMinimumStockLevel() ? Boolean.FALSE : Boolean.TRUE;
 
         setItemQuantity(item, quantity, ItemQuantityOperation.SUBTRACT);
 
