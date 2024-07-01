@@ -37,8 +37,8 @@ public class ItemEntity implements Serializable {
     @Column(name = "quantidade", nullable = false)
     private int quantity;
 
-    @Column(name = "quantidade_ideal")
-    private Integer idealAmount;
+    @Column(name = "quantidade_minima_estoque")
+    private int minimumStockLevel;
 
     @Column(name = "tipo_unitario")
     private String type;

@@ -1,2 +1,2 @@
 ALTER TABLE itens
-ADD COLUMN quantidade_ideal INTEGER DEFAULT 0;
+ADD COLUMN quantidade_minima_estoque INTEGER DEFAULT 0;
